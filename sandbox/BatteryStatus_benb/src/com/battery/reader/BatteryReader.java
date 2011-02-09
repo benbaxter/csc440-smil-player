@@ -132,7 +132,7 @@ public class BatteryReader extends Activity {
     		BufferedOutputStream buf;
 			buf = new BufferedOutputStream(context.openFileOutput(FILENAME, Context.MODE_APPEND));
 			DecimalFormat df = new DecimalFormat("###.#%");
-			String stats = "Bat leve: " + df.format(battLev) + "\tVolts: " + battVolts + "\n";
+			String stats = "Bat leve: " + df.format(battLev) + "\tVolts: " + battVolts + "\tTime: " + System.currentTimeMillis() + "\n";
 			buf.write(stats.getBytes());
 			buf.close();
 		} catch (FileNotFoundException e) {
