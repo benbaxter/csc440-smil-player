@@ -91,7 +91,9 @@ public class BatteryReader extends Activity {
 	         	//15% = 3605
 	            //90% = 4031, 4009
 	            //80% = 3985, 3925
-	            //70% = 3899, 3874
+	            //70% = 3899, 3826
+	            //50% = 3758
+	            
 	            
 	            Log.i(TAG, FILENAME);
 				try {
