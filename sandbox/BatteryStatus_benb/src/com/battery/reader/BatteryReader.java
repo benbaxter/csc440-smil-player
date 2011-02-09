@@ -28,7 +28,9 @@ import android.widget.TextView;
 public class BatteryReader extends Activity {
     /** Called when the activity is first created. */
 	private static final String TAG = "MyPrints";
-	String FILENAME = "batteryStats.txt";
+	private static String FILENAME = "batteryStats.txt";
+	private static double battLev;
+	private static int battVolts;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,31 @@ public class BatteryReader extends Activity {
 	            display.append("\nBattery Volts: " + volts);
 	            display.append("\nBattery Temp: " + temp +  "\u00b0F");
 	            display.append("\nBattery Tech: " + tech);
+	            battLev = batteryLevel / 100;
+	            battVolts = volts;
+	         	//15% = 3605
+	            //90% = 4031, 4009
+	            //80% = 3985, 3925
+	            //70% = 3899, 3874
+	            
+	            Log.i(TAG, FILENAME);
+				try {
+					File file = new File(getFilesDir() + "/" + FILENAME);
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String line;
+					while ( (line = br.readLine()) != null ) {
+						Log.i(TAG, line);
+						display.append( "\n" + line);
+					}
+					Log.i(TAG, file.getAbsolutePath());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException ioe ){
+					ioe.printStackTrace();			
+				}finally {
+					
+				}
 	            
 				TextView batteryStatusView = new TextView(context);
 				batteryStatusView.setText(display);
@@ -94,12 +121,35 @@ public class BatteryReader extends Activity {
         registerReceiver(battReceiver, battFilter);
     }
     
+    private static void captureBattery(Context context)
+    {
+    	Log.i(TAG, "starting capture");
+    	Log.i(TAG, "level : " + battLev );
+    	Log.i(TAG, "volts : " + battVolts );
+    	try {
+    		BufferedOutputStream buf;
+			buf = new BufferedOutputStream(context.openFileOutput(FILENAME, Context.MODE_APPEND));
+			DecimalFormat df = new DecimalFormat("###.#%");
+			String stats = "Bat leve: " + df.format(battLev) + "\tVolts: " + battVolts + "\n";
+			buf.write(stats.getBytes());
+			buf.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     static final int REFRESH = 0;
-    static final int CLEARFILE = 1;
-    static final int EXIT = 2;
+    static final int CAPTURE = 1;
+    static final int CLEARFILE = 2;
+    static final int EXIT = 3;
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	menu.add(0, REFRESH, 0, "Refresh");
+    	menu.add(0, CAPTURE, 0, "Caputre");
     	menu.add(0, CLEARFILE, 0, "Clear File");
     	menu.add(0,EXIT,0,"Exit");
     	return true;
@@ -116,6 +166,10 @@ public class BatteryReader extends Activity {
 	    	case CLEARFILE:
 	    		File file = new File( getFilesDir() + "/" + FILENAME);
 	    		file.delete();
+	    		monitorBatteryState(getApplicationContext());
+	    		break;
+	    	case CAPTURE:
+	    		captureBattery(getApplicationContext());
 	    		monitorBatteryState(getApplicationContext());
 	    		break;
     	}
