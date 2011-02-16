@@ -1,43 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout android:id="@+id/FrameLayout" 
+<RelativeLayout android:id="@+id/Composer" 
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent" 
-	xmlns:android="http://schemas.android.com/apk/res/android" android:layout_gravity="bottom">
-	<RelativeLayout android:id="@+id/Titlebar" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+		
+	<RelativeLayout android:id="@+id/TopBar" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/top" >
+		android:background="@drawable/top">
+		
 		<TextView android:text="Untitled Message" 
 			android:id="@+id/messageTitle" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:layout_centerVertical="true"/>
+			
 		<Button android:id="@+id/newBtn" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:background="@drawable/button_new" 
-			android:layout_alignParentRight="true"/>
+			android:layout_alignParentRight="true" />
 	</RelativeLayout>
-	<LinearLayout android:id="@+id/Buttons" 
+		
+	<FrameLayout android:id="@+id/FrameLayout01" android:layout_width="wrap_content" android:layout_below="@+id/TopBar" android:layout_height="wrap_content" android:layout_above="@+id/addBtn"></FrameLayout><Button android:id="@+id/addBtn" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"  
-		android:layout_gravity="bottom">
-		<Button android:id="@+id/addBtn" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:background="@drawable/button_add" />
-		<Button android:id="@+id/saveBtn" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:background="@drawable/button_save" />
-		<Button android:id="@+id/undoBtn" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:background="@drawable/button_undo" />
-		<Button android:id="@+id/sendBtn" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:background="@drawable/button_send" />
-	</LinearLayout>
-</FrameLayout>
+		android:layout_height="wrap_content" 
+		android:background="@drawable/button_add" 
+		android:layout_alignParentBottom="true"/>
+		
+	<Button android:id="@+id/saveBtn" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:background="@drawable/button_save" 
+		android:layout_toRightOf="@+id/addBtn" 
+		android:layout_alignParentBottom="true"/>
+		
+	<Button android:id="@+id/undoBtn" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:background="@drawable/button_undo" 
+		android:layout_alignParentBottom="true" 
+		android:layout_toRightOf="@+id/saveBtn"/>
+		
+	<Button android:id="@+id/sendBtn" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:background="@drawable/button_send" 
+		android:layout_toRightOf="@+id/undoBtn" 
+		android:layout_alignParentBottom="true"/>
+
+
+
+</RelativeLayout>
