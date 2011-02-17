@@ -1,5 +1,6 @@
 package com.team1.ui;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 public class UI extends Activity {
     /** Called when the activity is first created. */
+	Toast toast;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,33 +31,36 @@ public class UI extends Activity {
     }
     
     OnClickListener mClick = new OnClickListener() {
-    	public void onClick(View v){
+    	public void onClick(View v){    	
+    		//toast.cancel();
     		Context context = getApplicationContext();
-    		int duration = Toast.LENGTH_SHORT;
-    		CharSequence text = "";
+    		toast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
     		if(v.getId() == R.id.addBtn)
     		{
-    			text = "Clicking this button allows the user to add new objects to the Canvas.";
+    			toast.setText("Clicking this button allows the user to add new objects to the Canvas.");
+    			toast.show();
     		}
     		else if(v.getId() == R.id.saveBtn)
     		{
-    			text = "Clicking this button allows the user save their current message.";
+    			toast.setText("Clicking this button allows the user save their current message.");
+    			toast.show();
     		}
     		else if(v.getId() == R.id.undoBtn)
     		{
-    			text = "Clicking this button allows the user undo thier last change.";
+    			toast.setText("Clicking this button allows the user undo thier last change.");
+    			toast.show();
     		}
     		else if(v.getId() == R.id.sendBtn)
     		{
-    			text = "Clicking this button allows the user send the message to a friend.";
+    			toast.setText("Clicking this button allows the user send the message to a friend.");
+    			toast.show();
     		}
     		else
     		{
-    			text = "Clicking this button creates a new message.";
+    			toast.setText("Clicking this button creates a new message.");
+        		toast.show();
     		}
 
-    		Toast toast = Toast.makeText(context, text, duration);
-    		toast.show();
     	}
     };
 }

@@ -11,7 +11,7 @@
 		android:background="@drawable/top">
 		
 		<TextView android:text="Untitled Message" 
-			android:id="@+id/messageTitle" 
+			android:id="@+id/Title" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:layout_centerVertical="true"/>
@@ -19,34 +19,41 @@
 		<Button android:id="@+id/newBtn" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:background="@drawable/button_new" 
+			android:background="@drawable/newbutton" 
 			android:layout_alignParentRight="true" />
 	</RelativeLayout>
 		
-	<FrameLayout android:layout_width="wrap_content" android:layout_below="@+id/TopBar" android:layout_height="wrap_content" android:layout_above="@+id/addBtn" android:id="@+id/Canvas"></FrameLayout><Button android:id="@+id/addBtn" 
+	<FrameLayout android:layout_width="wrap_content" 
+		android:layout_below="@+id/TopBar" 
+		android:layout_height="wrap_content" 
+		android:layout_above="@+id/addBtn" 
+		android:id="@+id/Canvas">
+	</FrameLayout>
+	
+	<Button android:id="@+id/addBtn" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/button_add" 
+		android:background="@drawable/addbutton" 
 		android:layout_alignParentBottom="true"/>
 		
 	<Button android:id="@+id/saveBtn" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/button_save" 
+		android:background="@drawable/savebutton" 
 		android:layout_toRightOf="@+id/addBtn" 
 		android:layout_alignParentBottom="true"/>
 		
 	<Button android:id="@+id/undoBtn" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/button_undo" 
+		android:background="@drawable/undobutton" 
 		android:layout_alignParentBottom="true" 
 		android:layout_toRightOf="@+id/saveBtn"/>
 		
 	<Button android:id="@+id/sendBtn" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/button_send" 
+		android:background="@drawable/sendbutton" 
 		android:layout_toRightOf="@+id/undoBtn" 
 		android:layout_alignParentBottom="true"/>
 
