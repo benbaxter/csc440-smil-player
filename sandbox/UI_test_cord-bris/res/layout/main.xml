@@ -23,11 +23,13 @@
 			android:layout_alignParentRight="true" />
 	</RelativeLayout>
 		
-	<FrameLayout android:layout_width="wrap_content" 
+	<FrameLayout android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
 		android:layout_below="@+id/TopBar" 
-		android:layout_height="wrap_content" 
 		android:layout_above="@+id/addBtn" 
-		android:id="@+id/Canvas">
+		android:id="@+id/Canvas"
+		android:layout_gravity="top">
+		
 	</FrameLayout>
 	
 	<Button android:id="@+id/addBtn" 
@@ -56,7 +58,5 @@
 		android:background="@drawable/sendbutton" 
 		android:layout_toRightOf="@+id/undoBtn" 
 		android:layout_alignParentBottom="true" />
-
-
 
 </RelativeLayout>
