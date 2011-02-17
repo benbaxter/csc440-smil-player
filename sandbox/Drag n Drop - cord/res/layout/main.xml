@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	android:id="@+id/Board" 
+	android:layout_gravity="top"> 
+
+	<View android:background="@drawable/icon" 
+		android:layout_height="40dp" 
+		android:layout_width="40dp" 
+		android:id="@+id/Pawn" 
+		android:layout_gravity="top"/> 
+		
+</FrameLayout>
