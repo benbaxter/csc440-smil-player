@@ -8,7 +8,7 @@
 	<RelativeLayout android:id="@+id/TopBar" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/top">
+		android:background="@drawable/top" android:fadingEdge="none">
 		
 		<TextView android:text="Untitled Message" 
 			android:id="@+id/Title" 
@@ -37,25 +37,25 @@
 		android:layout_alignParentBottom="true"/>
 		
 	<Button android:id="@+id/saveBtn" 
-		android:layout_width="wrap_content" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:background="@drawable/savebutton" 
 		android:layout_toRightOf="@+id/addBtn" 
-		android:layout_alignParentBottom="true"/>
+		android:layout_alignParentBottom="true" />
 		
 	<Button android:id="@+id/undoBtn" 
-		android:layout_width="wrap_content" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:background="@drawable/undobutton" 
 		android:layout_alignParentBottom="true" 
-		android:layout_toRightOf="@+id/saveBtn"/>
+		android:layout_toRightOf="@+id/saveBtn" />
 		
 	<Button android:id="@+id/sendBtn" 
-		android:layout_width="wrap_content" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:background="@drawable/sendbutton" 
 		android:layout_toRightOf="@+id/undoBtn" 
-		android:layout_alignParentBottom="true"/>
+		android:layout_alignParentBottom="true" />
 
 
 
