@@ -6,7 +6,8 @@
 	<RelativeLayout android:id="@+id/TopBar" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
-		android:background="@drawable/bar" android:fadingEdge="none">
+		android:background="@drawable/bar" 
+		android:fadingEdge="none">
 		
 		<TextView android:id="@+id/Title" 
 			android:layout_width="wrap_content" 
@@ -24,34 +25,39 @@
 	<RelativeLayout android:layout_width="fill_parent" 
 			android:layout_below="@+id/TopBar" 
 			android:id="@+id/ButtonSpacer" 
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content" android:layout_marginBottom="10px">
+			
 		<RelativeLayout android:id="@+id/Buttons" 
 			android:layout_centerInParent="true" 
 			android:layout_height="wrap_content" 
-			android:layout_width="wrap_content">
+			android:layout_width="wrap_content" android:layout_marginTop="5px">
 			
 			<Button android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:layout_below="@+id/TopBar" 
 				android:background="@drawable/newbuttonmain" 
-				android:id="@+id/newMain"/>
+				android:id="@+id/newMain" 
+				android:layout_margin="10px"/>
 				
 			<Button android:layout_width="wrap_content" 
 				android:layout_height="wrap_content"
 				android:layout_below="@+id/buttons"
 				android:background="@drawable/draftbuttonmain" 
 				android:id="@+id/draftsMain" 
+				android:layout_margin="10px"
 				android:layout_toRightOf="@+id/newMain"/>
 				
 			<Button android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:id="@+id/inboxMain" 
+				android:layout_margin="10px"
 				android:background="@drawable/inboxbuttonmain"
 				android:layout_below="@+id/newMain"/>
 				
 			<Button android:layout_width="wrap_content" 
 				android:layout_height="wrap_content"  
 				android:id="@+id/outboxMain" 
+				android:layout_margin="10px"
 				android:layout_toRightOf="@id/inboxMain" 
 				android:background="@drawable/outboxbuttonmain"
 				android:layout_below="@id/draftsMain"/>
