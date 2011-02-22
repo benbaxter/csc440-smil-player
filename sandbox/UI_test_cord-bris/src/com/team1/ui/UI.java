@@ -1,7 +1,11 @@
 package com.team1.ui;
 
+import com.team1.ui.HelloActivity;
+import com.team1.ui.SendTxtActivity;
+
 
 import android.app.Activity;
+//import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +17,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.FrameLayout.LayoutParams;
+import android.content.Intent;
+
 
 public class UI extends Activity {
     /** Called when the activity is first created. */
@@ -39,8 +45,6 @@ public class UI extends Activity {
         undo.setOnClickListener(mClick);
         send.setOnClickListener(mClick);
         newBtn.setOnClickListener(mClick);
-        
-        
     }
     
     OnClickListener mClick = new OnClickListener() {
@@ -63,7 +67,7 @@ public class UI extends Activity {
     			pawn.setOnTouchListener(drag);
     		}
     		else if(v.getId() == R.id.saveBtn)
-    		{
+    		{  			
     			toast.setText("Clicking this button allows the user save their current message.");
     			toast.show();
     		}
@@ -74,17 +78,45 @@ public class UI extends Activity {
     		}
     		else if(v.getId() == R.id.sendBtn)
     		{
-    			toast.setText("Clicking this button allows the user send the message to a friend.");
-    			toast.show();
+    			// Open the send SMS text form
+    			openSendTextActivity ( );
     		}
     		else
     		{
-    			toast.setText("Clicking this button creates a new message.");
-        		toast.show();
+    			// Open the Hello World form
+    			openHelloActivity ( );    			
     		}
 
     	}
     };
+    
+    //=========================================================
+    // Function: 	openHelloActivity ( )
+    // Description: Starts the HelloActivity class/form
+    // Parameters:  None
+    // Returns:     None
+    //=========================================================
+    
+    private void openHelloActivity ( )
+    {
+		Intent mHelloIntent = new Intent ( getApplicationContext(), HelloActivity.class );
+		mHelloIntent.putExtra( "Hello Activity", "" );
+		startActivity ( mHelloIntent ); 
+    }
+    
+    //=========================================================
+    // Function: 	openSendTextActivity ( )
+    // Description: Starts the SendTextActivity class/form
+    // Parameters:  None
+    // Returns:     None
+    //=========================================================
+    
+    private void openSendTextActivity ( )
+    {
+		Intent mSendIntent = new Intent ( getApplicationContext(), SendTxtActivity.class );
+		mSendIntent.putExtra( "Send Text Activity", "" );
+		startActivity ( mSendIntent ); 
+    }
     
     OnTouchListener drag = new OnTouchListener(){
 		@Override 
