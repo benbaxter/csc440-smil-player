@@ -33,10 +33,7 @@ public class SendTxtActivity extends Activity {
 
 			@Override
 			public void onClick(View view) {
-				Intent mComposerIntent = new Intent(getApplicationContext(),
-						ComposerActivity.class);
-				mComposerIntent.putExtra("Composer", "");
-				startActivity(mComposerIntent);
+				finish();
 			}
 		});
 	}
@@ -85,5 +82,6 @@ public class SendTxtActivity extends Activity {
 			throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(address, null, message, null, null);
+		finish();
 	}
 }

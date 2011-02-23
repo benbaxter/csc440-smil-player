@@ -21,13 +21,24 @@
 			android:background="@drawable/newbutton" 
 			android:layout_alignParentRight="true" />
 	</RelativeLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical" android:layout_below="@+id/TopBar" android:id="@+id/number">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Destination Address:" />
+		<EditText android:id="@+id/addrEditText"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="5136049688" android:selectAllOnFocus="true" />
+
+
+
+	</LinearLayout>
 		
 	<FrameLayout android:layout_width="fill_parent" 
 		android:layout_height="fill_parent" 
-		android:layout_below="@+id/TopBar" 
 		android:layout_above="@+id/addBtn" 
 		android:id="@+id/Canvas"
-		android:layout_gravity="top">
+		android:layout_gravity="top" android:layout_below="@+id/number" android:layout_margin="10px" android:background="#C4C4C4">
 		
 	</FrameLayout>
 	
