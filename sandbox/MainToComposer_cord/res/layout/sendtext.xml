@@ -1,39 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file is /res/layout/main.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="vertical" android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal" android:background="@drawable/bar">
+		<TextView android:layout_height="wrap_content" android:text="Send SMS"
+			android:gravity="left" android:layout_gravity="left"
+			android:layout_width="245dip" />
+		<Button android:background="@drawable/undobuttoncomposer"
+			android:layout_width="wrap_content" android:id="@+id/back"
+			android:layout_height="wrap_content" android:gravity="right"
+			android:layout_gravity="right"></Button>
+	</LinearLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Destination Address:" />
+		<EditText android:id="@+id/addrEditText"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="5136049688" android:selectAllOnFocus="true" />
 
-	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    	    android:orientation="horizontal" android:layout_width="fill_parent"
-	    	    android:layout_height="wrap_content">
 
-	    	    <TextView android:layout_width="wrap_content"
-	    	    	    android:layout_height="wrap_content" android:text="Destination Address:" />
-				<EditText android:id="@+id/addrEditText" android:layout_width="fill_parent"
-	    	    	    android:layout_height="wrap_content" android:text="5132765762" />
 
-	    	    
-
-	    </LinearLayout>
-
-	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    	    android:orientation="vertical" android:layout_width="fill_parent"
-	    	    android:layout_height="wrap_content">
-
-	    	    <TextView android:layout_width="wrap_content"
-	    	    	    android:layout_height="wrap_content" android:text="Text Message:" />
-
-	    	    <EditText android:id="@+id/msgEditText" android:layout_width="fill_parent"
-	    	    	    android:layout_height="wrap_content" android:text="hello sms" />
-
-	    </LinearLayout>
-	    
-	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    	    android:layout_width="fill_parent"
-	    	    android:layout_height="wrap_content" android:orientation="horizontal">
-	        <Button android:id="@+id/sendSmsBtn" android:text="Send Text Message" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
-	        <Button android:id="@+id/back" android:text="@string/back" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/linearLayout1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<LinearLayout android:id="@+id/linearLayoutInner"
+			android:orientation="vertical" android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<TextView android:text="Text Message:" android:id="@+id/textView1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<EditText android:selectAllOnFocus="true"
+				android:layout_width="wrap_content" android:id="@+id/msgEditText"
+				android:singleLine="false" android:gravity="top" android:lines="5"
+				android:text="hello sms" android:layout_height="wrap_content"
+				android:width="275px" />
 		</LinearLayout>
+		<Button android:layout_width="wrap_content" android:id="@+id/sendBtn"
+			android:layout_height="wrap_content" android:background="@drawable/sendverticalbuttoncomposer"
+			android:gravity="bottom" android:layout_gravity="bottom"
+			android:layout_marginBottom="10dip" android:layout_marginLeft="5dip" />
+	</LinearLayout>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<!-- <Button android:id="@+id/sendSmsBtn" android:text="Send Text Message" 
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></Button> -->
+	</LinearLayout>
 </LinearLayout>
 

@@ -19,30 +19,13 @@ public class SendTxtActivity extends Activity {
 
 		setContentView(R.layout.sendtext);
 
-		Button sendBtn = (Button) findViewById(R.id.sendSmsBtn);
+		/*
+		 * Button sendBtn = (Button) findViewById(R.id.sendSmsBtn);
+		 * sendBtn.setOnClickListener(sendSMS);
+		 */
 
-		sendBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				EditText addrTxt = (EditText) SendTxtActivity.this
-						.findViewById(R.id.addrEditText);
-
-				EditText msgTxt = (EditText) SendTxtActivity.this
-						.findViewById(R.id.msgEditText);
-
-				try {
-					sendSmsMessage(addrTxt.getText().toString(), msgTxt
-							.getText().toString());
-					Toast.makeText(SendTxtActivity.this, "SMS Sent",
-							Toast.LENGTH_LONG).show();
-				} catch (Exception e) {
-					Toast.makeText(SendTxtActivity.this, "Failed to send SMS",
-							Toast.LENGTH_LONG).show();
-					e.printStackTrace();
-				}
-			}
-		});
+		Button sendVertBtn = (Button) findViewById(R.id.sendBtn);
+		sendVertBtn.setOnClickListener(sendSMS);
 
 		Button back = (Button) findViewById(R.id.back);
 
@@ -56,6 +39,41 @@ public class SendTxtActivity extends Activity {
 				startActivity(mComposerIntent);
 			}
 		});
+	}
+
+	OnClickListener sendSMS = new OnClickListener() {
+
+		@Override
+		public void onClick(View view) {
+			EditText addrTxt = (EditText) SendTxtActivity.this
+					.findViewById(R.id.addrEditText);
+			addrTxt.setFocusable(false);
+
+			EditText msgTxt = (EditText) SendTxtActivity.this
+					.findViewById(R.id.msgEditText);
+			msgTxt.setFocusable(false);
+
+			Button sendVertBtn = (Button) findViewById(R.id.sendBtn);
+			sendVertBtn.setFocusable(true);
+			try {
+				sendSmsMessage(addrTxt.getText().toString(), msgTxt.getText()
+						.toString());
+				Toast.makeText(SendTxtActivity.this, "SMS Sent",
+						Toast.LENGTH_LONG).show();
+				openComposerActivity();
+			} catch (Exception e) {
+				Toast.makeText(SendTxtActivity.this, "Failed to send SMS",
+						Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		}
+	};
+
+	private void openComposerActivity() {
+		Intent mComposerIntent = new Intent(getApplicationContext(),
+				ComposerActivity.class);
+		mComposerIntent.putExtra("Composer", "");
+		startActivity(mComposerIntent);
 	}
 
 	@Override
