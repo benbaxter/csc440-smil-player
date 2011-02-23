@@ -28,9 +28,12 @@
 	    	    	    android:layout_height="wrap_content" android:text="hello sms" />
 
 	    </LinearLayout>
-
-	    <Button android:id="@+id/sendSmsBtn" android:layout_width="wrap_content"
-	    	    android:layout_height="wrap_content" android:text="Send Text Message" />
-
+	    
+	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    	    android:layout_width="fill_parent"
+	    	    android:layout_height="wrap_content" android:orientation="horizontal">
+	        <Button android:id="@+id/sendSmsBtn" android:text="Send Text Message" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+	        <Button android:id="@+id/back" android:text="@string/back" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+		</LinearLayout>
 </LinearLayout>
 

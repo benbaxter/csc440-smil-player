@@ -59,6 +59,7 @@ public final class R {
         public static final int TopBar=0x7f050001;
         public static final int addBtn=0x7f050004;
         public static final int addrEditText=0x7f050019;
+        public static final int back=0x7f05001c;
         public static final int buttons=0x7f05000f;
         public static final int draftsMain=0x7f050010;
         public static final int image=0x7f05000a;
@@ -83,6 +84,7 @@ public final class R {
     public static final class string {
         public static final int address=0x7f040002;
         public static final int app_name=0x7f040001;
+        public static final int back=0x7f040003;
         public static final int hello=0x7f040000;
     }
 }
