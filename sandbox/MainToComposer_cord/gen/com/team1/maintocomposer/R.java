@@ -65,6 +65,7 @@ public final class R {
         public static final int back=0x7f05001b;
         public static final int buttons=0x7f050011;
         public static final int draftsMain=0x7f050012;
+        public static final int editText=0x7f050020;
         public static final int image=0x7f05000c;
         public static final int inboxMain=0x7f050013;
         public static final int linearLayout1=0x7f05001c;
@@ -86,6 +87,7 @@ public final class R {
         public static final int image_add=0x7f030002;
         public static final int main=0x7f030003;
         public static final int sendtext=0x7f030004;
+        public static final int text_add=0x7f030005;
     }
     public static final class string {
         public static final int address=0x7f040002;
