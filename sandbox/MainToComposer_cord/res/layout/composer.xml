@@ -30,12 +30,13 @@
 
 	</LinearLayout>
 
-	<FrameLayout android:layout_width="fill_parent"
+	<AbsoluteLayout android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:layout_above="@+id/addBtn"
 		android:id="@+id/Canvas" android:layout_gravity="top"
 		android:layout_below="@+id/number" android:layout_margin="10px"
-		android:background="#C4C4C4" >
-	</FrameLayout>
+		android:background="#C4C4C4">
+
+	</AbsoluteLayout>
 
 	<Button android:id="@+id/addBtn" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:background="@drawable/addbuttoncomposer"
