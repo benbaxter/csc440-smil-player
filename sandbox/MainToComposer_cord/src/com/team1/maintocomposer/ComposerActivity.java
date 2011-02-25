@@ -119,8 +119,13 @@ public class ComposerActivity extends Activity {
 		public boolean onTouch(View v, MotionEvent event) {
 		    AbsoluteLayout.LayoutParams par = (android.widget.AbsoluteLayout.LayoutParams) v.getLayoutParams();
 		    int padding = 10;
+		    int topmargin = findViewById ( R.id.number ).getBottom ( );
 		    int x = (int) event.getRawX() - (v.getWidth() / 2) - padding;
-            int y = (int) event.getRawY() - (v.getHeight()) - 100;
+		    int y = (int) event.getRawY() - (v.getHeight()) - topmargin - padding;
+		    if( v instanceof TextView )
+		    {
+		        x = (int) event.getRawX() - v.getWidth();
+		    }
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_MOVE: {
 			    par.x = x; 
@@ -129,8 +134,8 @@ public class ComposerActivity extends Activity {
 				break;
 			}// inner case MOVE
 			case MotionEvent.ACTION_UP: {
-				par.height = 40;
-				par.width = 40;
+//				par.height = 40;
+//				par.width = 40;
 				par.x = x;
 				par.y = y;
 				v.setLayoutParams(par);

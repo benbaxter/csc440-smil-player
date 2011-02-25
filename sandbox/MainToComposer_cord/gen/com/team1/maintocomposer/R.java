@@ -65,6 +65,7 @@ public final class R {
         public static final int back=0x7f05001b;
         public static final int buttons=0x7f050011;
         public static final int draftsMain=0x7f050012;
+        public static final int editText=0x7f050020;
         public static final int image=0x7f05000c;
         public static final int inboxMain=0x7f050013;
         public static final int linearLayout1=0x7f05001c;
@@ -76,7 +77,6 @@ public final class R {
         public static final int outboxMain=0x7f050014;
         public static final int saveBtn=0x7f050008;
         public static final int sendBtn=0x7f05000a;
-        public static final int text=0x7f050020;
         public static final int textView1=0x7f05001e;
         public static final int txtHello=0x7f05000b;
         public static final int undoBtn=0x7f050009;
