@@ -78,7 +78,7 @@ public class ComposerActivity extends Activity {
 
 				try {
 					String msg = "hello test";
-					EditText msgTxt = (EditText) ComposerActivity.this
+					TextView msgTxt = (TextView) ComposerActivity.this
 							.findViewById(R.id.editText);
 					if (msgTxt != null && !msgTxt.getText().equals("")) {
 						msg = msgTxt.getText().toString();
