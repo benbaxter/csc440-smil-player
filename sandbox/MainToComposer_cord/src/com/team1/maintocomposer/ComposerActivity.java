@@ -24,6 +24,7 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@SuppressWarnings("deprecation")
 public class ComposerActivity extends Activity {
 	/** Called when the activity is first created. */
 	private static final int AUDIO = 0;
@@ -77,16 +78,20 @@ public class ComposerActivity extends Activity {
 				addrTxt.setFocusable(false);
 
 				try {
-					String msg = "hello test";
 					TextView msgTxt = (TextView) ComposerActivity.this
 							.findViewById(R.id.editText);
 					if (msgTxt != null && !msgTxt.getText().equals("")) {
-						msg = msgTxt.getText().toString();
+					    String msg = msgTxt.getText().toString();
+						sendSmsMessage(addrTxt.getText().toString(), msg);
+						
+						Toast.makeText(ComposerActivity.this, "SMS Sent",
+						        Toast.LENGTH_LONG).show();
 					}
-					sendSmsMessage(addrTxt.getText().toString(), msg);
-
-					Toast.makeText(ComposerActivity.this, "SMS Sent",
-							Toast.LENGTH_LONG).show();
+					else 
+					{
+					    Toast.makeText(ComposerActivity.this, "No Text to send.",
+                                Toast.LENGTH_LONG).show();
+					}
 				} catch (Exception e) {
 					Toast.makeText(ComposerActivity.this, "Failed to send SMS",
 							Toast.LENGTH_LONG).show();
@@ -114,8 +119,7 @@ public class ComposerActivity extends Activity {
 	}
 
 	OnTouchListener drag = new OnTouchListener() {
-		@SuppressWarnings ( "deprecation" )
-        @Override
+		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 		    AbsoluteLayout.LayoutParams par = (android.widget.AbsoluteLayout.LayoutParams) v.getLayoutParams();
 		    int padding = 10;
@@ -227,8 +231,7 @@ public class ComposerActivity extends Activity {
 		}
 	}
 
-	@SuppressWarnings ( "deprecation" )
-    public void addImageToCanvas() {
+	public void addImageToCanvas() {
 		AbsoluteLayout fl = (AbsoluteLayout) findViewById(R.id.Canvas);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View itemView = inflater.inflate(R.layout.image_add, null);
@@ -236,14 +239,12 @@ public class ComposerActivity extends Activity {
 		image = (View) itemView.findViewById(R.id.image);
 		image.setFocusableInTouchMode(true);
 		image.setBackgroundResource(R.drawable.icon);
-		image.setPadding ( (int)(Math.random() * 100), (int)(Math.random() * 100), 0, 0 );
 		image.setOnTouchListener(drag);
 
 		fl.addView(itemView, new AbsoluteLayout.LayoutParams(40, 40, 0, 0));
 	}
 	
-	@SuppressWarnings ( "deprecation" )
-    public void addTextToCanvas(String text) {
+	public void addTextToCanvas(String text) {
         
 	    AbsoluteLayout fl = (AbsoluteLayout) findViewById(R.id.Canvas);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -252,6 +253,7 @@ public class ComposerActivity extends Activity {
         textToAdd = (TextView) itemView.findViewById(R.id.editText);
         Log.i("TEXT", text);
         textToAdd.setText(text);
+        //This will place the text string in a random position in the canvas
         textToAdd.setPadding ( (int)(Math.random() * 100), (int)(Math.random() * 100), 0, 0 );
         textToAdd.setOnTouchListener(drag);
         fl.addView(itemView, new AbsoluteLayout.LayoutParams(
