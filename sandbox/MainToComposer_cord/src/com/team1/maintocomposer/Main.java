@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-import com.team1.maintocomposer.HelloActivity;
 
 public class Main extends Activity {
 	Toast toast;
@@ -82,7 +81,7 @@ public class Main extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case EXIT:
-			System.exit(0);
+			finish();
 			return true;
 		case COMPOSER:
 			openComposerActivity();

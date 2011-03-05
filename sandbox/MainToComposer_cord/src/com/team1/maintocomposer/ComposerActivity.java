@@ -1,14 +1,19 @@
 package com.team1.maintocomposer;
 
+import java.util.LinkedList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,11 +21,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,11 +39,18 @@ public class ComposerActivity extends Activity {
 
 	private static final int ADD_DIALOG = 4;
 	private static final int ADD_TEXT = 5;
-
+	private static final int EDIT_TEXT = 6;
+	
+	static LinkedList<Media> media;
 	Toast toast;
 	Dialog dialog = null;
 	public View image;
 	String addingText;
+	
+	public static LinkedList<Media> getMedia()
+	{
+	    return media;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,13 +61,20 @@ public class ComposerActivity extends Activity {
 		Button save = (Button) findViewById(R.id.saveBtn);
 		Button undo = (Button) findViewById(R.id.undoBtn);
 		Button send = (Button) findViewById(R.id.sendBtn);
-		Button newBtn = (Button) findViewById(R.id.newBtn);
-
+//		Button newBtn = (Button) findViewById(R.id.newBtn);
+		Button backBtn = (Button) findViewById(R.id.backBtn);
+		
 		add.setOnClickListener(mClick);
 		save.setOnClickListener(mClick);
 		undo.setOnClickListener(mClick);
 		send.setOnClickListener(mClick);
-		newBtn.setOnClickListener(mClick);
+//		newBtn.setOnClickListener(mClick);
+		backBtn.setOnClickListener(mClick);
+		
+		EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
+		phoneNumber.setText ( getMyPhoneNumber() );
+		
+		media = new LinkedList<Media>();
 	}
 
 	OnClickListener mClick = new OnClickListener() {
@@ -97,27 +116,74 @@ public class ComposerActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 					e.printStackTrace();
 				}
-			} else {
-				// Open the Hello World form
-				openHelloActivity();
+			} else if ( v.getId() == R.id.backBtn) {
+			    finish();
 			}
-
 		}
 	};
+	
+	static final int CLEAR = 2;
+    static final int MAIN = 1;
+    static final int EXIT = 0;
 
-	private void openHelloActivity() {
-		Intent mHelloIntent = new Intent(getApplicationContext(),
-				HelloActivity.class);
-		mHelloIntent.putExtra("Hello Activity", "");
-		startActivity(mHelloIntent);
-	}
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, CLEAR, 0, "Clear");
+        menu.add(0, MAIN, 0, "Main Menu");
+        menu.add(0, EXIT, 0, "Exit");
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case EXIT:
+            finish();
+            return true;
+        case MAIN:
+            finish();
+            break;
+        case CLEAR:
+            AbsoluteLayout layout = (AbsoluteLayout) findViewById(R.id.Canvas);
+            layout.removeAllViews();
+            break;
+        }
+        return false;
+    }
+
+	
+	private void openMediaPropertiesActivity() {
+        Intent mMediaPropIntent = new Intent(this,
+                MediaPropertiesActivity.class);
+        mMediaPropIntent.putExtra("Media Properties", "");
+//        startActivity(mMediaPropIntent);
+
+        startActivityForResult( mMediaPropIntent, RESULT_OK );
+        Log.i("Method", "Done Start");
+        stopService( mMediaPropIntent );
+        
+        Log.i("Method", "Done Stop");
+    }
 
 	void sendSmsMessage(String address, String message) throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(address, null, message, null, null);
 		finish();
 	}
-
+	
+	void sendMMSMessage()
+	{
+	    Intent sendIntent = new Intent(Intent.ACTION_SEND); 
+	    sendIntent.putExtra("sms_body", "some text");
+	    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(getDir( "smilmessages", MODE_WORLD_READABLE ).getAbsolutePath() ));
+	    sendIntent.setType("image/png");
+	}
+	
+	private String getMyPhoneNumber(){  
+	    TelephonyManager mTelephonyMgr;  
+	    mTelephonyMgr = (TelephonyManager)  
+	        getSystemService(Context.TELEPHONY_SERVICE);   
+	    return mTelephonyMgr.getLine1Number();  
+	}
+	
 	OnTouchListener drag = new OnTouchListener() {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
@@ -158,26 +224,7 @@ public class ComposerActivity extends Activity {
 		}
 	}; // drag
 
-	static final int MAIN = 1;
-	static final int EXIT = 0;
 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, MAIN, 0, "Main Menu");
-		menu.add(0, EXIT, 0, "Exit");
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case EXIT:
-			System.exit(0);
-			return true;
-		case MAIN:
-			finish();
-			break;
-		}
-		return false;
-	}
 
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -193,71 +240,70 @@ public class ComposerActivity extends Activity {
 			});
 			dialog = builder.create();
 			break;
-		case ADD_TEXT:
-			final EditText edit = new EditText(this);
-			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-			builder2.setView(edit);
-			builder2.setTitle("Enter Something:");
-			builder2.setPositiveButton("Ok",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							addTextToCanvas(edit.getText().toString());
-							dialog.dismiss();
-
-						}
-					});
-
-			builder2.setNegativeButton("Cancel",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							// Canceled.
-							dialog.dismiss();
-						}
-					});
-			dialog = builder2.create();
-			break;
 		}
 		return dialog;
 	}
-
+	
 	public void addToCanvas(int what) {
+        //need to see of user hit cancel...
 		if (what == IMAGE) {
+		    media.add ( new Media ( Media.IMAGE_TYPE ) );
+            openMediaPropertiesActivity();
 			addImageToCanvas();
 		} else if (what == TEXT) {
-			showDialog ( ADD_TEXT );
-//		    addTextToCanvas();
+		    //addTextToCanvas();
+		    media.add ( new Media ( Media.TEXT_TYPE ) );
+		    openMediaPropertiesActivity();
+            addTextToCanvas();
 		}
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+	    Log.i("CODE", Integer.toString( requestCode ) );
+	    Log.i("CODE", Integer.toString( resultCode) );
+//	    if( requestCode == requestCode)
+//	    addTextToCanvas();
+	    super.onActivityResult( requestCode, resultCode, data );
+	    
+	};
 
 	public void addImageToCanvas() {
 		AbsoluteLayout fl = (AbsoluteLayout) findViewById(R.id.Canvas);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View itemView = inflater.inflate(R.layout.image_add, null);
 
-		image = (View) itemView.findViewById(R.id.image);
+		ImageView image = (ImageView) itemView.findViewById(R.id.image);
+		image.getDrawingCache ( true );
 		image.setFocusableInTouchMode(true);
 		image.setBackgroundResource(R.drawable.icon);
 		image.setOnTouchListener(drag);
-
-		fl.addView(itemView, new AbsoluteLayout.LayoutParams(40, 40, 0, 0));
+		Media mediaImage = media.getLast();
+		fl.addView(itemView, new AbsoluteLayout.LayoutParams(mediaImage.getHeight(), mediaImage.getWidth(), 0, 0));
+//		fl.addView(itemView, new AbsoluteLayout.LayoutParams(40, 40, 0, 0));
 	}
 	
-	public void addTextToCanvas(String text) {
-        
+	public void addTextToCanvas() {
+	    
+//	    openMediaPropertiesActivity();
+	    
 	    AbsoluteLayout fl = (AbsoluteLayout) findViewById(R.id.Canvas);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.text_add, null);
         TextView textToAdd = new TextView(this);
         textToAdd = (TextView) itemView.findViewById(R.id.editText);
-        Log.i("TEXT", text);
-        textToAdd.setText(text);
+        textToAdd.setText( media.getLast().getText() );
+        textToAdd.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.getLast().getFontSize());
+        if (media.getLast().getText() != null)
+            Log.i("TEXT", media.getLast().getText());
+        textToAdd.setFocusableInTouchMode( true );
         //This will place the text string in a random position in the canvas
         textToAdd.setPadding ( (int)(Math.random() * 100), (int)(Math.random() * 100), 0, 0 );
         textToAdd.setOnTouchListener(drag);
-        fl.addView(itemView, new AbsoluteLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0));
-         
+        
+        fl.addView(itemView, new AbsoluteLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0));
+        fl.invalidate();
     }
+	
 }
