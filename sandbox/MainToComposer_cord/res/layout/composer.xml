@@ -30,13 +30,18 @@
 
 	</LinearLayout>
 
-	<AbsoluteLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_above="@+id/addBtn"
-		android:id="@+id/Canvas" android:layout_gravity="top"
-		android:layout_below="@+id/number" android:layout_margin="10px"
+	<com.team1.maintocomposer.drag.DragLayer
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+	    android:id="@+id/Canvas"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_above="@+id/addBtn"
+		android:layout_below="@+id/number" 
+		android:layout_margin="10px"
 		android:background="#C4C4C4">
-
-	</AbsoluteLayout>
+	    
+	</com.team1.maintocomposer.drag.DragLayer>
 
 	<Button android:id="@+id/addBtn" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:background="@drawable/addbuttoncomposer"
