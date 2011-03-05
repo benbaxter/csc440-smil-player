@@ -72,7 +72,7 @@ public final class R {
     public static final class id {
         public static final int ButtonSpacer=0x7f06000f;
         public static final int Buttons=0x7f060010;
-        public static final int Canvas=0x7f060007;
+        public static final int Canvas=0x7f060006;
         public static final int Composer=0x7f060000;
         public static final int Main=0x7f06000e;
         public static final int MediaProperties=0x7f06001c;
@@ -84,7 +84,7 @@ public final class R {
         public static final int TextView04=0x7f06001b;
         public static final int Title=0x7f060002;
         public static final int TopBar=0x7f060001;
-        public static final int addBtn=0x7f060006;
+        public static final int addBtn=0x7f060007;
         public static final int addrEditText=0x7f060005;
         public static final int back=0x7f060042;
         public static final int backBtn=0x7f060003;
