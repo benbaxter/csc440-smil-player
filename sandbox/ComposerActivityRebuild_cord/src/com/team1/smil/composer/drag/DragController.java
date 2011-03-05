@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.team1.smil.composer.drag;
+package com.team1.maintocomposer.drag;
 
 import android.content.Context;
 import android.graphics.Bitmap;

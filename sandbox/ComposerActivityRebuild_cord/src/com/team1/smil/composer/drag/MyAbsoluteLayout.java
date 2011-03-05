@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.team1.smil.composer.drag;
+package com.team1.maintocomposer.drag;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -239,9 +239,9 @@ public class MyAbsoluteLayout extends ViewGroup {
             if (size == WRAP_CONTENT) {
                 return "wrap-content";
             }
-            if (size == MATCH_PARENT) {
-                return "match-parent";
-            }
+//            if (size == MATCH_PARENT) {
+//                return "match-parent";
+//            }
             return String.valueOf(size);
         }
     } // end class
