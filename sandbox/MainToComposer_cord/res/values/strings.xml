@@ -24,4 +24,5 @@
         <item>70</item>
         <item>80</item>
     </string-array>
+    <string name="message_sent_notification">You have just received a new SMIL message! Go to our application to check it out!</string>
 </resources>
