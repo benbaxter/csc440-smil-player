@@ -28,17 +28,25 @@ public class Receiver extends BroadcastReceiver
             //---retrieve the SMS message received---
             Object[] pdus = (Object[]) bundle.get("pdus");
             msgs = new SmsMessage[pdus.length];
-            ticker = "You have " + msgs.length + " new SMIL message(s)";
+            int numOfSMIL = 0;
             for (int i=0; i<msgs.length; i++){
-                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
-                str += "SMS from " + msgs[i].getOriginatingAddress();   
-                str += " :";
-                str += msgs[i].getMessageBody().toString();
-                str += "\n";        
+                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                if(msgs[i].getMessageBody().toString().equals( "You have just received a new SMIL " +
+                		"message! Go to our application to check it out!" ))
+                {
+                    str += "SMS from " + msgs[i].getOriginatingAddress();   
+                    str += " :";
+                    str += msgs[i].getMessageBody().toString();
+                    str += "\n";    
+                    ++numOfSMIL;
+                }
             }
+            ticker = "You have " + numOfSMIL + " new SMIL message(s)";
             //---display the new SMS message---
-            Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-            displayNotification( ticker, "SMIL MEssages!", context );
+            if(numOfSMIL > 0){                
+                Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+                displayNotification( ticker, "SMIL MEssages!", context );
+            }
         } 
     }
     
