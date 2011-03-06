@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.team1.maintocomposer.drag;
+package com.team1.composer.drag;
 
 import android.content.Context;
 import android.util.AttributeSet;
