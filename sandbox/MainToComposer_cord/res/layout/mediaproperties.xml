@@ -14,10 +14,6 @@
 
 		<Button android:id="@+id/backBtn" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:background="@drawable/backbutton"
-			android:layout_toLeftOf="@+id/homeBtn" />
-
-		<Button android:id="@+id/homeBtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:background="@drawable/homebutton"
 			android:layout_alignParentRight="true" android:layout_marginLeft="5px" />
 	</RelativeLayout>
 
