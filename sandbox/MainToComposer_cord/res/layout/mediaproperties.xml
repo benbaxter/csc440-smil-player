@@ -34,7 +34,7 @@
 			<EditText android:id="@+id/inputString"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:gravity="right" android:layout_marginLeft="15px"
-				android:lines="2" />
+				android:lines="1" />
 
 		</TableRow>
 		<TableRow android:id="@+id/fontSizeInfo" android:visibility="gone">
