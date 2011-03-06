@@ -1,4 +1,4 @@
-package com.team1.maintocomposer;
+package com.team1.composer;
 
 import java.util.LinkedList;
 
@@ -8,9 +8,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Contacts.People;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.Contacts;
 import android.telephony.*;
 import android.util.*;
 import android.view.*;
@@ -19,8 +16,8 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
-import com.team1.maintocomposer.drag.DragController;
-import com.team1.maintocomposer.drag.DragLayer;
+import com.team1.composer.drag.DragController;
+import com.team1.composer.drag.DragLayer;
 
 @SuppressWarnings("deprecation")
 public class ComposerActivity extends Activity {
@@ -31,7 +28,7 @@ public class ComposerActivity extends Activity {
 	private static final int VIDEO = 3;
 
 	private static final int ADD_DIALOG = 4;
-	private static final int ADD_TEXT = 5;
+	private static final int SAVE_CONFIRM = 5;
 	private static final int EDIT_TEXT = 6;
 
 	private static final int CLEAR = 7;
@@ -124,18 +121,17 @@ public class ComposerActivity extends Activity {
 
 				try {
 				        String msg = "You have just received a new SMIL message! Go to our application to check it out!";
-				        String address = addrTxt.getText().toString().split( " - " )[1];
+				        String[] addr = addrTxt.getText().toString().split( " - " );
+				        String address = addr[addr.length - 1];
 				        Log.i("ADDRESS", address);
-						sendSmsMessage(address, msg);
-						Toast.makeText(ComposerActivity.this, "SMS Sent",
-						        Toast.LENGTH_LONG).show();
+						sendSMSMessage(address, msg);
 				} catch (Exception e) {
 					Toast.makeText(ComposerActivity.this, "Failed to send SMS",
 							Toast.LENGTH_LONG).show();
 					e.printStackTrace();
 				}
 			} else if ( v.getId() == R.id.homeBtn) {
-			    finish();
+			    showDialog( SAVE_CONFIRM );
 			}
 			else if ( v.getId() == R.id.addContactBtn) {
 			    changeContactNumber();
@@ -158,16 +154,92 @@ public class ComposerActivity extends Activity {
         Intent mMediaPropIntent = new Intent(this,
                 MediaPropertiesActivity.class);
         mMediaPropIntent.putExtra("Media Properties", "");
-//        startActivity(mMediaPropIntent);
-
         startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
     }
 
-	void sendSmsMessage(String address, String message) throws Exception {
+	private void openFileChooserActivity(){
+        Intent mIntent = new Intent( this.getApplicationContext(),
+                FileChooserListActivity.class);
+        mIntent.putExtra("File Chooser", "");
+        startActivityForResult( mIntent, 10 );
+    }
+
+	/*
+	void sendSMSMessage(String address, String message) throws Exception {
 		SmsManager smsMgr = SmsManager.getDefault();
 		smsMgr.sendTextMessage(address, null, message, null, null);
 		finish();
 	}
+	*/
+	
+    //---sends an SMS message to another device---
+    private void sendSMSMessage(String phoneNumber, String message)
+    {        
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+ 
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+            new Intent(SENT), 0);
+ 
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+            new Intent(DELIVERED), 0);
+        BroadcastReceiver sentReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS sent", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+        BroadcastReceiver deliveredReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered", 
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered", 
+                                Toast.LENGTH_SHORT).show();
+                        break;                        
+                }
+            }
+        };
+        //---when the SMS has been sent---
+        registerReceiver(sentReceiver, new IntentFilter(SENT));
+        
+        //---when the SMS has been delivered---
+        registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
+        
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
+//        unregisterReceiver( sentReceiver );
+//        unregisterReceiver( deliveredReceiver );
+
+        finish();
+    }
 	
 	void sendMMSMessage()
 	{
@@ -194,15 +266,31 @@ public class ComposerActivity extends Activity {
 		case ADD_DIALOG:
 			final CharSequence[] items = { "Audio", "Image", "Text", "Video" };
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Pick a Thing");
-			builder.setItems(items, new DialogInterface.OnClickListener() {
+			AlertDialog.Builder buildSelecter = new AlertDialog.Builder(this);
+			buildSelecter.setTitle("Pick a Thing");
+			buildSelecter.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					addToCanvas(item);
 				}
 			});
-			dialog = builder.create();
+			dialog = buildSelecter.create();
 			break;
+		case SAVE_CONFIRM:
+		    //Ask the user if they want to quit
+            AlertDialog.Builder buidSave = new AlertDialog.Builder(this);
+            buidSave.setIcon(android.R.drawable.ic_dialog_alert);
+            buidSave.setTitle(R.string.quit);
+            buidSave.setMessage(R.string.quit_message);
+            buidSave.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Stop the activity
+                    ComposerActivity.this.finish();    
+                }
+            });
+            buidSave.setNegativeButton(R.string.no, null);
+            dialog = buidSave.create();
+		    break;
 		}
 		return dialog;
 	}
@@ -211,7 +299,8 @@ public class ComposerActivity extends Activity {
         //need to see of user hit cancel...
 		if (what == AUDIO) {
 		    media.add ( new Media ( Media.AUDIO_TYPE ) );
-            openMediaPropertiesActivity();
+//            openMediaPropertiesActivity();
+		    openFileChooserActivity();
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE ) );
             openMediaPropertiesActivity();
@@ -224,6 +313,15 @@ public class ComposerActivity extends Activity {
 		}
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        showDialog( SAVE_CONFIRM );
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
 	  super.onActivityResult(reqCode, resultCode, data);

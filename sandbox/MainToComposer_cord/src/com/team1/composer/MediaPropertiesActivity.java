@@ -1,5 +1,7 @@
 
-package com.team1.maintocomposer;
+package com.team1.composer;
+
+import com.team1.composer.R;
 
 import android.app.Activity;
 import android.content.Intent;
