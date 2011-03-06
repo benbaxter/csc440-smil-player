@@ -134,7 +134,7 @@ public class ComposerActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 					e.printStackTrace();
 				}
-			} else if ( v.getId() == R.id.backBtn) {
+			} else if ( v.getId() == R.id.homeBtn) {
 			    finish();
 			}
 			else if ( v.getId() == R.id.addContactBtn) {
@@ -234,16 +234,16 @@ public class ComposerActivity extends Activity {
 	        Cursor c =  managedQuery(contactData, null, null, null, null);
 	        if (c.moveToFirst()) {
 	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
-//	          String number = c.getString(c.getColumnIndexOrThrow(People.NUMBER));
-	          String numberKey = c.getString(c.getColumnIndexOrThrow(People.NUMBER_KEY));
-	          if(numberKey == null )
+	          String number = c.getString(c.getColumnIndexOrThrow(People.NUMBER));
+//	          String numberKey = c.getString(c.getColumnIndexOrThrow(People.NUMBER_KEY));
+	          if(number == null )
 	          {
 	              name = "Defaulting";
-	              numberKey = getMyPhoneNumber();
+	              number = getMyPhoneNumber();
 	          }
 	          
 	          EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
-	          phoneNumber.setText ( name + " - " + numberKey );
+	          phoneNumber.setText ( name + " - " + number );
 	          // TODO Whatever you want to do with the selected contact name.
 	        }
 	      }
@@ -261,6 +261,8 @@ public class ComposerActivity extends Activity {
                   } else if (type == Media.VIDEO_TYPE) {
                       toast( "Video comming soon" );
                   }
+	          } else if ( resultCode == Activity.RESULT_CANCELED) {
+	            media.removeLast();  
 	          }
 	          break;
 	    default :
@@ -330,14 +332,14 @@ public class ComposerActivity extends Activity {
 		Button save = (Button) findViewById(R.id.saveBtn);
 		Button undo = (Button) findViewById(R.id.undoBtn);
 		Button send = (Button) findViewById(R.id.sendBtn);
-		Button backBtn = (Button) findViewById(R.id.backBtn);
+		Button homeBtn = (Button) findViewById(R.id.homeBtn);
 		Button addContact = (Button) findViewById(R.id.addContactBtn);
 
 		add.setOnClickListener(buttonClick);
 		save.setOnClickListener(buttonClick);
 		undo.setOnClickListener(buttonClick);
 		send.setOnClickListener(buttonClick);
-		backBtn.setOnClickListener(buttonClick);
+		homeBtn.setOnClickListener(buttonClick);
 		addContact.setOnClickListener(buttonClick);
 		
 	}

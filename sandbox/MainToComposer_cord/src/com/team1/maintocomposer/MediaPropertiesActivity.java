@@ -30,13 +30,9 @@ public class MediaPropertiesActivity extends Activity
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
         backBtn.setOnClickListener( mClick );
 
-        Button homeBtn = ( Button ) findViewById( R.id.homeBtn );
-        homeBtn.setOnClickListener( mClick );
-
         media = ComposerActivity.getMedia().getLast();
-        ComposerActivity.getMedia().removeLast();
-        if( media.getMediaType() == Media.AUDIO_TYPE) 
-        {
+
+        if( media.getMediaType() == Media.AUDIO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
         } else if ( media.getMediaType() == Media.TEXT_TYPE )
         {
@@ -162,9 +158,6 @@ public class MediaPropertiesActivity extends Activity
                 media.setStartTime( Integer.parseInt(startTime) );
                 media.setDuration( Integer.parseInt(dur) );
                 
-                ComposerActivity.getMedia().add( media );
-                Toast.makeText( MediaPropertiesActivity.this,
-                        "Information Submitted", Toast.LENGTH_LONG ).show();
                 setResult(RESULT_OK);
                 finish();
             }
@@ -176,13 +169,6 @@ public class MediaPropertiesActivity extends Activity
             else if ( v.getId() == R.id.backBtn )
             {
                 setResult( RESULT_CANCELED );
-                finish();
-            }
-            else if ( v.getId() == R.id.homeBtn )
-            {
-                Intent mComposerIntent = new Intent(
-                        getApplicationContext(), ComposerActivity.class );
-                mComposerIntent.putExtra( "Home", "" );
                 finish();
             }
         }
