@@ -89,7 +89,7 @@ public final class R {
         public static final int addrBar=0x7f060005;
         public static final int addrEditText=0x7f060006;
         public static final int back=0x7f060044;
-        public static final int backBtn=0x7f060003;
+        public static final int backBtn=0x7f06001f;
         public static final int bottomButtons=0x7f060041;
         public static final int buttons=0x7f060014;
         public static final int cancelBtn=0x7f060043;
@@ -103,7 +103,7 @@ public final class R {
         public static final int fontSizeSpinner=0x7f060027;
         public static final int height=0x7f060036;
         public static final int heightLabel=0x7f060035;
-        public static final int homeBtn=0x7f06001f;
+        public static final int homeBtn=0x7f060003;
         public static final int hwInfo=0x7f060034;
         public static final int image=0x7f06000f;
         public static final int inboxMain=0x7f060016;
