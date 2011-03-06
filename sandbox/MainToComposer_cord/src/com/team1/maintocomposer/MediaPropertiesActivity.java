@@ -34,7 +34,11 @@ public class MediaPropertiesActivity extends Activity
         homeBtn.setOnClickListener( mClick );
 
         media = ComposerActivity.getMedia().getLast();
-        if ( media.getMediaType() == Media.TEXT_TYPE )
+        ComposerActivity.getMedia().removeLast();
+        if( media.getMediaType() == Media.AUDIO_TYPE) 
+        {
+            findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
+        } else if ( media.getMediaType() == Media.TEXT_TYPE )
         {
             //font size drop down.
             //This code will also set the font size
@@ -66,12 +70,14 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.textInfo).setVisibility( View.VISIBLE );
             findViewById( R.id.fontSizeInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
-        }
-        else if (media.getMediaType() == Media.IMAGE_TYPE )
+        } else if (media.getMediaType() == Media.IMAGE_TYPE )
         {
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
+        } else if (media.getMediaType() == Media.VIDEO_TYPE)
+        {
+            findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
+            findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
         }
-        
         
         
         findViewById( R.id.x ).setEnabled( false );
@@ -112,13 +118,30 @@ public class MediaPropertiesActivity extends Activity
             {
                 // media =
                 // ComposerActivity.getMedia().getLast();
-                if ( media.getMediaType() == Media.TEXT_TYPE )
+                if( media.getMediaType() == Media.AUDIO_TYPE )
+                {
+                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
+                }
+                else if ( media.getMediaType() == Media.TEXT_TYPE )
                 {
                     media.setText( ( (EditText)findViewById( R.id.inputString ) ).getText().toString() );
-                    Log.i( "TEXT2", ComposerActivity.getMedia().getLast().getText() );
+//                    Log.i( "TEXT2", ComposerActivity.getMedia().getLast().getText() );
                 }
                 else if( media.getMediaType() == Media.IMAGE_TYPE)
                 {
+                    String height = ((EditText)findViewById( R.id.height )).getText().toString();
+                    String width = ((EditText)findViewById( R.id.width )).getText().toString();
+                    //set default width and height here
+                    if( height.equals( "" ))
+                        height = "40";
+                    if( width.equals( "" ))
+                        width = "40";
+                    media.setHeight( Integer.parseInt( height ));
+                    media.setWidth( Integer.parseInt( width ));
+                }
+                else if( media.getMediaType() == Media.VIDEO_TYPE)
+                {
+                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
                     //set default width and height here
@@ -138,17 +161,21 @@ public class MediaPropertiesActivity extends Activity
                     dur = "0";
                 media.setStartTime( Integer.parseInt(startTime) );
                 media.setDuration( Integer.parseInt(dur) );
+                
+                ComposerActivity.getMedia().add( media );
                 Toast.makeText( MediaPropertiesActivity.this,
                         "Information Submitted", Toast.LENGTH_LONG ).show();
+                setResult(RESULT_OK);
                 finish();
             }
             else if ( v.getId() == R.id.cancelBtn )
             {
-                ComposerActivity.getMedia().removeLast();
+                setResult( RESULT_CANCELED );
                 finish();
             }
             else if ( v.getId() == R.id.backBtn )
             {
+                setResult( RESULT_CANCELED );
                 finish();
             }
             else if ( v.getId() == R.id.homeBtn )
@@ -156,7 +183,6 @@ public class MediaPropertiesActivity extends Activity
                 Intent mComposerIntent = new Intent(
                         getApplicationContext(), ComposerActivity.class );
                 mComposerIntent.putExtra( "Home", "" );
-                getParent().finish();
                 finish();
             }
         }

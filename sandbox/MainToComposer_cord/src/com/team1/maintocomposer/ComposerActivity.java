@@ -1,18 +1,26 @@
 package com.team1.maintocomposer;
 
-import com.team1.maintocomposer.drag.DragController;
-import com.team1.maintocomposer.drag.DragLayer;
-import java.util.*;
+import java.util.LinkedList;
+
 import android.app.*;
 import android.content.*;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts.People;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
 import android.telephony.*;
 import android.util.*;
 import android.view.*;
-import android.view.View.*;
-import android.view.ViewGroup.*;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
+
+import com.team1.maintocomposer.drag.DragController;
+import com.team1.maintocomposer.drag.DragLayer;
 
 @SuppressWarnings("deprecation")
 public class ComposerActivity extends Activity {
@@ -29,6 +37,9 @@ public class ComposerActivity extends Activity {
 	private static final int CLEAR = 7;
     private static final int MAIN = 8;
     private static final int EXIT = 9;
+    
+    final static int PICK_CONTACT = 10;
+    final static int EDIT_MEDIA = 11;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
@@ -76,8 +87,8 @@ public class ComposerActivity extends Activity {
             finish();
             break;
         case CLEAR:
-            AbsoluteLayout layout = (AbsoluteLayout) findViewById(R.id.Canvas);
-            layout.removeAllViews();
+            mDragLayer.removeAllViews();
+            media.clear();
             break;
         }
         return false;
@@ -112,20 +123,12 @@ public class ComposerActivity extends Activity {
 				addrTxt.setFocusable(false);
 
 				try {
-					TextView msgTxt = (TextView) ComposerActivity.this
-							.findViewById(R.id.editText);
-					if (msgTxt != null && !msgTxt.getText().equals("")) {
-					    String msg = msgTxt.getText().toString();
-						sendSmsMessage(addrTxt.getText().toString(), msg);
-						
+				        String msg = "You have just received a new SMIL message! Go to our application to check it out!";
+				        String address = addrTxt.getText().toString().split( " - " )[1];
+				        Log.i("ADDRESS", address);
+						sendSmsMessage(address, msg);
 						Toast.makeText(ComposerActivity.this, "SMS Sent",
 						        Toast.LENGTH_LONG).show();
-					}
-					else 
-					{
-					    Toast.makeText(ComposerActivity.this, "No Text to send.",
-                                Toast.LENGTH_LONG).show();
-					}
 				} catch (Exception e) {
 					Toast.makeText(ComposerActivity.this, "Failed to send SMS",
 							Toast.LENGTH_LONG).show();
@@ -133,6 +136,9 @@ public class ComposerActivity extends Activity {
 				}
 			} else if ( v.getId() == R.id.backBtn) {
 			    finish();
+			}
+			else if ( v.getId() == R.id.addContactBtn) {
+			    changeContactNumber();
 			}
 		}
 	};
@@ -154,11 +160,7 @@ public class ComposerActivity extends Activity {
         mMediaPropIntent.putExtra("Media Properties", "");
 //        startActivity(mMediaPropIntent);
 
-        startActivityForResult( mMediaPropIntent, RESULT_OK );
-        Log.i("Method", "Done Start");
-        stopService( mMediaPropIntent );
-        
-        Log.i("Method", "Done Stop");
+        startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
     }
 
 	void sendSmsMessage(String address, String message) throws Exception {
@@ -181,49 +183,12 @@ public class ComposerActivity extends Activity {
 	        getSystemService(Context.TELEPHONY_SERVICE);   
 	    return mTelephonyMgr.getLine1Number();  
 	}
-	/*
-	OnTouchListener drag = new OnTouchListener() {
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-		    AbsoluteLayout.LayoutParams par = (android.widget.AbsoluteLayout.LayoutParams) v.getLayoutParams();
-		    int padding = 10;
-		    int topmargin = findViewById ( R.id.number ).getBottom ( );
-		    int x = (int) event.getRawX() - (v.getWidth() / 2) - padding;
-		    int y = (int) event.getRawY() - (v.getHeight()) - topmargin - padding;
-		    if( v instanceof TextView )
-		    {
-		        x = (int) event.getRawX() - v.getWidth();
-		    }
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_MOVE: {
-			    par.x = x; 
-				par.y = y;
-				v.setLayoutParams(par);
-				break;
-			}// inner case MOVE
-			case MotionEvent.ACTION_UP: {
-//				par.height = 40;
-//				par.width = 40;
-				par.x = x;
-				par.y = y;
-				v.setLayoutParams(par);
-				break;
-			}// inner case UP
-			case MotionEvent.ACTION_DOWN: {
-				par.x = x;
-				par.y = y;
-//				par.height = 60;
-//				par.width = 60;
-				v.setLayoutParams(par);
-				break;
-			}// inner case UP
-			}// onTouch
-			return true;
-		}
-	}; // drag
-
-
-*/
+	
+	private void changeContactNumber() {
+	    Intent intent = new Intent(Intent.ACTION_PICK, People.CONTENT_URI);
+	    startActivityForResult(intent, PICK_CONTACT);
+	}
+	
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case ADD_DIALOG:
@@ -245,33 +210,66 @@ public class ComposerActivity extends Activity {
 	public void addToCanvas(int what) {
         //need to see of user hit cancel...
 		if (what == AUDIO) {
-	        Toast.makeText(ComposerActivity.this, "Audio not supported", Toast.LENGTH_SHORT).show();
+		    media.add ( new Media ( Media.AUDIO_TYPE ) );
+            openMediaPropertiesActivity();
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE ) );
             openMediaPropertiesActivity();
-			addImageToCanvas();
 		} else if (what == TEXT) {
-		    //addTextToCanvas();
 		    media.add ( new Media ( Media.TEXT_TYPE ) );
 		    openMediaPropertiesActivity();
-		    String text = media.getLast().getText();
-            addTextToCanvas(text);
 		} else if (what == VIDEO) {
-		    Toast.makeText(ComposerActivity.this, "Video not supported", Toast.LENGTH_LONG).show();
+		    media.add ( new Media ( Media.VIDEO_TYPE) );
+            openMediaPropertiesActivity();
 		}
 	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-	    Log.i("CODE", Integer.toString( requestCode ) );
-	    Log.i("CODE", Integer.toString( resultCode) );
-//	    if( requestCode == requestCode)
-//	    addTextToCanvas();
-	    super.onActivityResult( requestCode, resultCode, data );
-	    
-	};
 
+	@Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+	  super.onActivityResult(reqCode, resultCode, data);
+	  switch (reqCode) {
+	    case (PICK_CONTACT) :
+	      if (resultCode == Activity.RESULT_OK) {
+	        Uri contactData = data.getData();
+	        Cursor c =  managedQuery(contactData, null, null, null, null);
+	        if (c.moveToFirst()) {
+	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
+//	          String number = c.getString(c.getColumnIndexOrThrow(People.NUMBER));
+	          String numberKey = c.getString(c.getColumnIndexOrThrow(People.NUMBER_KEY));
+	          if(numberKey == null )
+	          {
+	              name = "Defaulting";
+	              numberKey = getMyPhoneNumber();
+	          }
+	          
+	          EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
+	          phoneNumber.setText ( name + " - " + numberKey );
+	          // TODO Whatever you want to do with the selected contact name.
+	        }
+	      }
+	      break;
+	    case (EDIT_MEDIA) :
+	          if (resultCode == Activity.RESULT_OK) {
+	              int type = media.getLast().getMediaType();
+	              if( type == Media.AUDIO_TYPE){
+	                  toast( "AUDIO ADDED" );
+                  } else if (type == Media.IMAGE_TYPE) {
+                      addImageToCanvas();
+                  } else if (type == Media.TEXT_TYPE) {
+                      String text = media.getLast().getText();
+                      addTextToCanvas(text);
+                  } else if (type == Media.VIDEO_TYPE) {
+                      toast( "Video comming soon" );
+                  }
+	          }
+	          break;
+	    default :
+	        Log.i("CODE", Integer.toString( reqCode ) );
+	        Log.i("CODE", Integer.toString( resultCode) );
+	        break;
+	  }
+	}
+	
 	public void addImageToCanvas() {
 	    ImageView newView;
         
@@ -303,8 +301,6 @@ public class ComposerActivity extends Activity {
 //        newView.setText( media.getLast().getText() );
         newView.setText(text);
         newView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.getLast().getFontSize());
-        if (media.getLast().getText() != null)
-            Log.i("TEXT", media.getLast().getText());
 
         newView.setPadding ( (int)(Math.random() * 100), (int)(Math.random() * 100), 0, 0 );
         
@@ -335,12 +331,14 @@ public class ComposerActivity extends Activity {
 		Button undo = (Button) findViewById(R.id.undoBtn);
 		Button send = (Button) findViewById(R.id.sendBtn);
 		Button backBtn = (Button) findViewById(R.id.backBtn);
+		Button addContact = (Button) findViewById(R.id.addContactBtn);
 
 		add.setOnClickListener(buttonClick);
 		save.setOnClickListener(buttonClick);
 		undo.setOnClickListener(buttonClick);
 		send.setOnClickListener(buttonClick);
 		backBtn.setOnClickListener(buttonClick);
+		addContact.setOnClickListener(buttonClick);
 		
 	}
 	

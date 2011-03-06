@@ -82,6 +82,7 @@ public class Main extends Activity {
 		switch (item.getItemId()) {
 		case EXIT:
 			finish();
+			android.os.Process.killProcess(android.os.Process.myPid());
 			return true;
 		case COMPOSER:
 			openComposerActivity();
