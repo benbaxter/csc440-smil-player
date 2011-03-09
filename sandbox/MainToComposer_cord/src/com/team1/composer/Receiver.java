@@ -9,10 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.gsm.SmsMessage;
+import android.telephony.SmsMessage;
 import android.widget.Toast;
  
-@SuppressWarnings ( "deprecation" )
 public class Receiver extends BroadcastReceiver
 {
     @Override
