@@ -99,7 +99,12 @@ public class ComposerActivity extends Activity {
 		public void onClick(View v) {
 			if(v.getId() == R.id.editText)
 			{
-			    toast("You clicked text with tag " + v.getTag());
+			    toast("you clicked me");
+			    for(int i=0; i<media.size(); i++)
+			    {
+			        if(media.get( i ).getMediaTag().equals( v.getTag() ))
+			            editMediaPropertiesActivity(i);
+			    }
 			}
 			else if(v.getId() == R.id.image)
 			{
@@ -156,6 +161,12 @@ public class ComposerActivity extends Activity {
 	private void openMediaPropertiesActivity() {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
         startActivityForResult( mMediaPropIntent, ADD_MEDIA );
+    }
+	
+	private void editMediaPropertiesActivity( int index ) {
+        Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
+        mMediaPropIntent.putExtra("INDEX", index);
+        startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
     }
 	
 
@@ -369,6 +380,29 @@ public class ComposerActivity extends Activity {
 	            media.removeLast();  
 	          }
 	          break;
+	    case (EDIT_MEDIA) :
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle extras = data.getExtras();
+                int index = extras.getInt( "INDEX" );
+                
+                int type = media.get( index ).getMediaType();
+                if( type == Media.AUDIO_TYPE){
+                    toast( "AUDIO EDITED" );
+                } else if (type == Media.IMAGE_TYPE) {
+                    toast("IMAGE EDITED");
+                } else if (type == Media.TEXT_TYPE) {
+                    String text = media.get( index ).getText();
+                    TextView tv = (TextView)mDragLayer.findViewWithTag(media.get( index ).getMediaTag());
+                    tv.setText(text);
+                    tv.setWidth(LayoutParams.WRAP_CONTENT);
+                    tv.setHeight(LayoutParams.WRAP_CONTENT);
+                } else if (type == Media.VIDEO_TYPE) {
+                    toast( "Video comming soon" );
+                }
+            } else if ( resultCode == Activity.RESULT_CANCELED) {
+              media.removeLast();  
+            }
+            break;
 	    default :
 	        Log.i("CODE", Integer.toString( reqCode ) );
 	        Log.i("CODE", Integer.toString( resultCode) );

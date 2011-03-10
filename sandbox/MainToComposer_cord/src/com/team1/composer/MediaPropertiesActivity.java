@@ -16,6 +16,7 @@ public class MediaPropertiesActivity extends Activity
 {
 
     Media media;
+    int index;
 
     @Override
     public void onCreate( Bundle savedInstanceState )
@@ -32,7 +33,15 @@ public class MediaPropertiesActivity extends Activity
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
         backBtn.setOnClickListener( mClick );
         
-        media = ComposerActivity.getMedia().getLast();
+        Bundle extras = getIntent().getExtras();
+        
+        if(extras != null)
+        {
+            index = extras.getInt( "INDEX" );
+            media = ComposerActivity.getMedia().get( index );
+        }
+        else
+            media = ComposerActivity.getMedia().getLast();
         
         if( media.getMediaType() == Media.AUDIO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
@@ -68,6 +77,9 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.textInfo).setVisibility( View.VISIBLE );
             findViewById( R.id.fontSizeInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
+            
+            EditText et = (EditText)findViewById(R.id.inputString);
+            et.setText(media.getText());
         } 
         else if (media.getMediaType() == Media.IMAGE_TYPE ) {
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
@@ -162,7 +174,10 @@ public class MediaPropertiesActivity extends Activity
                 media.setStartTime( Integer.parseInt(startTime) );
                 media.setDuration( Integer.parseInt(dur) );
                 
-                setResult(RESULT_OK);
+                Intent data = new Intent();
+                data.putExtra("INDEX", index);
+                
+                setResult(RESULT_OK, data);
                 finish();
             }
             else if ( v.getId() == R.id.cancelBtn )
