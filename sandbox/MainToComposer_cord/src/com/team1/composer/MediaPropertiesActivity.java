@@ -79,7 +79,10 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
             
             EditText et = (EditText)findViewById(R.id.inputString);
-            et.setText(media.getText());
+            if(extras != null)
+                et.setText( media.getText() );
+            else
+                et.setText( null );
         } 
         else if (media.getMediaType() == Media.IMAGE_TYPE ) {
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );

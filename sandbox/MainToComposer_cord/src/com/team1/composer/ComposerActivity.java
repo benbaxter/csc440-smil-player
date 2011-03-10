@@ -99,11 +99,13 @@ public class ComposerActivity extends Activity {
 		public void onClick(View v) {
 			if(v.getId() == R.id.editText)
 			{
-			    toast("you clicked me");
 			    for(int i=0; i<media.size(); i++)
 			    {
 			        if(media.get( i ).getMediaTag().equals( v.getTag() ))
+			        {
 			            editMediaPropertiesActivity(i);
+			            //toast("click me baby one more time");
+			        }
 			    }
 			}
 			else if(v.getId() == R.id.image)
