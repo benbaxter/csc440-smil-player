@@ -1,7 +1,6 @@
 package com.team1.composer;
 
 import java.util.LinkedList;
-
 import android.app.*;
 import android.content.*;
 import android.database.Cursor;
@@ -37,9 +36,13 @@ public class ComposerActivity extends Activity {
     
     final static int PICK_CONTACT = 10;
     final static int EDIT_MEDIA = 11;
+    final static int ADD_MEDIA = 12;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
+	
+	private static int mediaCount = 0;
+	
 	public static final boolean Debugging = false;
 	
 	static LinkedList<Media> media;
@@ -96,11 +99,11 @@ public class ComposerActivity extends Activity {
 		public void onClick(View v) {
 			if(v.getId() == R.id.editText)
 			{
-				//showDialog(EDIT_TEXT);
+			    toast("You clicked text with tag " + v.getTag());
 			}
 			else if(v.getId() == R.id.image)
 			{
-				toast("You clicked an image");
+				toast("You clicked an image with tag " + v.getTag());
 			}
 		}
 	};
@@ -151,11 +154,10 @@ public class ComposerActivity extends Activity {
 	};
 	
 	private void openMediaPropertiesActivity() {
-        Intent mMediaPropIntent = new Intent(this,
-                MediaPropertiesActivity.class);
-        mMediaPropIntent.putExtra("Media Properties", "");
-        startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
+        Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
+        startActivityForResult( mMediaPropIntent, ADD_MEDIA );
     }
+	
 
 	private void openFileChooserActivity(){
         Intent mIntent = new Intent( this.getApplicationContext(),
@@ -298,18 +300,22 @@ public class ComposerActivity extends Activity {
 	public void addToCanvas(int what) {
         //need to see of user hit cancel...
 		if (what == AUDIO) {
-		    media.add ( new Media ( Media.AUDIO_TYPE ) );
+		    media.add ( new Media ( Media.AUDIO_TYPE, "audio" + mediaCount ) );
 //            openMediaPropertiesActivity();
 		    openFileChooserActivity();
+		    mediaCount++;
 	    } else if (what == IMAGE) {
-		    media.add ( new Media ( Media.IMAGE_TYPE ) );
+		    media.add ( new Media ( Media.IMAGE_TYPE, "image" + mediaCount ) );
             openMediaPropertiesActivity();
+            mediaCount++;
 		} else if (what == TEXT) {
-		    media.add ( new Media ( Media.TEXT_TYPE ) );
+		    media.add ( new Media ( Media.TEXT_TYPE, "text" + mediaCount ) );
 		    openMediaPropertiesActivity();
+		    mediaCount++;
 		} else if (what == VIDEO) {
-		    media.add ( new Media ( Media.VIDEO_TYPE) );
+		    media.add ( new Media ( Media.VIDEO_TYPE, "video" + mediaCount ) );
             openMediaPropertiesActivity();
+            mediaCount++;
 		}
 	}
 
@@ -346,7 +352,7 @@ public class ComposerActivity extends Activity {
 	        }
 	      }
 	      break;
-	    case (EDIT_MEDIA) :
+	    case (ADD_MEDIA) :
 	          if (resultCode == Activity.RESULT_OK) {
 	              int type = media.getLast().getMediaType();
 	              if( type == Media.AUDIO_TYPE){
@@ -378,11 +384,10 @@ public class ComposerActivity extends Activity {
 
         newView = (ImageView) itemView.findViewById(R.id.image);
         newView.setImageResource(R.drawable.icon);
-//        newView.setFocusableInTouchMode(true);
         
-//        Media mediaImage = media.getLast();
-//        mDragLayer.addView(itemView, new DragLayer.LayoutParams(mediaImage.getHeight(), mediaImage.getWidth(), 0, 0));
+        newView.setTag( media.getLast().getMediaTag() );
         
+       // mDragLayer.addView(itemView, new DragLayer.LayoutParams(media.getLast().getHeight(), media.getLast().getWidth(), 0, 0));
         mDragLayer.addView(itemView, new DragLayer.LayoutParams(40, 40, 0, 0));
         
         newView.setOnClickListener(viewClick);
@@ -398,11 +403,10 @@ public class ComposerActivity extends Activity {
         View itemView = inflater.inflate(R.layout.text_add, null);
         
         newView = (TextView) itemView.findViewById(R.id.editText);
-//        newView.setText( media.getLast().getText() );
         newView.setText(text);
         newView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.getLast().getFontSize());
-
-        newView.setPadding ( (int)(Math.random() * 100), (int)(Math.random() * 100), 0, 0 );
+        
+        newView.setTag( media.getLast().getMediaTag() );
         
         mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, 
                 LayoutParams.WRAP_CONTENT, 0, 0));

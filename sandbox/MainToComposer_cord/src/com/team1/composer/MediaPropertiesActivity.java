@@ -31,13 +31,13 @@ public class MediaPropertiesActivity extends Activity
 
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
         backBtn.setOnClickListener( mClick );
-
+        
         media = ComposerActivity.getMedia().getLast();
-
+        
         if( media.getMediaType() == Media.AUDIO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
-        } else if ( media.getMediaType() == Media.TEXT_TYPE )
-        {
+        } 
+        else if ( media.getMediaType() == Media.TEXT_TYPE ) {
             //font size drop down.
             //This code will also set the font size
             Spinner spinner = (Spinner) findViewById(R.id.fontSizeSpinner);
@@ -68,11 +68,11 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.textInfo).setVisibility( View.VISIBLE );
             findViewById( R.id.fontSizeInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
-        } else if (media.getMediaType() == Media.IMAGE_TYPE )
-        {
+        } 
+        else if (media.getMediaType() == Media.IMAGE_TYPE ) {
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
-        } else if (media.getMediaType() == Media.VIDEO_TYPE)
-        {
+        } 
+        else if (media.getMediaType() == Media.VIDEO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
         }
@@ -90,6 +90,8 @@ public class MediaPropertiesActivity extends Activity
     //radio button listener
     //this code will also set the orientation of the text
     private OnClickListener radio_listener = new OnClickListener() {
+        
+        @Override
         public void onClick(View v) {
             //Reference for vertical text
             //http://stackoverflow.com/questions/1258275/vertical-rotated-label-in-android
@@ -194,4 +196,5 @@ public class MediaPropertiesActivity extends Activity
         }
         return false;
     }
+    
 }

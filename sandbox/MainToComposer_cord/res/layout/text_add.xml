@@ -2,4 +2,4 @@
 <TextView android:id="@+id/editText" android:layout_width="fill_parent"
 	android:layout_height="wrap_content" android:text="Edit me"
 	android:selectAllOnFocus="true" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:gravity="bottom" android:textColor="#4CBB17" /> 
+	android:gravity="bottom" android:textColor="#000000" /> 

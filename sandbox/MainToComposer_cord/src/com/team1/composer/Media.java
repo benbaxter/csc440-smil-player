@@ -6,27 +6,27 @@ public class Media {
     public static final int IMAGE_TYPE = 1;
     public static final int TEXT_TYPE = 2;
     public static final int VIDEO_TYPE = 3; 
-    public static int mediaType;
-    public static int startTime;
-    
-
-    public static int duration;
-    public static int x;
-    public static int y;
-    public static int height;
-    public static int width;
-    
-    public static int fontSize;
     public static final int HORIZONTAL = 4;
     public static final int VERTICAL = 5;
-    public static int orientation;
-    public static String text;
     
-    public static boolean repeat;
+    private static int mediaType;
+    private static int startTime;
+    private static int duration;
+    private static int x;
+    private static int y;
+    private static int height;
+    private static int width;
+    private static int fontSize;
+    private static int orientation;
+    private static String mediaTag;
+    private static String text;
+    private static boolean repeat;
     
-    public Media( int mediaType )
+    
+    public Media( int mediaType, String mediaTag )
     {
         this.mediaType = mediaType;
+        this.mediaTag = mediaTag;
     }
     
     public Media( int mediaType, int startTime, int duration)
@@ -34,6 +34,11 @@ public class Media {
         this.mediaType = mediaType;
         this.startTime = startTime;
         this.duration = duration;
+    }
+    
+    public String getMediaTag()
+    {
+        return mediaTag;
     }
     
     public int getMediaType()
