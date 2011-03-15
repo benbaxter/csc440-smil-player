@@ -6,7 +6,8 @@ import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts.People;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
 import android.telephony.*;
 import android.util.*;
 import android.view.*;
@@ -18,7 +19,6 @@ import android.widget.*;
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
 
-@SuppressWarnings("deprecation")
 public class ComposerActivity extends Activity {
 	/** Called when the activity is first created. */
 	private static final int AUDIO = 0;
@@ -34,12 +34,13 @@ public class ComposerActivity extends Activity {
     private static final int MAIN = 8;
     private static final int EXIT = 9;
     
-    final static int PICK_CONTACT = 10;
-    final static int EDIT_MEDIA = 11;
-    final static int ADD_MEDIA = 12;
+    private final static int PICK_CONTACT = 10;
+    private final static int EDIT_MEDIA = 11;
+    private final static int ADD_MEDIA = 12;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
+	private Dialog dialog = null;
 	
 	private static int mediaCount = 0;
 	
@@ -47,9 +48,6 @@ public class ComposerActivity extends Activity {
 	
 	static LinkedList<Media> media;
 	Toast toast;
-	Dialog dialog = null;
-	public View image;
-	String addingText;
 	
 	public static LinkedList<Media> getMedia()
 	{
@@ -171,7 +169,6 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
     }
 	
-
 	private void openFileChooserActivity(){
         Intent mIntent = new Intent( this.getApplicationContext(),
                 FileChooserListActivity.class);
@@ -256,13 +253,13 @@ public class ComposerActivity extends Activity {
         finish();
     }
 	
-	void sendMMSMessage()
+	/*void sendMMSMessage()
 	{
 	    Intent sendIntent = new Intent(Intent.ACTION_SEND); 
 	    sendIntent.putExtra("sms_body", "some text");
 	    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(getDir( "smilmessages", MODE_WORLD_READABLE ).getAbsolutePath() ));
 	    sendIntent.setType("image/png");
-	}
+	}*/
 	
 	private String getMyPhoneNumber(){  
 	    TelephonyManager mTelephonyMgr;  
@@ -272,7 +269,8 @@ public class ComposerActivity extends Activity {
 	}
 	
 	private void changeContactNumber() {
-	    Intent intent = new Intent(Intent.ACTION_PICK, People.CONTENT_URI);
+	    
+	    Intent intent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
 	    startActivityForResult(intent, PICK_CONTACT);
 	}
 	
@@ -348,19 +346,24 @@ public class ComposerActivity extends Activity {
 	    case (PICK_CONTACT) :
 	      if (resultCode == Activity.RESULT_OK) {
 	        Uri contactData = data.getData();
-	        Cursor c =  managedQuery(contactData, null, null, null, null);
+	        String id = contactData.getLastPathSegment();
+	        Cursor c =  getContentResolver().query(Phone.CONTENT_URI,  
+                    null, Phone.CONTACT_ID + "=?", new String[] { id },  
+                    null);  
+
 	        if (c.moveToFirst()) {
-	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
-	          String number = c.getString(c.getColumnIndexOrThrow(People.NUMBER));
+	          String name = c.getString(c.getColumnIndex(Contacts.DISPLAY_NAME));
+	          String number = c.getString(c.getColumnIndex(Phone.DATA));
 //	          String numberKey = c.getString(c.getColumnIndexOrThrow(People.NUMBER_KEY));
 	          if(number == null )
 	          {
 	              name = "Defaulting";
 	              number = getMyPhoneNumber();
 	          }
-	          
+
 	          EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
 	          phoneNumber.setText ( name + " - " + number );
+	          
 	          // TODO Whatever you want to do with the selected contact name.
 	        }
 	      }
