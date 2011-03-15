@@ -396,13 +396,14 @@ public class ComposerActivity extends Activity {
                     String text = media.get( index ).getText();
                     TextView tv = (TextView)mDragLayer.findViewWithTag(media.get( index ).getMediaTag());
                     tv.setText(text);
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.get( index ).getFontSize());
                     tv.setWidth(LayoutParams.WRAP_CONTENT);
                     tv.setHeight(LayoutParams.WRAP_CONTENT);
                 } else if (type == Media.VIDEO_TYPE) {
                     toast( "Video comming soon" );
                 }
             } else if ( resultCode == Activity.RESULT_CANCELED) {
-              media.removeLast();  
+              //media.removeLast();  
             }
             break;
 	    default :
