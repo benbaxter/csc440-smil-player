@@ -9,18 +9,18 @@ public class Media {
     public static final int HORIZONTAL = 4;
     public static final int VERTICAL = 5;
     
-    private static int mediaType;
-    private static int startTime;
-    private static int duration;
-    private static int x;
-    private static int y;
-    private static int height;
-    private static int width;
-    private static int fontSize;
-    private static int orientation;
-    private static String mediaTag;
-    private static String text;
-    private static boolean repeat;
+    private int mediaType;
+    private int startTime;
+    private int duration;
+    private int x;
+    private int y;
+    private int height;
+    private int width;
+    private int fontSize;
+    private int orientation;
+    private String mediaTag;
+    private String text;
+    private boolean repeat;
     
     
     public Media( int mediaType, String mediaTag )
@@ -51,7 +51,7 @@ public class Media {
         this.mediaType = mediaType;
     }
 
-    public static int getStartTime()
+    public int getStartTime()
     {
         return startTime;
     }
@@ -61,7 +61,7 @@ public class Media {
         this.startTime = startTime;
     }
 
-    public static int getDuration()
+    public int getDuration()
     {
         return duration;
     }
@@ -71,7 +71,7 @@ public class Media {
         this.duration = duration;
     }
 
-    public static int getX()
+    public int getX()
     {
         return x;
     }
@@ -81,7 +81,7 @@ public class Media {
         this.x = x;
     }
 
-    public static int getY()
+    public int getY()
     {
         return y;
     }
@@ -121,7 +121,7 @@ public class Media {
         this.fontSize = fontSize;
     }
 
-    public static int getOrientation()
+    public int getOrientation()
     {
         return orientation;
     }
@@ -141,7 +141,7 @@ public class Media {
         this.text = text;
     }
 
-    public static boolean isRepeat()
+    public boolean isRepeat()
     {
         return repeat;
     }

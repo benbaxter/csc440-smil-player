@@ -298,7 +298,7 @@ public class ComposerActivity extends Activity {
         
         newView.setTag( media.getLast().getMediaTag() );
         
-       // mDragLayer.addView(itemView, new DragLayer.LayoutParams(media.getLast().getHeight(), media.getLast().getWidth(), 0, 0));
+        //mDragLayer.addView(itemView, new DragLayer.LayoutParams(media.getLast().getHeight(), media.getLast().getWidth(), 0, 0));
         mDragLayer.addView(itemView, new DragLayer.LayoutParams(40, 40, 0, 0));
         
         newView.setOnClickListener(viewClick);
