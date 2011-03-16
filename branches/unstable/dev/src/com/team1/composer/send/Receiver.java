@@ -1,5 +1,6 @@
-package com.team1.composer;
+package com.team1.composer.send;
 
+import com.team1.composer.Main;
 import com.team1.composer.R;
 
 import android.app.Notification;

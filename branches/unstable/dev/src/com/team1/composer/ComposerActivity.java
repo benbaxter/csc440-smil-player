@@ -3,12 +3,7 @@ package com.team1.composer;
 import java.util.LinkedList;
 import android.app.*;
 import android.content.*;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.Contacts;
-import android.telephony.*;
 import android.util.*;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -18,6 +13,7 @@ import android.widget.*;
 
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
+import com.team1.composer.send.SendActivity;
 
 public class ComposerActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -28,15 +24,14 @@ public class ComposerActivity extends Activity {
 
 	private static final int ADD_DIALOG = 4;
 	private static final int SAVE_CONFIRM = 5;
-	private static final int EDIT_TEXT = 6;
-
-	private static final int CLEAR = 7;
-    private static final int MAIN = 8;
-    private static final int EXIT = 9;
+	
+	private static final int CLEAR = 6;
+    private static final int MAIN = 7;
+    private static final int EXIT = 8;
     
-    private final static int PICK_CONTACT = 10;
-    private final static int EDIT_MEDIA = 11;
-    private final static int ADD_MEDIA = 12;
+    private final static int EDIT_MEDIA = 9;
+    private final static int ADD_MEDIA = 10;
+    private final static int SEND_MESSAGE = 11;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
@@ -62,10 +57,7 @@ public class ComposerActivity extends Activity {
 		setContentView(R.layout.composer);
 		
 		setupListeners();
-		
-		EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
-		phoneNumber.setText ( getMyPhoneNumber() );
-		
+	
 		media = new LinkedList<Media>();
 	}
 	
@@ -101,8 +93,7 @@ public class ComposerActivity extends Activity {
 			    {
 			        if(media.get( i ).getMediaTag().equals( v.getTag() ))
 			        {
-			            editMediaPropertiesActivity(i);
-			            //toast("click me baby one more time");
+			           editMediaPropertiesActivity(i);
 			        }
 			    }
 			}
@@ -123,26 +114,11 @@ public class ComposerActivity extends Activity {
 			} else if (v.getId() == R.id.undoBtn) {
 				toast("Clicking this button allows the user undo thier last change.");
 			} else if (v.getId() == R.id.sendBtn) {
-				EditText addrTxt = (EditText) ComposerActivity.this
-						.findViewById(R.id.addrEditText);
-				addrTxt.setFocusable(false);
-
-				try {
-				        String msg = "You have just received a new SMIL message! Go to our application to check it out!";
-				        String[] addr = addrTxt.getText().toString().split( " - " );
-				        String address = addr[addr.length - 1];
-				        Log.i("ADDRESS", address);
-						sendSMSMessage(address, msg);
-				} catch (Exception e) {
-					Toast.makeText(ComposerActivity.this, "Failed to send SMS",
-							Toast.LENGTH_LONG).show();
-					e.printStackTrace();
-				}
+			    
+			    openSendActivity();
+				/**/
 			} else if ( v.getId() == R.id.homeBtn) {
 			    showDialog( SAVE_CONFIRM );
-			}
-			else if ( v.getId() == R.id.addContactBtn) {
-			    changeContactNumber();
 			}
 		}
 	};
@@ -163,6 +139,18 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mMediaPropIntent, ADD_MEDIA );
     }
 	
+	private void openSendActivity() {
+        Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
+        startActivityForResult( mSendIntent, SEND_MESSAGE );
+    }
+	
+	public void openGalleryActivity(){
+	    Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
+	    intentBrowseFiles.setType("image/*");
+	    intentBrowseFiles.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	    startActivity(intentBrowseFiles);
+	}
+	
 	private void editMediaPropertiesActivity( int index ) {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
         mMediaPropIntent.putExtra("INDEX", index);
@@ -176,105 +164,7 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mIntent, 10 );
     }
 
-	/*
-	void sendSMSMessage(String address, String message) throws Exception {
-		SmsManager smsMgr = SmsManager.getDefault();
-		smsMgr.sendTextMessage(address, null, message, null, null);
-		finish();
-	}
-	*/
-	
-    //---sends an SMS message to another device---
-    private void sendSMSMessage(String phoneNumber, String message)
-    {        
-        String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
- 
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(SENT), 0);
- 
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(DELIVERED), 0);
-        BroadcastReceiver sentReceiver = new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS sent", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(getBaseContext(), "Generic failure", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(getBaseContext(), "No service", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(getBaseContext(), "Null PDU", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(getBaseContext(), "Radio off", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
-        BroadcastReceiver deliveredReceiver = new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(getBaseContext(), "SMS not delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;                        
-                }
-            }
-        };
-        //---when the SMS has been sent---
-        registerReceiver(sentReceiver, new IntentFilter(SENT));
-        
-        //---when the SMS has been delivered---
-        registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
-        
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
-//        unregisterReceiver( sentReceiver );
-//        unregisterReceiver( deliveredReceiver );
-
-        finish();
-    }
-	
-	/*void sendMMSMessage()
-	{
-	    Intent sendIntent = new Intent(Intent.ACTION_SEND); 
-	    sendIntent.putExtra("sms_body", "some text");
-	    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(getDir( "smilmessages", MODE_WORLD_READABLE ).getAbsolutePath() ));
-	    sendIntent.setType("image/png");
-	}*/
-	
-	private String getMyPhoneNumber(){  
-	    TelephonyManager mTelephonyMgr;  
-	    mTelephonyMgr = (TelephonyManager)  
-	        getSystemService(Context.TELEPHONY_SERVICE);   
-	    return mTelephonyMgr.getLine1Number();  
-	}
-	
-	private void changeContactNumber() {
-	    
-	    Intent intent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
-	    startActivityForResult(intent, PICK_CONTACT);
-	}
-	
-	protected Dialog onCreateDialog(int id) {
+    protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case ADD_DIALOG:
 			final CharSequence[] items = { "Audio", "Image", "Text", "Video" };
@@ -313,22 +203,23 @@ public class ComposerActivity extends Activity {
 		if (what == AUDIO) {
 		    media.add ( new Media ( Media.AUDIO_TYPE, "audio" + mediaCount ) );
 //            openMediaPropertiesActivity();
-		    openFileChooserActivity();
 		    mediaCount++;
+		    openFileChooserActivity();
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE, "image" + mediaCount ) );
+		    mediaCount++;
             openMediaPropertiesActivity();
-            mediaCount++;
 		} else if (what == TEXT) {
 		    media.add ( new Media ( Media.TEXT_TYPE, "text" + mediaCount ) );
-		    openMediaPropertiesActivity();
 		    mediaCount++;
+		    openMediaPropertiesActivity();
 		} else if (what == VIDEO) {
 		    media.add ( new Media ( Media.VIDEO_TYPE, "video" + mediaCount ) );
-            openMediaPropertiesActivity();
-            mediaCount++;
+		    mediaCount++;
+            openGalleryActivity();
 		}
 	}
+	
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -343,31 +234,6 @@ public class ComposerActivity extends Activity {
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
 	  super.onActivityResult(reqCode, resultCode, data);
 	  switch (reqCode) {
-	    case (PICK_CONTACT) :
-	      if (resultCode == Activity.RESULT_OK) {
-	        Uri contactData = data.getData();
-	        String id = contactData.getLastPathSegment();
-	        Cursor c =  getContentResolver().query(Phone.CONTENT_URI,  
-                    null, Phone.CONTACT_ID + "=?", new String[] { id },  
-                    null);  
-
-	        if (c.moveToFirst()) {
-	          String name = c.getString(c.getColumnIndex(Contacts.DISPLAY_NAME));
-	          String number = c.getString(c.getColumnIndex(Phone.DATA));
-//	          String numberKey = c.getString(c.getColumnIndexOrThrow(People.NUMBER_KEY));
-	          if(number == null )
-	          {
-	              name = "Defaulting";
-	              number = getMyPhoneNumber();
-	          }
-
-	          EditText phoneNumber = (EditText) findViewById ( R.id.addrEditText );
-	          phoneNumber.setText ( name + " - " + number );
-	          
-	          // TODO Whatever you want to do with the selected contact name.
-	        }
-	      }
-	      break;
 	    case (ADD_MEDIA) :
 	          if (resultCode == Activity.RESULT_OK) {
 	              int type = media.getLast().getMediaType();
@@ -408,6 +274,11 @@ public class ComposerActivity extends Activity {
             } else if ( resultCode == Activity.RESULT_CANCELED) {
               //media.removeLast();  
             }
+            break;
+	    case (SEND_MESSAGE) :
+            if (resultCode == Activity.RESULT_OK) {
+                finish();
+            } 
             break;
 	    default :
 	        Log.i("CODE", Integer.toString( reqCode ) );
@@ -475,19 +346,16 @@ public class ComposerActivity extends Activity {
 		Button undo = (Button) findViewById(R.id.undoBtn);
 		Button send = (Button) findViewById(R.id.sendBtn);
 		Button homeBtn = (Button) findViewById(R.id.homeBtn);
-		Button addContact = (Button) findViewById(R.id.addContactBtn);
 
 		add.setOnClickListener(buttonClick);
 		save.setOnClickListener(buttonClick);
 		undo.setOnClickListener(buttonClick);
 		send.setOnClickListener(buttonClick);
 		homeBtn.setOnClickListener(buttonClick);
-		addContact.setOnClickListener(buttonClick);
 		
 	}
 	
 	public void toast(String msg) {
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
-	
 }

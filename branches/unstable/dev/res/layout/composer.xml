@@ -16,35 +16,14 @@
 			android:layout_height="wrap_content" android:background="@drawable/homebutton"
 			android:layout_alignParentRight="true" />
 	</RelativeLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:orientation="vertical" android:layout_below="@+id/TopBar"
-		android:id="@+id/number">
-		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="Destination Address:" />
-
-		<RelativeLayout android:id="@+id/addrBar"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:background="@drawable/bar" android:fadingEdge="none">
-
-			<EditText android:id="@+id/addrEditText"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:text="" android:selectAllOnFocus="true" />
-			<Button android:id="@+id/addContactBtn" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:background="@drawable/addbuttoncomposer"
-				android:layout_alignParentRight="true" />
-		</RelativeLayout>
-
-
-
-	</LinearLayout>
+	
 
 	<com.team1.composer.drag.DragLayer
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 		android:id="@+id/Canvas" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:layout_above="@+id/addBtn"
-		android:layout_below="@+id/number" android:layout_margin="10px"
+		android:layout_below="@+id/TopBar" android:layout_margin="10px"
 		android:background="#C4C4C4">
 
 	</com.team1.composer.drag.DragLayer>
