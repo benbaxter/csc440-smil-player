@@ -8,9 +8,7 @@ import java.io.File;
 import java.util.*;
 import android.app.*;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
-import android.view.View.OnClickListener;
 import android.widget.*;
 
 public class FileChooserListActivity extends ListActivity {
