@@ -79,7 +79,8 @@
 				android:layout_height="wrap_content" android:gravity="right"
 				android:layout_marginLeft="15px" android:numeric="integer"
 				android:maxLength="4" android:width="70dip" />
-		</TableRow>
+		
+</TableRow>
 		<TableRow android:id="@+id/repeatInfo" android:visibility="gone">
 			<TextView android:id="@+id/repeatLabel"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -108,7 +109,7 @@
 				android:layout_marginLeft="15px" android:numeric="integer"
 				android:maxLength="4" android:width="70dip" />
 		</TableRow>
-		<TableLayout android:id="@+id/optional"
+		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/rotation" android:visibility="gone"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rotate" android:layout_gravity="center" android:gravity="center" android:id="@+id/rotateBtn"></Button></TableRow><TableLayout android:id="@+id/optional"
 			android:layout_height="wrap_content" android:fadingEdge="none"
 			android:layout_centerHorizontal="true" android:layout_width="fill_parent">
 
@@ -117,7 +118,8 @@
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:text="Position (optional):" android:gravity="left" />
 
-			</TableRow>
+			
+</TableRow>
 			<TableRow android:id="@+id/xyInfo">
 				<TextView android:id="@+id/xLabel" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:text="X:"

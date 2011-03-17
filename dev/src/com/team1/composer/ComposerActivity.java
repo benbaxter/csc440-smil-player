@@ -3,7 +3,10 @@ package com.team1.composer;
 import java.util.LinkedList;
 import android.app.*;
 import android.content.*;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.*;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -32,6 +35,7 @@ public class ComposerActivity extends Activity {
     private final static int EDIT_MEDIA = 9;
     private final static int ADD_MEDIA = 10;
     private final static int SEND_MESSAGE = 11;
+    private final static int MEDIA_PICK = 12;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
@@ -84,6 +88,15 @@ public class ComposerActivity extends Activity {
         return false;
     }
 	
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            showDialog( SAVE_CONFIRM );
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    
 	OnClickListener viewClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -99,11 +112,17 @@ public class ComposerActivity extends Activity {
 			}
 			else if(v.getId() == R.id.image)
 			{
-				toast("You clicked an image with tag " + v.getTag());
+			    for(int i=0; i<media.size(); i++)
+                {
+                    if(media.get( i ).getMediaTag().equals( v.getTag() ))
+                    {
+                       editMediaPropertiesActivity(i);
+                    }
+                }
 			}
 		}
 	};
-
+	
 	OnClickListener buttonClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -114,15 +133,13 @@ public class ComposerActivity extends Activity {
 			} else if (v.getId() == R.id.undoBtn) {
 				toast("Clicking this button allows the user undo thier last change.");
 			} else if (v.getId() == R.id.sendBtn) {
-			    
 			    openSendActivity();
-				/**/
 			} else if ( v.getId() == R.id.homeBtn) {
 			    showDialog( SAVE_CONFIRM );
 			}
 		}
 	};
-
+	
 	OnLongClickListener viewLongClick = new OnLongClickListener() {
 		@Override
 		public boolean onLongClick(View v) {
@@ -134,8 +151,12 @@ public class ComposerActivity extends Activity {
 		}
 	};
 	
-	private void openMediaPropertiesActivity() {
+	private void openMediaPropertiesActivity(String path) {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
+        if(!path.equals( "text" ))
+        {
+            mMediaPropIntent.putExtra("PATH", path);
+        }
         startActivityForResult( mMediaPropIntent, ADD_MEDIA );
     }
 	
@@ -144,11 +165,10 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mSendIntent, SEND_MESSAGE );
     }
 	
-	public void openGalleryActivity(){
+	public void openGalleryActivity(String type){
 	    Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-	    intentBrowseFiles.setType("image/*");
-	    intentBrowseFiles.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    startActivity(intentBrowseFiles);
+	    intentBrowseFiles.setType(type);
+	    startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), MEDIA_PICK);
 	}
 	
 	private void editMediaPropertiesActivity( int index ) {
@@ -163,6 +183,94 @@ public class ComposerActivity extends Activity {
         mIntent.putExtra("File Chooser", "");
         startActivityForResult( mIntent, 10 );
     }
+	
+	@Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+	    super.onActivityResult(reqCode, resultCode, data);
+	    switch (reqCode) {
+	        case (ADD_MEDIA) :
+	            if (resultCode == Activity.RESULT_OK) {
+	                int type = media.getLast().getMediaType();
+	                if( type == Media.AUDIO_TYPE){
+	                    toast( "AUDIO ADDED" );
+	                } else if (type == Media.IMAGE_TYPE) {
+	                    addImageToCanvas();
+	                } else if (type == Media.TEXT_TYPE) {
+	                    String text = media.getLast().getText();
+	                    addTextToCanvas(text);
+	                } else if (type == Media.VIDEO_TYPE) {
+	                    toast( "Video comming soon" );
+	                }
+	            } else if ( resultCode == Activity.RESULT_CANCELED) {
+	                media.removeLast();  
+	            }
+	        break;
+	        case (EDIT_MEDIA) :
+	            if (resultCode == Activity.RESULT_OK) {
+	                Bundle extras = data.getExtras();
+	                int index = extras.getInt( "INDEX" );
+	                
+	                int type = media.get( index ).getMediaType();
+	                if( type == Media.AUDIO_TYPE){
+	                    toast( "AUDIO EDITED" );
+	                } else if (type == Media.IMAGE_TYPE) {
+	                    ImageView iv = (ImageView)mDragLayer.findViewWithTag (media.get( index ).getMediaTag() );
+	                    iv.setImageBitmap( media.get( index ).getImage() );
+	                    iv.setMaxWidth( media.get( index ).getWidth());
+	                    iv.setMaxHeight( media.get( index ).getHeight());
+	                    DragLayer.LayoutParams lp = new DragLayer.LayoutParams (
+                                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+                                media.get( index ).getX(), media.get( index ).getY());
+                        mDragLayer.updateViewLayout(iv, lp); 
+	                } else if (type == Media.TEXT_TYPE) {
+	                    String text = media.get( index ).getText();
+	                    TextView tv = (TextView)mDragLayer.findViewWithTag( media.get( index ).getMediaTag() );
+	                    tv.setText(text);
+	                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.get( index ).getFontSize());
+	                    DragLayer.LayoutParams lp = new DragLayer.LayoutParams (
+	                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+	                            media.get( index ).getX(), media.get( index ).getY());
+	                    mDragLayer.updateViewLayout(tv, lp); 
+	                } else if (type == Media.VIDEO_TYPE) {
+	                    toast( "Video comming soon" );
+	                }
+	            } else if ( resultCode == Activity.RESULT_CANCELED) {
+	                //media.removeLast();  
+	            }
+	        break;
+	        case (SEND_MESSAGE) :
+	            if (resultCode == Activity.RESULT_OK) {
+	                finish();
+	            } 
+	        break;
+	        case (MEDIA_PICK) :
+	            if (resultCode == Activity.RESULT_OK) {
+	                Uri selectedImageUri = data.getData();
+	                String selectedImagePath;
+	                
+	                String[] projection = { MediaStore.Images.Media.DATA };
+	                Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
+	                
+	                if(cursor != null){
+	                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	                    cursor.moveToFirst();
+	                    selectedImagePath = cursor.getString(column_index);
+	                } else {
+	                    selectedImagePath = null;
+	                }
+	                
+	                if(selectedImagePath == null){
+	                    selectedImagePath = selectedImageUri.getPath();
+	                }
+	                openMediaPropertiesActivity(selectedImagePath);
+	            }
+	        break;
+	        default :
+	            Log.i("CODE", Integer.toString( reqCode ) );
+	            Log.i("CODE", Integer.toString( resultCode) );
+	            break;
+	    }
+	}
 
     protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -208,83 +316,17 @@ public class ComposerActivity extends Activity {
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE, "image" + mediaCount ) );
 		    mediaCount++;
-            openMediaPropertiesActivity();
+		    openGalleryActivity("image/*");
+            //openMediaPropertiesActivity();
 		} else if (what == TEXT) {
 		    media.add ( new Media ( Media.TEXT_TYPE, "text" + mediaCount ) );
 		    mediaCount++;
-		    openMediaPropertiesActivity();
+		    openMediaPropertiesActivity("text");
 		} else if (what == VIDEO) {
 		    media.add ( new Media ( Media.VIDEO_TYPE, "video" + mediaCount ) );
 		    mediaCount++;
-            openGalleryActivity();
+            openGalleryActivity("video/*");
 		}
-	}
-	
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-	        showDialog( SAVE_CONFIRM );
-	        return true;
-	    }
-	    return super.onKeyDown(keyCode, event);
-	}
-	
-	@Override
-	public void onActivityResult(int reqCode, int resultCode, Intent data) {
-	  super.onActivityResult(reqCode, resultCode, data);
-	  switch (reqCode) {
-	    case (ADD_MEDIA) :
-	          if (resultCode == Activity.RESULT_OK) {
-	              int type = media.getLast().getMediaType();
-	              if( type == Media.AUDIO_TYPE){
-	                  toast( "AUDIO ADDED" );
-                  } else if (type == Media.IMAGE_TYPE) {
-                      addImageToCanvas();
-                  } else if (type == Media.TEXT_TYPE) {
-                      String text = media.getLast().getText();
-                      addTextToCanvas(text);
-                  } else if (type == Media.VIDEO_TYPE) {
-                      toast( "Video comming soon" );
-                  }
-	          } else if ( resultCode == Activity.RESULT_CANCELED) {
-	            media.removeLast();  
-	          }
-	          break;
-	    case (EDIT_MEDIA) :
-            if (resultCode == Activity.RESULT_OK) {
-                Bundle extras = data.getExtras();
-                int index = extras.getInt( "INDEX" );
-                
-                int type = media.get( index ).getMediaType();
-                if( type == Media.AUDIO_TYPE){
-                    toast( "AUDIO EDITED" );
-                } else if (type == Media.IMAGE_TYPE) {
-                    toast("IMAGE EDITED");
-                } else if (type == Media.TEXT_TYPE) {
-                    String text = media.get( index ).getText();
-                    TextView tv = (TextView)mDragLayer.findViewWithTag(media.get( index ).getMediaTag());
-                    tv.setText(text);
-                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.get( index ).getFontSize());
-                    tv.setWidth(LayoutParams.WRAP_CONTENT);
-                    tv.setHeight(LayoutParams.WRAP_CONTENT);
-                } else if (type == Media.VIDEO_TYPE) {
-                    toast( "Video comming soon" );
-                }
-            } else if ( resultCode == Activity.RESULT_CANCELED) {
-              //media.removeLast();  
-            }
-            break;
-	    case (SEND_MESSAGE) :
-            if (resultCode == Activity.RESULT_OK) {
-                finish();
-            } 
-            break;
-	    default :
-	        Log.i("CODE", Integer.toString( reqCode ) );
-	        Log.i("CODE", Integer.toString( resultCode) );
-	        break;
-	  }
 	}
 	
 	public void addImageToCanvas() {
@@ -294,12 +336,15 @@ public class ComposerActivity extends Activity {
         View itemView = inflater.inflate(R.layout.image_add, null);
 
         newView = (ImageView) itemView.findViewById(R.id.image);
-        newView.setImageResource(R.drawable.icon);
+        newView.setImageBitmap(media.getLast().getImage());
+        newView.setAdjustViewBounds( true );
+        newView.setMaxHeight( media.getLast().getHeight() );
+        newView.setMaxWidth( media.getLast().getWidth() );
         
         newView.setTag( media.getLast().getMediaTag() );
         
-        //mDragLayer.addView(itemView, new DragLayer.LayoutParams(media.getLast().getHeight(), media.getLast().getWidth(), 0, 0));
-        mDragLayer.addView(itemView, new DragLayer.LayoutParams(40, 40, 0, 0));
+        mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0));
+        //mDragLayer.addView(itemView, new DragLayer.LayoutParams(40, 40, 0, 0));
         
         newView.setOnClickListener(viewClick);
         newView.setOnLongClickListener(viewLongClick);
