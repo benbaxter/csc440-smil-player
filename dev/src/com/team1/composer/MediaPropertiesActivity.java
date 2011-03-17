@@ -1,8 +1,6 @@
 
 package com.team1.composer;
 
-import java.util.StringTokenizer;
-
 import com.team1.composer.R;
 
 import android.app.Activity;
@@ -10,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -46,28 +45,33 @@ public class MediaPropertiesActivity extends Activity
         
         if(extras != null)
         {
-            if(extras.containsKey("INDEX"))
-            {
-                index = extras.getInt( "INDEX" );
-                media = ComposerActivity.getMedia().get( index );
-            }
-            else if(extras.containsKey("PATH"))
-            {
-                media = ComposerActivity.getMedia().getLast();
-                
-                String path = extras.getString("PATH");
-                media.setPath( path );
-                StringTokenizer st = new StringTokenizer(media.getPath(), "/");
-                while (st.hasMoreTokens()) {
-                    media.setFileName(st.nextToken());
-                }
-            }
+            index = extras.getInt( "INDEX" );
+            media = ComposerActivity.getMedia().get( index );
         }
         else
             media = ComposerActivity.getMedia().getLast();
         
         if( media.getMediaType() == Media.AUDIO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
+            
+            TextView tv = (TextView)findViewById( R.id.Title );
+            tv.setText(media.getFileName());
+            
+            MediaPlayer mp = new MediaPlayer();
+            try
+            {
+                mp.setDataSource(media.getPath());
+            }
+            catch ( Exception e )
+            {
+                toast("Audio Failed");
+            }
+            
+            double duration =  mp.getDuration()/1000.0 ;
+            duration = Math.ceil(duration);
+            toast(mp.getDuration()+"");
+            EditText et = (EditText)findViewById( R.id.duration);
+            et.setText( Double.toString( duration ) ); //( int ) duration ) );
         } 
         else if ( media.getMediaType() == Media.TEXT_TYPE ) {
             //font size drop down.
@@ -115,7 +119,7 @@ public class MediaPropertiesActivity extends Activity
                 et.setText( null );
         } 
         else if (media.getMediaType() == Media.IMAGE_TYPE ) {
-            if(extras.containsKey("INDEX"))
+            if(extras != null)
             {
                 EditText et = (EditText)findViewById( R.id.height);
                 et.setText( Integer.toString( media.getHeight() ) );
