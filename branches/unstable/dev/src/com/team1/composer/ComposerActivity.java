@@ -1,6 +1,8 @@
 package com.team1.composer;
 
 import java.util.LinkedList;
+import java.util.StringTokenizer;
+
 import android.app.*;
 import android.content.*;
 import android.database.Cursor;
@@ -27,15 +29,18 @@ public class ComposerActivity extends Activity {
 
 	private static final int ADD_DIALOG = 4;
 	private static final int SAVE_CONFIRM = 5;
+	private static final int AUDIO_DIALOG = 6;
 	
-	private static final int CLEAR = 6;
-    private static final int MAIN = 7;
-    private static final int EXIT = 8;
+	private static final int CLEAR = 7;
+    private static final int MAIN = 8;
+    private static final int EXIT = 9;
     
-    private final static int EDIT_MEDIA = 9;
-    private final static int ADD_MEDIA = 10;
-    private final static int SEND_MESSAGE = 11;
-    private final static int MEDIA_PICK = 12;
+    private final static int EDIT_MEDIA = 10;
+    private final static int ADD_MEDIA = 11;
+    private final static int SEND_MESSAGE = 12;
+    private final static int AUDIO_PICK = 13;
+    private final static int IMAGE_PICK = 14;
+    private final static int VIDEO_PICK = 15;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
@@ -82,6 +87,8 @@ public class ComposerActivity extends Activity {
             break;
         case CLEAR:
             mDragLayer.removeAllViews();
+            View audio = findViewById(R.id.audio);
+            audio.setVisibility( View.GONE );
             media.clear();
             break;
         }
@@ -100,26 +107,45 @@ public class ComposerActivity extends Activity {
 	OnClickListener viewClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			if(v.getId() == R.id.editText)
-			{
-			    for(int i=0; i<media.size(); i++)
-			    {
-			        if(media.get( i ).getMediaTag().equals( v.getTag() ))
-			        {
-			           editMediaPropertiesActivity(i);
-			        }
-			    }
-			}
-			else if(v.getId() == R.id.image)
-			{
-			    for(int i=0; i<media.size(); i++)
+		    int index = 0;
+		    for(int i=0; i<media.size(); i++)
+            {
+                if(media.get( i ).getMediaTag().equals( v.getTag() ))
                 {
-                    if(media.get( i ).getMediaTag().equals( v.getTag() ))
-                    {
-                       editMediaPropertiesActivity(i);
-                    }
+                   index = i; 
                 }
-			}
+            }
+		    
+		    if(v.getId() == R.id.audio){
+		        int audioCount = 0;
+		        for(int i=0; i<media.size(); i++)
+	            {
+	                if(media.get( i ).getMediaType() == Media.AUDIO_TYPE)
+	                {
+	                   audioCount++; 
+	                }
+	            }
+		        
+		        if(audioCount == 1) {
+		            for(int i=0; i<media.size(); i++)
+		            {
+		                if(media.get( i ).getMediaTag().equals( v.getTag() ))
+		                {
+		                   index = i; 
+		                }
+		            }
+		            editMediaPropertiesActivity(index);
+		        }
+		        else {
+		            //showDialog(AUDIO_DIALOG);
+		        }
+		    }
+		    else if(v.getId() == R.id.editText)
+			    editMediaPropertiesActivity(index);
+			else if(v.getId() == R.id.image)
+			    editMediaPropertiesActivity(index);
+			else if(v.getId() == R.id.video)
+			    editMediaPropertiesActivity(index);
 		}
 	};
 	
@@ -151,12 +177,8 @@ public class ComposerActivity extends Activity {
 		}
 	};
 	
-	private void openMediaPropertiesActivity(String path) {
+	private void openMediaPropertiesActivity() {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
-        if(!path.equals( "text" ))
-        {
-            mMediaPropIntent.putExtra("PATH", path);
-        }
         startActivityForResult( mMediaPropIntent, ADD_MEDIA );
     }
 	
@@ -165,23 +187,28 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mSendIntent, SEND_MESSAGE );
     }
 	
-	public void openGalleryActivity(String type){
+	private void openAudioActivity(){
+        Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
+        intentBrowseFiles.setType("audio/*");
+        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), AUDIO_PICK);
+    }
+	
+	private void openImageActivity(){
 	    Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-	    intentBrowseFiles.setType(type);
-	    startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), MEDIA_PICK);
+	    intentBrowseFiles.setType("image/*");
+	    startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), IMAGE_PICK);
 	}
+	
+	private void openVideoActivity(){
+        Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
+        intentBrowseFiles.setType("video/*");
+        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), VIDEO_PICK);
+    }
 	
 	private void editMediaPropertiesActivity( int index ) {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
         mMediaPropIntent.putExtra("INDEX", index);
         startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
-    }
-	
-	private void openFileChooserActivity(){
-        Intent mIntent = new Intent( this.getApplicationContext(),
-                FileChooserListActivity.class);
-        mIntent.putExtra("File Chooser", "");
-        startActivityForResult( mIntent, 10 );
     }
 	
 	@Override
@@ -192,14 +219,13 @@ public class ComposerActivity extends Activity {
 	            if (resultCode == Activity.RESULT_OK) {
 	                int type = media.getLast().getMediaType();
 	                if( type == Media.AUDIO_TYPE){
-	                    toast( "AUDIO ADDED" );
+	                    addAudioToCanvas();
 	                } else if (type == Media.IMAGE_TYPE) {
 	                    addImageToCanvas();
 	                } else if (type == Media.TEXT_TYPE) {
-	                    String text = media.getLast().getText();
-	                    addTextToCanvas(text);
+	                    addTextToCanvas();
 	                } else if (type == Media.VIDEO_TYPE) {
-	                    toast( "Video comming soon" );
+	                    addVideoToCanvas();
 	                }
 	            } else if ( resultCode == Activity.RESULT_CANCELED) {
 	                media.removeLast();  
@@ -243,18 +269,48 @@ public class ComposerActivity extends Activity {
 	                finish();
 	            } 
 	        break;
-	        case (MEDIA_PICK) :
+	        case (AUDIO_PICK) :
+	            if (resultCode == Activity.RESULT_OK) {
+    	            Uri selectedAudioUri = data.getData();
+                    String selectedAudioPath;
+                    
+                    String[] audioProjection = { MediaStore.Audio.Media.DATA };
+                    Cursor audioCursor = managedQuery(selectedAudioUri,audioProjection, null, null, null);
+                    
+                    if(audioCursor != null){
+                        int column_index = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                        audioCursor.moveToFirst();
+                        selectedAudioPath = audioCursor.getString(column_index);
+                    } else {
+                        selectedAudioPath = null;
+                    }
+                    
+                    if(selectedAudioPath == null){
+                        selectedAudioPath = selectedAudioUri.getPath();
+                    }
+                    
+                    media.getLast().setPath( selectedAudioPath );
+                    
+                    StringTokenizer audioToken = new StringTokenizer(selectedAudioPath, "/");
+                    while (audioToken.hasMoreTokens()) {
+                        media.getLast().setFileName(audioToken.nextToken());
+                    }
+                    openMediaPropertiesActivity();
+    	            
+    	            break;
+	            }
+	        case (IMAGE_PICK) :
 	            if (resultCode == Activity.RESULT_OK) {
 	                Uri selectedImageUri = data.getData();
 	                String selectedImagePath;
 	                
-	                String[] projection = { MediaStore.Images.Media.DATA };
-	                Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
+	                String[] imageProjection = { MediaStore.Images.Media.DATA };
+	                Cursor imageCursor = managedQuery(selectedImageUri, imageProjection, null, null, null);
 	                
-	                if(cursor != null){
-	                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	                    cursor.moveToFirst();
-	                    selectedImagePath = cursor.getString(column_index);
+	                if(imageCursor != null){
+	                    int column_index = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	                    imageCursor.moveToFirst();
+	                    selectedImagePath = imageCursor.getString(column_index);
 	                } else {
 	                    selectedImagePath = null;
 	                }
@@ -262,9 +318,45 @@ public class ComposerActivity extends Activity {
 	                if(selectedImagePath == null){
 	                    selectedImagePath = selectedImageUri.getPath();
 	                }
-	                openMediaPropertiesActivity(selectedImagePath);
+	                
+	                media.getLast().setPath( selectedImagePath );
+	                
+	                StringTokenizer imageToken = new StringTokenizer(selectedImagePath, "/");
+	                while (imageToken.hasMoreTokens()) {
+	                    media.getLast().setFileName(imageToken.nextToken());
+	                }
+	                openMediaPropertiesActivity();
 	            }
 	        break;
+	        case (VIDEO_PICK) :
+	            if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedVideoUri = data.getData();
+                    String selectedVideoPath;
+                    
+                    String[] videoProjection = { MediaStore.Images.Media.DATA };
+                    Cursor videoCursor = managedQuery(selectedVideoUri, videoProjection, null, null, null);
+                    
+                    if(videoCursor != null){
+                        int column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        videoCursor.moveToFirst();
+                        selectedVideoPath = videoCursor.getString(column_index);
+                    } else {
+                        selectedVideoPath = null;
+                    }
+                    
+                    if(selectedVideoPath == null){
+                        selectedVideoPath = selectedVideoUri.getPath();
+                    }
+                    
+                    media.getLast().setPath( selectedVideoPath );
+                    
+                    StringTokenizer imageToken = new StringTokenizer(selectedVideoPath, "/");
+                    while (imageToken.hasMoreTokens()) {
+                        media.getLast().setFileName(imageToken.nextToken());
+                    }
+                    openMediaPropertiesActivity();
+                }
+                break;
 	        default :
 	            Log.i("CODE", Integer.toString( reqCode ) );
 	            Log.i("CODE", Integer.toString( resultCode) );
@@ -275,7 +367,7 @@ public class ComposerActivity extends Activity {
     protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case ADD_DIALOG:
-			final CharSequence[] items = { "Audio", "Image", "Text", "Video" };
+			final String[] items = { "Audio", "Image", "Text", "Video" };
 
 			AlertDialog.Builder buildSelecter = new AlertDialog.Builder(this);
 			buildSelecter.setTitle("Pick a Thing");
@@ -302,31 +394,56 @@ public class ComposerActivity extends Activity {
             buidSave.setNegativeButton(R.string.no, null);
             dialog = buidSave.create();
 		    break;
+		case AUDIO_DIALOG:
+            final String[] audioItems = new String[5];
+            int count = 0;
+            for(int i=0; i<media.size(); i++)
+            {
+                if(media.get( i ).getMediaType() == Media.AUDIO_TYPE)
+                {
+                   audioItems[count] = "stuff";//media.get( i ).getFileName();
+                   count++;
+                }
+            }
+            
+           
+            toast(count+"");
+            AlertDialog.Builder buildAudio = new AlertDialog.Builder(this);
+            buildAudio.setTitle("Pick Audio to Edit");
+            buildAudio.setItems(audioItems, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    //addToCanvas(item);
+                }
+            });
+            dialog = buildAudio.create();
+            break;
 		}
 		return dialog;
 	}
 	
 	public void addToCanvas(int what) {
-        //need to see of user hit cancel...
 		if (what == AUDIO) {
 		    media.add ( new Media ( Media.AUDIO_TYPE, "audio" + mediaCount ) );
-//            openMediaPropertiesActivity();
 		    mediaCount++;
-		    openFileChooserActivity();
+		    openAudioActivity();
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE, "image" + mediaCount ) );
 		    mediaCount++;
-		    openGalleryActivity("image/*");
-            //openMediaPropertiesActivity();
+		    openImageActivity();
 		} else if (what == TEXT) {
 		    media.add ( new Media ( Media.TEXT_TYPE, "text" + mediaCount ) );
 		    mediaCount++;
-		    openMediaPropertiesActivity("text");
+		    openMediaPropertiesActivity();
 		} else if (what == VIDEO) {
 		    media.add ( new Media ( Media.VIDEO_TYPE, "video" + mediaCount ) );
 		    mediaCount++;
-            openGalleryActivity("video/*");
+            openVideoActivity();
 		}
+	}
+	
+	public void addAudioToCanvas() {
+	    View audio = findViewById(R.id.audio);
+	    audio.setVisibility( View.VISIBLE );
 	}
 	
 	public void addImageToCanvas() {
@@ -343,8 +460,8 @@ public class ComposerActivity extends Activity {
         
         newView.setTag( media.getLast().getMediaTag() );
         
-        mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0));
-        //mDragLayer.addView(itemView, new DragLayer.LayoutParams(40, 40, 0, 0));
+        mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, 
+                LayoutParams.WRAP_CONTENT, 0, 0));
         
         newView.setOnClickListener(viewClick);
         newView.setOnLongClickListener(viewLongClick);
@@ -352,14 +469,14 @@ public class ComposerActivity extends Activity {
         
 	}
 	
-	public void addTextToCanvas(String text) {
+	public void addTextToCanvas() {
 	    TextView newView;
         
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.text_add, null);
         
         newView = (TextView) itemView.findViewById(R.id.editText);
-        newView.setText(text);
+        newView.setText( media.getLast().getText() );
         newView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, media.getLast().getFontSize());
         
         newView.setTag( media.getLast().getMediaTag() );
@@ -371,6 +488,27 @@ public class ComposerActivity extends Activity {
         newView.setOnLongClickListener(viewLongClick);
         mDragLayer.invalidate();
     }
+	
+	public void addVideoToCanvas() {
+	    ImageView newView;
+	    
+	    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+	    View itemView = inflater.inflate (R.layout.video_add, null);
+	    
+	    newView = (ImageView) itemView.findViewById(R.id.video);
+	    newView.setAdjustViewBounds( true );
+	    newView.setMaxHeight( media.getLast().getHeight() );
+	    newView.setMaxWidth( media.getLast().getWidth() );
+	    
+	    newView.setTag( media.getLast().getMediaTag() );
+	    
+	    mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, 
+	            LayoutParams.WRAP_CONTENT, 0, 0));
+	    
+	    newView.setOnClickListener(viewClick);
+        newView.setOnLongClickListener(viewLongClick);
+        mDragLayer.invalidate();
+	}
 	
 	public boolean startDrag(View v) {
 		Object dragInfo = v;
@@ -397,6 +535,9 @@ public class ComposerActivity extends Activity {
 		undo.setOnClickListener(buttonClick);
 		send.setOnClickListener(buttonClick);
 		homeBtn.setOnClickListener(buttonClick);
+		
+		View audio = findViewById(R.id.audio);
+		audio.setOnClickListener(viewClick);
 		
 	}
 	
