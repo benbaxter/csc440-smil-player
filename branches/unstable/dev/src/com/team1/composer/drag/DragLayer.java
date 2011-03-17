@@ -19,6 +19,11 @@
 
 package com.team1.composer.drag;
 
+import java.util.LinkedList;
+
+import com.team1.composer.ComposerActivity;
+import com.team1.composer.Media;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -112,13 +117,26 @@ public class DragLayer extends MyAbsoluteLayout
 public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
         DragView dragView, Object dragInfo)
 {
+    LinkedList<Media> media = ComposerActivity.getMedia();
+
     View v = (View) dragInfo;
     int w = v.getWidth ();
     int h = v.getHeight ();
     int left = x - xOffset;
     int top = y - yOffset;
+    
+    for(int i=0; i<media.size(); i++)
+    {
+        if(media.get( i ).getMediaTag().equals( v.getTag() ))
+        {
+            media.get( i ).setX( left );
+            media.get( i ).setY( top );
+        }
+    }
+    
     DragLayer.LayoutParams lp = new DragLayer.LayoutParams (w, h, left, top);
     this.updateViewLayout(v, lp);
+    
 }
 
 public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,

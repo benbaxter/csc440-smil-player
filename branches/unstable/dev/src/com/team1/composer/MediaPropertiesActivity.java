@@ -1,10 +1,15 @@
 
 package com.team1.composer;
 
+import java.util.StringTokenizer;
+
 import com.team1.composer.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -13,9 +18,11 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MediaPropertiesActivity extends Activity
 {
+    static final int EXIT   = 0;
 
-    Media media;
-    int index;
+    private Media media;
+    private int index;
+    private Bitmap image;
 
     @Override
     public void onCreate( Bundle savedInstanceState )
@@ -32,12 +39,29 @@ public class MediaPropertiesActivity extends Activity
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
         backBtn.setOnClickListener( mClick );
         
+        Button rotateBtn = ( Button ) findViewById( R.id.rotateBtn );
+        rotateBtn.setOnClickListener( mClick );
+        
         Bundle extras = getIntent().getExtras();
         
         if(extras != null)
         {
-            index = extras.getInt( "INDEX" );
-            media = ComposerActivity.getMedia().get( index );
+            if(extras.containsKey("INDEX"))
+            {
+                index = extras.getInt( "INDEX" );
+                media = ComposerActivity.getMedia().get( index );
+            }
+            else if(extras.containsKey("PATH"))
+            {
+                media = ComposerActivity.getMedia().getLast();
+                
+                String path = extras.getString("PATH");
+                media.setPath( path );
+                StringTokenizer st = new StringTokenizer(media.getPath(), "/");
+                while (st.hasMoreTokens()) {
+                    media.setFileName(st.nextToken());
+                }
+            }
         }
         else
             media = ComposerActivity.getMedia().getLast();
@@ -78,13 +102,46 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
             
             EditText et = (EditText)findViewById(R.id.inputString);
+            
             if(extras != null)
+            {
                 et.setText( media.getText() );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( Integer.toString( media.getX() ) );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( Integer.toString( media.getY() ) );
+            }
             else
                 et.setText( null );
         } 
         else if (media.getMediaType() == Media.IMAGE_TYPE ) {
+            if(extras.containsKey("INDEX"))
+            {
+                EditText et = (EditText)findViewById( R.id.height);
+                et.setText( Integer.toString( media.getHeight() ) );
+                et = (EditText)findViewById( R.id.width );
+                et.setText( Integer.toString( media.getWidth() ) );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( Integer.toString( media.getX() ) );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( Integer.toString( media.getY() ) );
+                image = media.getImage();
+            }
+            else
+            {
+                EditText et = (EditText)findViewById( R.id.height);
+                et.setText( "150" );
+                et = (EditText)findViewById( R.id.width );
+                et.setText( "150" );
+                image = BitmapFactory.decodeFile( media.getPath() );
+            }
+            
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
+            findViewById( R.id.rotation).setVisibility( View.VISIBLE );
+            
+            TextView tv = (TextView)findViewById( R.id.Title );
+            tv.setText(media.getFileName());
+            
         } 
         else if (media.getMediaType() == Media.VIDEO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
@@ -98,13 +155,11 @@ public class MediaPropertiesActivity extends Activity
         findViewById( R.id.yLabel ).setEnabled( false );
         findViewById( R.id.xyInfo ).setEnabled( false );
         findViewById( R.id.optional ).setEnabled( false );
-
     }
     
     //radio button listener
     //this code will also set the orientation of the text
     private OnClickListener radio_listener = new OnClickListener() {
-        
         @Override
         public void onClick(View v) {
             //Reference for vertical text
@@ -147,11 +202,12 @@ public class MediaPropertiesActivity extends Activity
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
                     //set default width and height here
                     if( height.equals( "" ))
-                        height = "40";
+                        height = "200";
                     if( width.equals( "" ))
-                        width = "40";
+                        width = "200";
                     media.setHeight( Integer.parseInt( height ));
                     media.setWidth( Integer.parseInt( width ));
+                    media.setImage( image );
                 }
                 else if( media.getMediaType() == Media.VIDEO_TYPE)
                 {
@@ -182,6 +238,15 @@ public class MediaPropertiesActivity extends Activity
                 setResult(RESULT_OK, data);
                 finish();
             }
+            else if ( v.getId() == R.id.rotateBtn )
+            {
+                int w = image.getWidth();
+                int h = image.getHeight();
+                Matrix mtx = new Matrix();
+                mtx.postRotate(90);
+                image = Bitmap.createBitmap(image, 0, 0, w, h, mtx, true);
+                toast("Image rotated 90 degrees");
+            }
             else if ( v.getId() == R.id.cancelBtn )
             {
                 setResult( RESULT_CANCELED );
@@ -194,8 +259,6 @@ public class MediaPropertiesActivity extends Activity
             }
         }
     };
-
-    static final int EXIT   = 0;
 
     public boolean onCreateOptionsMenu( Menu menu )
     {
@@ -214,4 +277,7 @@ public class MediaPropertiesActivity extends Activity
         return false;
     }
     
+    public void toast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
 }

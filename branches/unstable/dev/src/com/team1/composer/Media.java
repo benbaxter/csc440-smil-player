@@ -1,5 +1,7 @@
 package com.team1.composer;
 
+import android.graphics.Bitmap;
+
 public class Media {
     
     public static final int AUDIO_TYPE = 0;
@@ -20,7 +22,10 @@ public class Media {
     private int orientation;
     private String mediaTag;
     private String text;
+    private String fileName;
+    private String path;
     private boolean repeat;
+    private Bitmap image;
     
     
     public Media( int mediaType, String mediaTag )
@@ -151,5 +156,33 @@ public class Media {
         this.repeat = repeat;
     }
 
+    public void setFileName( String fileName )
+    {
+        this.fileName = fileName;
+    }
 
+    public String getFileName()
+    {
+        return fileName;
+    }
+
+    public void setPath( String path )
+    {
+        this.path = path;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setImage( Bitmap image )
+    {
+        this.image = image;
+    }
+
+    public Bitmap getImage()
+    {
+        return image;
+    }
 }
