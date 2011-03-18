@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/player"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout android:id="@+id/TopBar"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:background="@drawable/bar" 
+		android:fadingEdge="none">
+
+		<TextView android:id="@+id/Title" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:layout_centerVertical="true"
+			android:text="@string/app_name" />
+
+		<Button android:id="@+id/newBtn" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:background="@drawable/newbutton"
+			android:layout_alignParentRight="true" />
+	</RelativeLayout>
+
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  			android:layout_width="wrap_content"
+  			android:layout_height="wrap_content" 
+   	        android:layout_below="@+id/TopBar"
+  			android:id="@+id/frame">
+	</FrameLayout>
+	
+	<Button android:id="@+id/playBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/playbuttonplayer"
+		android:layout_alignParentBottom="true" />
+
+	<Button android:id="@+id/pauseBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/pausebuttonplayer"
+		android:layout_toRightOf="@+id/playBtn"
+		android:layout_alignParentBottom="true" />
+
+	<Button android:id="@+id/replayBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/replaybuttonplayer"
+		android:layout_toRightOf="@+id/pauseBtn"
+		android:layout_alignParentBottom="true" />
+
+	<Button android:id="@+id/respondBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/respondbuttonplayer"
+		android:layout_toRightOf="@+id/replayBtn"
+		android:layout_alignParentBottom="true" />
+		
+</RelativeLayout>
