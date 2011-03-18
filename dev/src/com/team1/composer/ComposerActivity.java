@@ -436,7 +436,7 @@ public class ComposerActivity extends Activity {
 //	    newView.setMaxHeight( media.getLast().getHeight() );
 //	    newView.setMaxWidth( media.getLast().getWidth() );
 //	    
-	    newView.setVideoPath((media.getLast().getFileName()));
+	    newView.setVideoPath((media.getLast().getPath()));
 	    
 	    newView.setTag( media.getLast().getMediaTag() );
 	    
