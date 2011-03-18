@@ -38,9 +38,9 @@ public class ComposerActivity extends Activity {
     private final static int EDIT_MEDIA = 10;
     private final static int ADD_MEDIA = 11;
     private final static int SEND_MESSAGE = 12;
-    private final static int AUDIO_PICK = 13;
-    private final static int IMAGE_PICK = 14;
-    private final static int VIDEO_PICK = 15;
+    private final static int MEDIA_PICK = 13;
+//    private final static int IMAGE_PICK = 14;
+//    private final static int VIDEO_PICK = 15;
 	
 	private DragController mDragController;
 	private DragLayer mDragLayer;
@@ -187,22 +187,10 @@ public class ComposerActivity extends Activity {
         startActivityForResult( mSendIntent, SEND_MESSAGE );
     }
 	
-	private void openAudioActivity(){
+	private void openMediaChoserActivity(String type){
         Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-        intentBrowseFiles.setType("audio/*");
-        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), AUDIO_PICK);
-    }
-	
-	private void openImageActivity(){
-	    Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-	    intentBrowseFiles.setType("image/*");
-	    startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), IMAGE_PICK);
-	}
-	
-	private void openVideoActivity(){
-        Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-        intentBrowseFiles.setType("video/*");
-        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Select Picture"), VIDEO_PICK);
+        intentBrowseFiles.setType(type);
+        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Make a Selection"), MEDIA_PICK);
     }
 	
 	private void editMediaPropertiesActivity( int index ) {
@@ -269,94 +257,42 @@ public class ComposerActivity extends Activity {
 	                finish();
 	            } 
 	        break;
-	        case (AUDIO_PICK) :
+	        case (MEDIA_PICK) :
 	            if (resultCode == Activity.RESULT_OK) {
-    	            Uri selectedAudioUri = data.getData();
-                    String selectedAudioPath;
+    	            Uri selectedUri = data.getData();
+                    String selectedPath = null;
                     
-                    String[] audioProjection = { MediaStore.Audio.Media.DATA };
-                    Cursor audioCursor = managedQuery(selectedAudioUri,audioProjection, null, null, null);
-                    
-                    if(audioCursor != null){
-                        int column_index = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-                        audioCursor.moveToFirst();
-                        selectedAudioPath = audioCursor.getString(column_index);
-                    } else {
-                        selectedAudioPath = null;
+                    String dataType = null;
+                    if(media.getLast().getMediaType() == Media.AUDIO_TYPE) {
+                        dataType = MediaStore.Audio.Media.DATA;
+                    } else if(media.getLast().getMediaType() == Media.IMAGE_TYPE) {
+                        dataType = MediaStore.Images.Media.DATA;
+                    } else if(media.getLast().getMediaType() == Media.VIDEO_TYPE) {
+                        dataType = MediaStore.Video.Media.DATA;
                     }
                     
-                    if(selectedAudioPath == null){
-                        selectedAudioPath = selectedAudioUri.getPath();
+                    String[] projection = { dataType };
+                    Cursor cursor = managedQuery(selectedUri, projection, null, null, null);
+                    
+                    if(cursor != null){
+                        int column_index = cursor.getColumnIndexOrThrow(dataType);
+                        cursor.moveToFirst();
+                        selectedPath = cursor.getString(column_index);
                     }
                     
-                    media.getLast().setPath( selectedAudioPath );
-                    
-                    StringTokenizer audioToken = new StringTokenizer(selectedAudioPath, "/");
-                    while (audioToken.hasMoreTokens()) {
-                        media.getLast().setFileName(audioToken.nextToken());
+                    if(selectedPath == null){
+                        selectedPath = selectedUri.getPath();
                     }
+                    
+                    media.getLast().setPath( selectedPath );
+                    
+                    String[] fileName = selectedPath.split( "/" );
+                    media.getLast().setFileName(fileName[fileName.length - 1]);
+                        
                     openMediaPropertiesActivity();
     	            
     	            break;
 	            }
-	        case (IMAGE_PICK) :
-	            if (resultCode == Activity.RESULT_OK) {
-	                Uri selectedImageUri = data.getData();
-	                String selectedImagePath;
-	                
-	                String[] imageProjection = { MediaStore.Images.Media.DATA };
-	                Cursor imageCursor = managedQuery(selectedImageUri, imageProjection, null, null, null);
-	                
-	                if(imageCursor != null){
-	                    int column_index = imageCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	                    imageCursor.moveToFirst();
-	                    selectedImagePath = imageCursor.getString(column_index);
-	                } else {
-	                    selectedImagePath = null;
-	                }
-	                
-	                if(selectedImagePath == null){
-	                    selectedImagePath = selectedImageUri.getPath();
-	                }
-	                
-	                media.getLast().setPath( selectedImagePath );
-	                
-	                StringTokenizer imageToken = new StringTokenizer(selectedImagePath, "/");
-	                while (imageToken.hasMoreTokens()) {
-	                    media.getLast().setFileName(imageToken.nextToken());
-	                }
-	                openMediaPropertiesActivity();
-	            }
-	        break;
-	        case (VIDEO_PICK) :
-	            if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedVideoUri = data.getData();
-                    String selectedVideoPath;
-                    
-                    String[] videoProjection = { MediaStore.Images.Media.DATA };
-                    Cursor videoCursor = managedQuery(selectedVideoUri, videoProjection, null, null, null);
-                    
-                    if(videoCursor != null){
-                        int column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        videoCursor.moveToFirst();
-                        selectedVideoPath = videoCursor.getString(column_index);
-                    } else {
-                        selectedVideoPath = null;
-                    }
-                    
-                    if(selectedVideoPath == null){
-                        selectedVideoPath = selectedVideoUri.getPath();
-                    }
-                    
-                    media.getLast().setPath( selectedVideoPath );
-                    
-                    StringTokenizer imageToken = new StringTokenizer(selectedVideoPath, "/");
-                    while (imageToken.hasMoreTokens()) {
-                        media.getLast().setFileName(imageToken.nextToken());
-                    }
-                    openMediaPropertiesActivity();
-                }
-                break;
 	        default :
 	            Log.i("CODE", Integer.toString( reqCode ) );
 	            Log.i("CODE", Integer.toString( resultCode) );
@@ -425,11 +361,11 @@ public class ComposerActivity extends Activity {
 		if (what == AUDIO) {
 		    media.add ( new Media ( Media.AUDIO_TYPE, "audio" + mediaCount ) );
 		    mediaCount++;
-		    openAudioActivity();
+		    openMediaChoserActivity("audio/*");
 	    } else if (what == IMAGE) {
 		    media.add ( new Media ( Media.IMAGE_TYPE, "image" + mediaCount ) );
 		    mediaCount++;
-		    openImageActivity();
+		    openMediaChoserActivity("image/*");
 		} else if (what == TEXT) {
 		    media.add ( new Media ( Media.TEXT_TYPE, "text" + mediaCount ) );
 		    mediaCount++;
@@ -437,7 +373,7 @@ public class ComposerActivity extends Activity {
 		} else if (what == VIDEO) {
 		    media.add ( new Media ( Media.VIDEO_TYPE, "video" + mediaCount ) );
 		    mediaCount++;
-            openVideoActivity();
+		    openMediaChoserActivity("video/*");
 		}
 	}
 	
@@ -490,18 +426,21 @@ public class ComposerActivity extends Activity {
     }
 	
 	public void addVideoToCanvas() {
-	    ImageView newView;
+	    VideoView newView;
 	    
 	    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 	    View itemView = inflater.inflate (R.layout.video_add, null);
 	    
-	    newView = (ImageView) itemView.findViewById(R.id.video);
-	    newView.setAdjustViewBounds( true );
-	    newView.setMaxHeight( media.getLast().getHeight() );
-	    newView.setMaxWidth( media.getLast().getWidth() );
+	    newView = (VideoView) itemView.findViewById(R.id.video);
+//	    newView.setAdjustViewBounds( true );
+//	    newView.setMaxHeight( media.getLast().getHeight() );
+//	    newView.setMaxWidth( media.getLast().getWidth() );
+//	    
+	    newView.setVideoPath((media.getLast().getFileName()));
 	    
 	    newView.setTag( media.getLast().getMediaTag() );
 	    
+	    newView.stopPlayback();
 	    mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT, 
 	            LayoutParams.WRAP_CONTENT, 0, 0));
 	    
