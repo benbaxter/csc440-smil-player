@@ -78,27 +78,8 @@ public class SmilReader extends DefaultHandler
 
             return message;
         }
-        /*****************
-        catch (Exception e)
-        {
-            if (e instanceof SAXException)
-                throw new SmilReadException("SAXException occured while parsing the XML message.", e);
-            else if (e instanceof IOException)
-                throw new SmilReadException("IOException occured while parsing the XML message.", e);
-            else if (e instanceof ParserConfigurationException)
-                throw new SmilReadException("ParserConfigurationException occured while parsing the XML message.", e);
-            else
-                throw new SmilReadException("An error occured while parsing the XML message.", e);
-        }
-        ****************/
     }
 
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.helpers.DefaultHandler#startDocument()
-     */
     @Override
     public void startDocument() throws SAXException
     {
@@ -106,8 +87,8 @@ public class SmilReader extends DefaultHandler
     }
 
     @Override
-    public void endDocument() throws SAXException {
-         // Nothing to do
+    public void endDocument() throws SAXException 
+    {
     }
 
     @Override

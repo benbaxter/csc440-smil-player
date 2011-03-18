@@ -1,8 +1,6 @@
 package smil.mobile.activity;
 
-//import java.io.IOException;
 import java.io.Serializable;
-//import java.io.StringWriter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,12 +8,6 @@ import java.util.ArrayList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Environment;
-//import android.util.Xml;
-
-//import org.xmlpull.v1.XmlSerializer;
-
-
-
 
 public class SmilMessage implements Serializable
 {
@@ -72,21 +64,8 @@ public class SmilMessage implements Serializable
         backgroundColor.setColor ( Color.parseColor ( ( colorString ) ) );
     }
 
-/**************    
-    public List<SmilComponent> getComponentList()
-    {
-        return componentList;
-    }
-
-    public void setComponentList(List<SmilComponent> componentList)
-    {
-        this.componentList = componentList;
-    }
-**************/
-    
     public void addComponent ( SmilComponent component )
     {
-        //componentList.add ( component );
         addResourceToBeginTimeList ( component );
         addResourceToEndTimeList ( component );
         updateLength ( );
@@ -108,8 +87,7 @@ public class SmilMessage implements Serializable
                 if ( resourcesByBeginTime.get(i).getBegin ( ) > component.getBegin ( )
                     || ( resourcesByBeginTime.get(i).getBegin ( ) == component.getBegin ( )
                             && resourcesByBeginTime.get(i).getEnd() > component.getEnd()))
-                { // if the resource at i has a larger beginTime, or the same beginTime and a larger endTime
-                  // then insert the new resource before it
+                { 
                     resourcesByBeginTime.add ( i, component );
                     added = true;
                 }
@@ -190,94 +168,6 @@ public class SmilMessage implements Serializable
     {
         this.subject = subject;
     }
-
-/********************
-    public String getXml() throws SmilReadException
-    {
-        try
-        {
-            XmlSerializer serializer = Xml.newSerializer();
-            StringWriter writer = new StringWriter();
-
-            serializer.setOutput(writer);
-
-            // set indentation option
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-
-            serializer.startDocument("UTF-8", true);
-            serializer.startTag(null, "smil");
-            serializer.startTag(null, "body");
-            serializer.startTag(null, "par");
-
-            for (SmilComponent component : componentList)
-            {
-                switch (component.getType())
-                {
-                    case SmilConstants.COMPONENT_TYPE_TEXT:
-                    {
-                        SmilTextComponent textComponent = (SmilTextComponent) component;
-                        serializer.startTag(null, "text");
-                        serializer.attribute(null, "dur", "" + textComponent.getDuration());
-                        serializer.attribute(null, "begin", "" + textComponent.getBegin());
-                        serializer.text(textComponent.getText());
-                        serializer.endTag(null, "text");
-                        break;
-                    }
-                    case SmilConstants.COMPONENT_TYPE_IMAGE:
-                    {
-                        SmilImageComponent imageComponent = (SmilImageComponent) component;
-                        serializer.startTag(null, "img");
-                        serializer.attribute(null, "dur", "" + imageComponent.getDuration());
-                        serializer.attribute(null, "begin", "" + imageComponent.getBegin());
-                        serializer.attribute(null, "src", imageComponent.getSource());
-                        serializer.endTag(null, "img");
-                        break;
-                    }
-                    case SmilConstants.COMPONENT_TYPE_AUDIO:
-                    {
-                        SmilAudioComponent audioComponent = (SmilAudioComponent) component;
-                        serializer.startTag(null, "audio");
-                        serializer.attribute(null, "dur", "" + audioComponent.getDuration());
-                        serializer.attribute(null, "begin", "" + audioComponent.getBegin());
-                        serializer.attribute(null, "src", audioComponent.getSource ( ) );
-                        serializer.endTag(null, "audio");
-                        break;
-                    }
-                    case SmilConstants.COMPONENT_TYPE_VIDEO:
-                    {
-                        SmilVideoComponent videoComponent = (SmilVideoComponent) component;
-                        serializer.startTag(null, "video");
-                        serializer.attribute(null, "dur", "" + videoComponent.getDuration());
-                        serializer.attribute(null, "begin", "" + videoComponent.getBegin());
-                        serializer.attribute(null, "src", videoComponent.getSource());
-                        serializer.endTag(null, "video");
-                        break;
-                    }
-                }
-            }
-
-            serializer.endTag(null, "par");
-            serializer.endTag(null, "body");
-            serializer.endTag(null, "smil");
-
-            serializer.endDocument();
-            serializer.flush();
-
-            return writer.toString();
-        }
-        catch (Exception e)
-        {
-            if (e instanceof IllegalArgumentException)
-                throw new SmilReadException("IllegalArgumentException occured while writing the XML message.", e);
-            else if (e instanceof IllegalStateException)
-                throw new SmilReadException("IllegalStateException occured while writing the XML message.", e);
-            else if (e instanceof IOException)
-                throw new SmilReadException("IOException occured while writing the XML message.", e);
-            else
-                throw new SmilReadException("An error occured while writing the XML message.", e);
-        }
-    }
-*************/
     
     public static void saveAsXML ( SmilMessage message ) throws Exception 
     {

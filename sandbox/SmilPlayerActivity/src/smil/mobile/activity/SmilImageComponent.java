@@ -18,17 +18,13 @@ public class SmilImageComponent extends SmilComponent
         loadImageFromSource ( );
     }
     
-    /**
-     * Sets {@link mImage} to the image located at the source. 
-     * Should only be called when the source of the image has changed.
-     */
     private void loadImageFromSource ( )
     {
+        // Decode the image file
         image = BitmapFactory.decodeFile ( super.getSource());
-        
-        //check to make sure file was decoded
         if ( image == null )
         {
+            // Use a blank 50x50 box if the image could not be loaded
             image = Bitmap.createBitmap ( 50, 50, Bitmap.Config.RGB_565 );
         }
     }
@@ -36,10 +32,17 @@ public class SmilImageComponent extends SmilComponent
     @Override
     public void play ( Canvas canvas ) 
     {
+        // Get the size of the region the image is
+        // to be placed in
         Rect r = super.getRegion().getRect ( );
+        
+        // Get the size of the image
+        Rect imageRect = new Rect();
+        imageRect.set ( 0, 0, image.getWidth ( ), image.getHeight ( ) );
+        
+        // Crop the image to fit within the region and draw it
         canvas.save ( );
-        canvas.clipRect ( r );
-        canvas.drawBitmap ( image, r.left, r.top, null );
+        canvas.drawBitmap ( image, imageRect, r, null );
         canvas.restore ( );
     }
 

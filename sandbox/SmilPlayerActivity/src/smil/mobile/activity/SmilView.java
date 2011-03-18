@@ -18,12 +18,14 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 
 	private class SmilThread extends Thread
 	{
-		private int mCurTime = -1;
+		private int currentTime = -1;
 		
-		private SurfaceHolder mHolder;
+		private SurfaceHolder resHolder;
         private ArrayList<SmilComponent> playList = new ArrayList<SmilComponent>();
-		private int mBeginIndex, mEndIndex;
-		private int mBeginMax, mEndMax;
+		private int beginIndex;
+		private int endIndex;
+		private int beginMax;
+		private int endMax;
 		private SmilMessage message;
 		
 		private Paint timePaint;
@@ -31,9 +33,7 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 		
 		private SmilThread ( SurfaceHolder holder )
 		{
-			mHolder = holder;
-			
-			//Set the paint for the time slider to dark gray, and to paint text left aligned.
+			resHolder = holder;
 			timePaint = new Paint();
 			timePaint.setColor(Color.DKGRAY);
 			timePaint.setTextAlign(Align.LEFT);
@@ -46,10 +46,10 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 			if ( set != null )
 			{
 				message = set;
-				mBeginIndex = 0;
-				mEndIndex = 0;
-				mBeginMax = message.getResourcesByBeginTime().size ( );
-				mEndMax = message.getResourcesByEndTime().size ( );
+				beginIndex = 0;
+				endIndex = 0;
+				beginMax = message.getResourcesByBeginTime().size ( );
+				endMax = message.getResourcesByEndTime().size ( );
 				backgroundPaint.setColor ( Color.parseColor ( set.getBackgroundColorString ( ) ) );
                 return true;
 			}			
@@ -60,86 +60,88 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 		@Override public void run() 
 		{
 			try{
-				mCurTime = -2;
+				currentTime = -2;
 				state = PLAYING;
 				Log.d("SmilView", "STATE: playing");
 	            while (getPlayState() > STOPPED) 
 	            {
 	                Canvas c = null;
 	                try {
-	                    c = mHolder.lockCanvas(null);
-	                    synchronized (mHolder) {
+	                    c = resHolder.lockCanvas(null);
+	                    synchronized (resHolder) {
 	                    	SmilComponentLoadThread t = new SmilComponentLoadThread ( c );
-	                    	t.start ( );	         //load resources while sleeping
-	                    	Thread.sleep ( 1000 );	 //pause for a second to keep track of time
-	                    	draw ( c) ;			     //draw any resource on the canvas
+	                    	t.start ( );	        
+	                    	Thread.sleep ( 1000 );	
+	                    	draw ( c) ;			    
 	                    }
 	                } catch (InterruptedException e) {
 						e.printStackTrace();
-					} finally {
-	                    // do this in a finally so that if an exception is thrown
-	                    // during the above, we don't leave the Surface in an
-	                    // inconsistent state
-	                    if (c != null) {
-	                        mHolder.unlockCanvasAndPost(c);
+					} 
+	                finally 
+	                {
+	                    if ( c != null ) 
+	                    {
+	                        resHolder.unlockCanvasAndPost ( c );
 	                    }
 					}
 	            }
-			}catch(Exception e){
-				e.printStackTrace();
-				Log.e(this.toString(), e.toString());
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace ( );
+				Log.e ( this.toString ( ), e.toString ( ) );
 			}
 		}
 		
-		private void forwardPlay(Canvas c) throws InterruptedException{
-			try{
+		private void forwardPlay(Canvas c) throws InterruptedException
+		{
+			try
+			{
 				if ( getPlayState() == PLAYING )
 				{
 	        		increment ( );
 				}
 				
-	        	//add Resources to play
-                while ( ( mBeginIndex < mBeginMax ) && 
-                        ( message.getResourcesByBeginTime().get(mBeginIndex).getBegin ( ) <= getRunTime ( ) ) )
+	        	while ( ( beginIndex < beginMax ) && 
+                        ( message.getResourcesByBeginTime().get(beginIndex).getBegin ( ) <= getRunTime ( ) ) )
                 {
-	        		if ( message.getResourcesByBeginTime().get(mBeginIndex).getType() == SmilConstants.COMPONENT_TYPE_AUDIO )
+	        		if ( message.getResourcesByBeginTime().get(beginIndex).getType() == SmilConstants.COMPONENT_TYPE_AUDIO )
 	        		{
-						SmilAudioThread t = new SmilAudioThread((SmilAudioComponent) message.getResourcesByBeginTime().get(mBeginIndex) );
+						SmilAudioThread t = new SmilAudioThread((SmilAudioComponent) message.getResourcesByBeginTime().get(beginIndex) );
 						t.setPriority ( 3 );
 						t.start ( );
 					}
-					else if ( message.getResourcesByBeginTime().get(mBeginIndex).getType() != SmilConstants.COMPONENT_TYPE_VIDEO )
+					else if ( message.getResourcesByBeginTime().get(beginIndex).getType() != SmilConstants.COMPONENT_TYPE_VIDEO )
 					{
-						playList.add ( message.getResourcesByBeginTime().get(mBeginIndex) );
+						playList.add ( message.getResourcesByBeginTime().get(beginIndex) );
 					}
 					else
 					{
-						SmilVideoThread t = new SmilVideoThread((SmilVideoComponent) message.getResourcesByBeginTime().get(mBeginIndex) );
+						SmilVideoThread t = new SmilVideoThread((SmilVideoComponent) message.getResourcesByBeginTime().get(beginIndex) );
 						t.start ( );
 					}
 	        		
-	        		++mBeginIndex;
+	        		++beginIndex;
 	        	}
 	        	
-	        	//remove Resources
-				while ( ( mEndIndex < mEndMax ) && 
-				        ( message.getResourcesByEndTime().get(mEndIndex).getEnd ( ) <= getRunTime() ) ) 
+	        	while ( ( endIndex < endMax ) && 
+				        ( message.getResourcesByEndTime().get(endIndex).getEnd ( ) <= getRunTime() ) ) 
 				{
-					if ( message.getResourcesByEndTime().get(mEndIndex).getType() == SmilConstants.COMPONENT_TYPE_VIDEO )
+					if ( message.getResourcesByEndTime().get(endIndex).getType() == SmilConstants.COMPONENT_TYPE_VIDEO )
 					{
-						message.getResourcesByEndTime().get(mEndIndex).stop(null);
+						message.getResourcesByEndTime().get(endIndex).stop(null);
 						if ( owner != null )
 						{
-							owner.displaySurface(((SmilVideoComponent)message.getResourcesByEndTime().get(mEndIndex)).getVideoView(), null);
+							owner.displaySurface(((SmilVideoComponent)message.getResourcesByEndTime().get(endIndex)).getVideoView(), null);
 						}
 					}
 					else
 					{
-						message.getResourcesByEndTime().get(mEndIndex).stop ( c );
-						playList.remove(message.getResourcesByEndTime().get(mEndIndex));
+						message.getResourcesByEndTime().get(endIndex).stop ( c );
+						playList.remove(message.getResourcesByEndTime().get(endIndex));
 					}
 					
-					++mEndIndex;
+					++endIndex;
 				}
 				
 				if ( getRunTime ( ) >= message.getLength ( ) )
@@ -167,12 +169,12 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 		
 		private synchronized void increment ( )
 		{
-			++mCurTime;
+			++currentTime;
 		}
 		
 		public int getRunTime ( )
 		{
-			return mCurTime;
+			return currentTime;
 		}
 		
 		private class SmilAudioThread extends Thread

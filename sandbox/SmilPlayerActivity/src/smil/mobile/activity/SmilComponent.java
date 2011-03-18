@@ -5,8 +5,6 @@ import android.graphics.Canvas;
 
 public abstract class SmilComponent
 {
-    private static final long serialVersionUID = 1L;
-
     private int type = SmilConstants.COMPONENT_TYPE_NONE;
     private String src; 
     private int begin;

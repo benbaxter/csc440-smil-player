@@ -24,7 +24,6 @@ public class SmilAudioComponent extends SmilComponent implements Serializable
             {
                 mediaPlayer.setDataSource ( source );
                 mediaPlayer.prepare ( );
-                //mediaPlayer.setOnPreparedListener(this);
             }
         } 
         catch ( IllegalArgumentException e ) 
@@ -49,7 +48,6 @@ public class SmilAudioComponent extends SmilComponent implements Serializable
     
     @Override public void play ( Canvas canvas ) 
     {
-        //if(mPlayerLoaded && !mPlayer.isPlaying()){
         if ( !mediaPlayer.isPlaying ( ) )
         {
             try 
@@ -82,7 +80,6 @@ public class SmilAudioComponent extends SmilComponent implements Serializable
     
     public void pause ( ) 
     {
-        //if ( mediaPlayer.isPlaying ( ) && mPlayerLoaded){
         if ( mediaPlayer.isPlaying ( ) )
         {
             try 

@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 public class SmilVideoComponent extends SmilComponent implements OnPreparedListener, Callback, OnVideoSizeChangedListener
 {
     public int playState = SmilView.STOPPED;
-    //private String TAG;
     private MediaPlayer mediaPlayer;
     private SurfaceView preview;
     private SurfaceHolder holder;
@@ -34,7 +33,6 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
         super ( source, region, begin, end );
         super.setType ( SmilConstants.COMPONENT_TYPE_VIDEO );
         path = source;
-        //TAG = source;
     }
     
     public SurfaceView prepareVideo ( SurfaceView view )

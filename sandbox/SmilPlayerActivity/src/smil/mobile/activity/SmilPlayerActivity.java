@@ -74,10 +74,10 @@ public class SmilPlayerActivity extends Activity implements Callback
 
 		frameLayout = (FrameLayout) findViewById ( R.id.frame );
 		frameLayout.setWillNotDraw ( true );
-		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT, 
+		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
 		                                                                       FrameLayout.LayoutParams.WRAP_CONTENT );
-		//setContentView ( frameLayout, layoutParams );
 		
+		        
 		view = new SmilView ( frameLayout.getContext ( ), null );
 		view.setZOrderMediaOverlay ( true );
 		view.getHolder().addCallback ( this );
@@ -157,8 +157,6 @@ public class SmilPlayerActivity extends Activity implements Callback
         	
         	message = SmilReader.parseMessage ( fileName );
         	loadVideos ( );
-        	//view.playPlayer ( message );
-        	
         }
         catch ( Exception e )
         {
@@ -271,7 +269,7 @@ public class SmilPlayerActivity extends Activity implements Callback
     		
     	@Override public boolean canSeekBackward ( ) 
     	{
-    		return false; //mFromBrowser;
+    		return false;
     	}
     		
     	@Override public boolean canPause ( ) 
@@ -290,7 +288,6 @@ public class SmilPlayerActivity extends Activity implements Callback
 
     @Override public void surfaceCreated ( SurfaceHolder holder ) 
     {
-    	//mSurfaceReady = true;
     	if ( message != null )
     	{
     		view.playPlayer ( message );
