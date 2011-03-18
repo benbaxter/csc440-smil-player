@@ -67,9 +67,11 @@ public class MediaPropertiesActivity extends Activity
                 toast("Audio Failed");
             }
             
-            double duration =  mp.getDuration()/1000.0 ;
-            duration = Math.ceil(duration);
-            toast(mp.getDuration()+"");
+            double duration =  mp.getDuration() ;
+            toast("Duration : " + duration);
+//            duration = Math.ceil(duration);
+            toast(Integer.toString(mp.getDuration()));
+            toast(mp.getDuration()+" with out Integer Class");
             EditText et = (EditText)findViewById( R.id.duration);
             et.setText( Double.toString( duration ) ); //( int ) duration ) );
         } 
@@ -159,6 +161,9 @@ public class MediaPropertiesActivity extends Activity
         findViewById( R.id.yLabel ).setEnabled( false );
         findViewById( R.id.xyInfo ).setEnabled( false );
         findViewById( R.id.optional ).setEnabled( false );
+        
+        TextView tv = (TextView)findViewById( R.id.Title );
+        tv.setText(media.getFileName());
     }
     
     //radio button listener
@@ -193,7 +198,7 @@ public class MediaPropertiesActivity extends Activity
                 // ComposerActivity.getMedia().getLast();
                 if( media.getMediaType() == Media.AUDIO_TYPE )
                 {
-                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
+//                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
                 }
                 else if ( media.getMediaType() == Media.TEXT_TYPE )
                 {
