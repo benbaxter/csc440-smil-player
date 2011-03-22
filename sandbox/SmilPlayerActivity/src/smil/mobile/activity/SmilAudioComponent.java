@@ -1,17 +1,22 @@
 package smil.mobile.activity;
 
-import java.io.Serializable;
 import android.media.MediaPlayer;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.io.File;
 import java.io.IOException;
 
-public class SmilAudioComponent extends SmilComponent implements Serializable
+public class SmilAudioComponent extends SmilComponent
 {
-    private static final long serialVersionUID = 1L;
     private MediaPlayer mediaPlayer;
     
+    public SmilAudioComponent ( ) 
+    {
+        super ( null, null, 0, 0 );
+        super.setType ( SmilConstants.COMPONENT_TYPE_AUDIO );
+    }
+
     public SmilAudioComponent ( String source, SmilRegion region, int begin, int end ) 
     {
         super ( source, region, begin, end );
@@ -108,4 +113,30 @@ public class SmilAudioComponent extends SmilComponent implements Serializable
         }
     }
 
+    @Override public String getText ( )
+    {
+        return null;
+    }
+
+    @Override public void setText ( String text )
+    {        
+    }
+
+    @Override public Bitmap getImage ( )
+    {
+        return null;
+    }
+
+    @Override public void setImage ( Bitmap image )
+    {
+    }
+    
+    @Override public int getFontSize ( )
+    {
+        return 0;
+    }
+
+    @Override public void setFontSize ( int size )
+    {
+    }
 }

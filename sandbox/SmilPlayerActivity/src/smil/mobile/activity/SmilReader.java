@@ -198,7 +198,7 @@ public class SmilReader extends DefaultHandler
                     else if ( mInParTag )
                     { // new resource to construct
                         String regionId = atts.getValue ( "region" );
-                        String source = SmilConstants.ROOT_PATH + atts.getValue ( "src" );
+                        String source = atts.getValue ( "src" );
                      
                         if ( localName.equals ( "text" ) ) 
                         {

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,45 +15,54 @@ import android.graphics.Paint.Align;
 
 public class SmilTextComponent extends SmilComponent
 {
-    private int xPos;
-    private int yPos;
-    private String text;
-    private Paint textColor;
+    private int      xPos;
+    private int      yPos;
+    private String   text;
+    private int      fontSize;
+    private Paint    textColor;
     private String[] breakText;
+
+    public SmilTextComponent ( ) 
+    {
+        super ( null, null, 0, 0 );
+        this.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
+        this.fontSize = 12;
+    }
     
     public SmilTextComponent ( String source, SmilRegion region, int begin, int end ) 
     {
         super ( source, region, begin, end );
         this.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
+        this.fontSize = 12;
         getTextFromSource ( );
         textColor = new Paint ( );
         updateText ( );
     }
 
-	public void getTextFromSource ( )
-	{
-		try 
-		{
-			BufferedReader br = new BufferedReader ( new FileReader ( new File ( super.getSource ( ) ) ) );
-			this.text = "";
-			String line = br.readLine ( );
-			while ( line != null )
-			{
-				this.text += line;
-				line = br.readLine ( );
-			}
-		} 
-		catch ( FileNotFoundException e ) 
-		{
-			e.printStackTrace ( );
-			this.text = "Source file not found.";
-		} 
-		catch ( IOException e ) 
-		{
-			e.printStackTrace ( );
-			this.text = "Source file not found.";
-		}
-	}
+    public void getTextFromSource ( )
+    {
+        try 
+        {
+            BufferedReader br = new BufferedReader ( new FileReader ( new File ( super.getSource ( ) ) ) );
+            this.text = "";
+            String line = br.readLine ( );
+            while ( line != null )
+            {
+                this.text += line;
+                line = br.readLine ( );
+            }
+        } 
+        catch ( FileNotFoundException e ) 
+        {
+            e.printStackTrace ( );
+            this.text = "Source file not found.";
+        } 
+        catch ( IOException e ) 
+        {
+            e.printStackTrace ( );
+            this.text = "Source file not found.";
+        }
+    }
 
     private void prepareText ( )
     {
@@ -134,5 +145,34 @@ public class SmilTextComponent extends SmilComponent
     {
         breakText = breakTextToRegion ( );
         prepareText ( );
+    }
+
+    @Override public String getText ( )
+    {
+        return text;
+    }
+
+    @Override public void setText ( String text )
+    {
+        this.text = text;
+    }
+
+    @Override public Bitmap getImage ( )
+    {
+        return null;
+    }
+
+    @Override public void setImage ( Bitmap image )
+    {        
+    }
+
+    @Override public int getFontSize ( )
+    {
+        return fontSize;
+    }
+
+    @Override public void setFontSize ( int size )
+    {
+        this.fontSize = size;
     }
 }

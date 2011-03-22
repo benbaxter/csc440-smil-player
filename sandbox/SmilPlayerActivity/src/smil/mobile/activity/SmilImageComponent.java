@@ -11,6 +11,12 @@ public class SmilImageComponent extends SmilComponent
 {
     private Bitmap image;
     
+    public SmilImageComponent ( ) 
+    {
+        super ( null, null, 0, 0 );
+        super.setType ( SmilConstants.COMPONENT_TYPE_IMAGE );
+    }
+    
     public SmilImageComponent ( String source, SmilRegion region, int begin, int end ) 
     {
         super ( source, region, begin, end );
@@ -48,6 +54,34 @@ public class SmilImageComponent extends SmilComponent
 
     @Override
     public void stop ( Canvas canvas ) 
+    {
+    }
+
+    @Override public String getText ( )
+    {
+        return null;
+    }
+    
+    @Override public void setText ( String text )
+    {
+    }
+    
+    @Override public Bitmap getImage ( )
+    {
+        return image;
+    }
+    
+    @Override public void setImage ( Bitmap image )
+    {
+        this.image = image;
+    }
+    
+    @Override public int getFontSize ( )
+    {
+        return 0;
+    }
+
+    @Override public void setFontSize ( int size )
     {
     }
 }

@@ -153,10 +153,31 @@ public class SmilPlayerActivity extends Activity implements Callback
 
         try
         {
-        	String fileName = "example.smil"; //in.getStringExtra(getString(R.string.fileName));
-        	
+        	String fileName = "my_file.smil";
         	message = SmilReader.parseMessage ( fileName );
-        	loadVideos ( );
+        	
+/*******************************************            
+            SmilRegion r;
+            SmilComponent c;
+            
+            message = new SmilMessage ( );
+            message.setBackgroundColor ( "blue" );
+            message.setCanvasHeight ( 450 );
+            message.setCanvasWidth ( 350 );
+            
+            r = new SmilRegion ( "text_region1", "yellow", 100, 75, 150, 25 );
+            c = new SmilTextComponent ( "text.txt", r, 0, 5 );
+            message.addComponent ( c );
+            
+            r = new SmilRegion ( "image_region1", "yellow", 100, 100, 250, 250 );
+            c = new SmilImageComponent ( "image.jpg", r, 5, 10 );
+            message.addComponent ( c );
+            
+            message.saveAsXML ( SmilConstants.ROOT_PATH + "my_file.smil" );
+*******************************************/            
+            
+            loadVideos ( );                     
+            
         }
         catch ( Exception e )
         {

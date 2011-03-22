@@ -3,6 +3,7 @@ package smil.mobile.activity;
 import java.io.File;
 
 import android.R;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -27,6 +28,12 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
     private int videoWidth;
     private int videoHeight;
     private boolean tryAtPlay = false;
+
+    public SmilVideoComponent ( ) 
+    {
+        super ( null, null, 0, 0 );
+        super.setType ( SmilConstants.COMPONENT_TYPE_VIDEO );
+    }
 
     public SmilVideoComponent ( String source, SmilRegion region, int begin, int end ) 
     {
@@ -109,7 +116,34 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
             reset ( );
         }
     }
+
+    @Override public String getText ( )
+    {
+        return null;
+    }
     
+    @Override public void setText ( String text )
+    {
+    }
+    
+    @Override public Bitmap getImage ( )
+    {
+        return null;
+    }
+
+    @Override public void setImage ( Bitmap image )
+    {
+    }
+
+    @Override public int getFontSize ( )
+    {
+        return 0;
+    }
+
+    @Override public void setFontSize ( int size )
+    {
+    }
+
     private void reset ( )
     {
         tryAtPlay = false;

@@ -8,20 +8,29 @@ public class SmilRegion
 {
 	private String id;
 	private Rect region;
+	private String colorString; 
 	private Paint color = new Paint();
 	
+    private static final String DEFAULT_BACKGROUND_COLOR = "#000000";
+
 	public SmilRegion ( String id, int top, int left, int width, int height ) 
 	{
 		this.id = id;
 		region = new Rect ( left, top, left + width, top + height );
-		color.setColor ( Color.parseColor ( "#000000" ) );
+		
+        colorString = DEFAULT_BACKGROUND_COLOR;
+        color = new Paint ( );
+        color.setColor ( Color.parseColor ( ( colorString ) ) );
 	}
 	
 	public SmilRegion ( String id, String color, int top, int left, int width, int height ) 
 	{
 		this.id = id;
 		region = new Rect ( left, top, left + width, top + height );
-		this.color.setColor ( Color.parseColor ( color ) );
+
+        colorString = color;
+        this.color = new Paint ( );
+        this.color.setColor ( Color.parseColor ( ( colorString ) ) );
 	}
 	
 	public SmilRegion ( SmilRegion region ) 
@@ -52,9 +61,15 @@ public class SmilRegion
 	{
 		return color;
 	}
-
-	public void setColor ( Paint color ) 
+	
+	public String getColorAsString ( )
 	{
-		this.color = color;
+	    return colorString;
+	}
+
+	public void setColor ( String color ) 
+	{
+        colorString = color;
+        this.color.setColor ( Color.parseColor ( ( colorString ) ) );
 	}
 }

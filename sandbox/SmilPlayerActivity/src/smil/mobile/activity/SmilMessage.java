@@ -1,6 +1,5 @@
 package smil.mobile.activity;
 
-import java.io.Serializable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,11 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Environment;
 
-public class SmilMessage implements Serializable
+public class SmilMessage
 {
     private String subject;
 
-    private static final long serialVersionUID = 1L;
     private ArrayList<SmilComponent> resourcesByBeginTime;
     private ArrayList<SmilComponent> resourcesByEndTime;
     private Integer canvasWidth;
@@ -38,16 +36,26 @@ public class SmilMessage implements Serializable
         backgroundColor.setColor ( Color.parseColor ( ( backgroundColorString ) ) );
     }
  
-    public Integer getCanvasWidth ( ) 
+    public int getCanvasWidth ( ) 
     {
         return canvasWidth;
     }
-    
-    public Integer getCanvasHeight ( ) 
+
+    public void setCanvasWidth ( int width ) 
+    {
+        canvasWidth = width;
+    }
+
+    public int getCanvasHeight ( ) 
     {
         return canvasHeight;
     }
-    
+
+    public void setCanvasHeight ( int height ) 
+    {
+        canvasHeight = height;
+    }
+
     public Paint getBackgroundColor ( ) 
     {
         return backgroundColor;
@@ -169,12 +177,12 @@ public class SmilMessage implements Serializable
         this.subject = subject;
     }
     
-    public static void saveAsXML ( SmilMessage message ) throws Exception 
+    public void saveAsXML ( ) throws Exception 
     {
-        saveAsXML ( message, message.getFileName ( ) );
+        saveAsXML ( this.fileName );
     }
     
-    public static void saveAsXML ( SmilMessage message, String fileName ) throws Exception
+    public void saveAsXML ( String fileName ) throws Exception
     {
         String SDCardDir = Environment.getExternalStorageDirectory() + "/";
         
@@ -199,7 +207,7 @@ public class SmilMessage implements Serializable
         StringBuilder parXmlBuilder = new StringBuilder ( );
         
         ArrayList<SmilComponent> resources = new ArrayList<SmilComponent> ( );
-        resources.addAll ( message.getResourcesByBeginTime ( ) );
+        resources.addAll ( resourcesByBeginTime );
         
         // this loop builds a par tag and all resource tags within it
         // and all of the region tags
@@ -207,7 +215,7 @@ public class SmilMessage implements Serializable
         {
             if ( i == 0 ) // first resource
             {
-                parXmlBuilder.append ( "<par>\n" );
+                parXmlBuilder.append ( "<par>\r\n" );
             }
             
             regionsXmlBuilder.append ( parseRegionXml ( resources.get(i).getRegion ( ) ) );
@@ -215,18 +223,18 @@ public class SmilMessage implements Serializable
             
             if ( i == resources.size ( ) - 1 ) // last resource
             {
-                parXmlBuilder.append ( "</par>\n" );
+                parXmlBuilder.append ( "</par>\r\n" );
             }
         }
         
         StringBuilder overallXmlBuilder = new StringBuilder ( );
-        overallXmlBuilder.append ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-        overallXmlBuilder.append ( "<smil>\n<head>\n<layout>\n" );
-        overallXmlBuilder.append ( parseRootLayoutXml ( message ) );
+        overallXmlBuilder.append ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" );
+        overallXmlBuilder.append ( "<smil>\r\n<head>\r\n<layout>\r\n" );
+        overallXmlBuilder.append ( parseRootLayoutXml ( ) );
         overallXmlBuilder.append ( regionsXmlBuilder.toString ( ) );
-        overallXmlBuilder.append ( "</layout>\n</head>\n<body>\n" );
+        overallXmlBuilder.append ( "</layout>\r\n</head>\r\n<body>\r\n" );
         overallXmlBuilder.append ( parXmlBuilder.toString ( ) );
-        overallXmlBuilder.append ( "</body>\n</smil>" );
+        overallXmlBuilder.append ( "</body>\r\n</smil>" );
         
         out.write( overallXmlBuilder.toString ( ) );
         out.close ( );
@@ -235,12 +243,12 @@ public class SmilMessage implements Serializable
     
     private static String parseResourceXml ( SmilComponent component )
     {
-        String xml = "<" + component.getType ( ) 
-            + " src=\"" + component.getSource ( )
+        String xml = "<" + component.getTypeAsString ( ) 
+            + " src=\"" + component.getFileName ( )
             + "\" region=\"" + component.getRegion().getId()
             + "\" begin=\"" + component.getBegin ( )
             + "\" end=\"" + component.getEnd ( )
-            + "\" />\n"
+            + "\" />\r\n"
         ;
         return xml;
     }
@@ -252,17 +260,18 @@ public class SmilMessage implements Serializable
             + "\" left=\"" + region.getRect().left
             + "\" width=\"" + region.getRect().width ( )
             + "\" height=\"" + region.getRect().height ( )
-            + "\" />\n"
+            + "\" background-color=\"" + region.getColorAsString ( )
+            + "\" />\r\n"
         ;
         return xml;
     }
     
-    private static String parseRootLayoutXml ( SmilMessage message )
+    private String parseRootLayoutXml ( )
     {
-        String xml = "<root-layout height=\"" + message.getCanvasHeight ( ) 
-            + "\" width=\"" + message.getCanvasWidth ( )
-            + "\" background-color=\"" + message.getBackgroundColorString ( ) 
-            + "\" />\n"
+        String xml = "<root-layout height=\"" + this.canvasHeight  
+            + "\" width=\"" + this.canvasWidth
+            + "\" background-color=\"" + this.backgroundColorString  
+            + "\" />\r\n"
         ;
         return xml;
     }
