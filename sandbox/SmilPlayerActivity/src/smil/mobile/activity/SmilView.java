@@ -63,18 +63,22 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 				currentTime = -2;
 				state = PLAYING;
 				Log.d("SmilView", "STATE: playing");
-	            while (getPlayState() > STOPPED) 
+	            while ( getPlayState ( ) > STOPPED ) 
 	            {
 	                Canvas c = null;
-	                try {
-	                    c = resHolder.lockCanvas(null);
-	                    synchronized (resHolder) {
+	                try 
+	                {
+	                    c = resHolder.lockCanvas ( null );
+	                    synchronized (resHolder) 
+	                    {
 	                    	SmilComponentLoadThread t = new SmilComponentLoadThread ( c );
 	                    	t.start ( );	        
 	                    	Thread.sleep ( 1000 );	
-	                    	draw ( c) ;			    
+	                    	draw ( c );			    
 	                    }
-	                } catch (InterruptedException e) {
+	                } 
+	                catch ( InterruptedException e ) 
+	                {
 						e.printStackTrace();
 					} 
 	                finally 
@@ -127,7 +131,7 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 	        	while ( ( endIndex < endMax ) && 
 				        ( message.getResourcesByEndTime().get(endIndex).getEnd ( ) <= getRunTime() ) ) 
 				{
-					if ( message.getResourcesByEndTime().get(endIndex).getType() == SmilConstants.COMPONENT_TYPE_VIDEO )
+	        	    if ( message.getResourcesByEndTime().get(endIndex).getType() == SmilConstants.COMPONENT_TYPE_VIDEO )
 					{
 						message.getResourcesByEndTime().get(endIndex).stop(null);
 						if ( owner != null )
@@ -177,6 +181,21 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 			return currentTime;
 		}
 		
+		public void setRunTime ( int time )
+		{
+		    currentTime = time;
+		    if ( time == 0 )
+		    {
+		        Canvas c = null;
+                c = resHolder.lockCanvas ( null );
+                c.drawPaint ( backgroundPaint );
+                resHolder.unlockCanvasAndPost ( c );
+                
+                beginIndex = 0;
+                endIndex = 0;
+            }
+		}
+		
 		private class SmilAudioThread extends Thread
 		{
 			private SmilAudioComponent audio;
@@ -218,19 +237,25 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 		/**
 		 * Private thread used to load resources during second pauses.
 		 */
-		private class SmilComponentLoadThread extends Thread{
+		private class SmilComponentLoadThread extends Thread
+		{
 			private Canvas c;
 			
-			public SmilComponentLoadThread(Canvas c){
+			public SmilComponentLoadThread ( Canvas c )
+			{
 				this.c = c;
 			}
 			
-			@Override public void run(){
-				try {
-					forwardPlay(c);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					Log.e(this.toString(), e.toString());
+			@Override public void run ( )
+			{
+				try 
+				{
+					forwardPlay ( c );
+				} 
+				catch ( InterruptedException e ) 
+				{
+					e.printStackTrace ( );
+					Log.e ( this.toString ( ), e.toString ( ) );
 				}
 			}
 		}
@@ -257,20 +282,28 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 					
 					while((percivedState = getPlayState()) > STOPPED && getRunTime() < video.getEnd ( ) )
 					{
-						try {
-							if(percivedState == PLAYING){
-								video.play(null);
-								Thread.sleep(230);
-								//video.pause();
-							}else
-								video.pause();
-						} catch (InterruptedException e){
+						try 
+						{
+							if ( percivedState == PLAYING )
+							{							    
+								video.play ( null );
+								Thread.sleep ( 230 );
+							}
+							else
+							{
+								video.pause ( );
+							}
+						} 
+						catch ( InterruptedException e )
+						{
 							Log.e("VideoThread", e.getMessage());
 						}
 					}
-					Log.i("Video", video.getSource ( ) + " has stoped");
+					Log.i("Video", video.getSource ( ) + " has stopped");
 					video.stop(null);
-				}catch(Exception e){
+				}
+				catch(Exception e)
+				{
 					e.printStackTrace();
 					Log.e(video.getSource ( ), e.toString());
 				}
@@ -310,12 +343,15 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public synchronized void playPlayer ( SmilMessage data )
 	{
-		if ( state == STOPPED && ready )
+		if ( ready )
 		{
-			if ( time.setDataSet ( data ) ) 
-			{
-				time.start ( );
-			}
+		    if ( state == STOPPED )
+		    {
+		        if ( time.setDataSet ( data ) ) 
+		        {
+		            time.start ( );
+		        }
+		    }
 		}
 		else
 		{
@@ -347,8 +383,9 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 	{
 		if ( state >= PAUSED )
 		{
-			state = PLAYED;
-		}
+		    state = STOPPED;
+		} 
+        time.stop ( );
 	}
 	
 	public int getPlayState ( )
@@ -371,6 +408,11 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 		return time.getRunTime ( );
 	}
 
+	public void setRuntime ( int pos )
+	{
+	    time.setRunTime ( pos );
+	}
+	
 	@Override public void surfaceCreated ( SurfaceHolder arg0 ) 
 	{
 		this.setFocusable ( true );
@@ -384,11 +426,14 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback{
 	@Override public void surfaceDestroyed(SurfaceHolder arg0) {
 		 boolean retry = true;
 		 state = STOPPED;
-	        while (retry) {
-	            try {
+	        while ( retry ) 
+	        {
+	            try 
+	            {
 	            	time.join();
 	                retry = false;
-	            } catch (InterruptedException e) {}
+	            } 
+	            catch (InterruptedException e) {}
 	        }
 	}
 

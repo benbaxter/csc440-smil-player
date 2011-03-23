@@ -21,6 +21,8 @@ public class SmilPlayerActivity extends Activity implements Callback
 	private SmilView view;
 	private MediaController mediaController;
 	private SmilMessage message;
+	
+	private Bundle instance;
 
 	   private class DisplaySurfaceRunnable implements Runnable
 	   {
@@ -68,6 +70,8 @@ public class SmilPlayerActivity extends Activity implements Callback
     @Override
     public void onCreate ( Bundle savedInstanceState )
     {
+        instance = savedInstanceState;
+        
         super.onCreate ( savedInstanceState );
         
         setContentView ( R.layout.main );
@@ -95,20 +99,17 @@ public class SmilPlayerActivity extends Activity implements Callback
         {
         	@SuppressWarnings ( "static-access" )
             @Override
-        	public void onClick ( View v ) 
+            public void onClick ( View v ) 
         	{
         		if ( message != null )
         	    {
         	        if ( view.getPlayState ( ) == view.PAUSED )
         	        {
         	            view.resumePlayer ( );
-        	            Toast.makeText(getApplicationContext(), "Resuming", Toast.LENGTH_SHORT).show();
-
         	        }
         	        else
         	        {
         	            view.playPlayer ( message );
-                        Toast.makeText(getApplicationContext(), "Playing", Toast.LENGTH_SHORT).show();
         	        }
         	    }
         	    else
@@ -126,7 +127,6 @@ public class SmilPlayerActivity extends Activity implements Callback
         		if ( message != null )
                 {
                     view.pausePlayer ( );
-                    Toast.makeText(getApplicationContext(), "Pausing", Toast.LENGTH_SHORT).show();
                 }             
         	}
         });
@@ -137,7 +137,6 @@ public class SmilPlayerActivity extends Activity implements Callback
         	public void onClick ( View v ) 
         	{
         		restartPlayer ( );
-        		Toast.makeText(getApplicationContext(), "Replay", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -146,7 +145,7 @@ public class SmilPlayerActivity extends Activity implements Callback
         	@Override
         	public void onClick ( View v ) 
         	{
-        		//respond to the smil message
+        		//TBD: Respond to the smil message
         		Toast.makeText(getApplicationContext(), "Respond", Toast.LENGTH_SHORT).show();
         	}
         });
@@ -227,7 +226,117 @@ public class SmilPlayerActivity extends Activity implements Callback
     
    	private void restartPlayer ( )
    	{
-   		startActivity ( getIntent ( ) );
+   	    super.onCreate ( instance );
+     
+   	    setContentView ( R.layout.main );
+
+   	    frameLayout = (FrameLayout) findViewById ( R.id.frame );
+   	    frameLayout.setWillNotDraw ( true );
+   	    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
+   	                                                                           FrameLayout.LayoutParams.WRAP_CONTENT );
+     
+             
+   	    view = new SmilView ( frameLayout.getContext ( ), null );
+   	    view.setZOrderMediaOverlay ( true );
+   	    view.getHolder().addCallback ( this );
+   	    view.setLayoutParams ( layoutParams );
+   	    view.setCallingActivity ( this );
+   	    frameLayout.addView ( view );
+     
+   	    mediaController = new MediaController ( this );
+   	    mediaController.setMediaPlayer ( playerInterface );
+   	    mediaController.setEnabled ( true );
+   	    mediaController.setAnchorView ( frameLayout );
+   	    mediaController.setLayoutParams ( layoutParams );
+     
+   	    ((Button)findViewById(R.id.playBtn)).setOnClickListener(new View.OnClickListener ( ) 
+   	    {
+   	        @SuppressWarnings ( "static-access" )
+   	        @Override
+   	        public void onClick ( View v ) 
+   	        {
+   	            if ( message != null )
+   	            {
+   	                if ( view.getPlayState ( ) == view.PAUSED )
+   	                {
+   	                    view.resumePlayer ( );
+   	                }
+   	                else
+   	                {
+   	                    view.playPlayer ( message );
+   	                }
+   	            }
+   	            else
+   	            {
+   	                Toast.makeText(getApplicationContext(), "Message is NULL", Toast.LENGTH_SHORT).show();
+   	            }    
+   	        }
+   	    });
+
+   	    ((Button)findViewById(R.id.pauseBtn)).setOnClickListener(new View.OnClickListener ( ) 
+   	    {
+   	        @Override
+   	        public void onClick ( View v ) 
+   	        {
+   	            if ( message != null )
+   	            {
+   	                view.pausePlayer ( );
+   	            }             
+   	        }
+   	    });
+
+   	    ((Button)findViewById(R.id.replayBtn)).setOnClickListener(new View.OnClickListener ( ) 
+   	    {
+   	        @Override
+   	        public void onClick ( View v ) 
+   	        {
+   	            restartPlayer ( );
+   	        }
+   	    });
+
+   	    ((Button)findViewById(R.id.respondBtn)).setOnClickListener(new View.OnClickListener ( ) 
+   	    {
+   	        @Override
+   	        public void onClick ( View v ) 
+   	        {
+   	            //TBD: Respond to the smil message
+   	            Toast.makeText(getApplicationContext(), "Respond", Toast.LENGTH_SHORT).show();
+   	        }
+   	    });
+
+   	    try
+   	    {
+   	        String fileName = "my_file.smil";
+   	        message = SmilReader.parseMessage ( fileName );
+         
+/*******************************************            
+            SmilRegion r;
+            SmilComponent c;
+         
+            message = new SmilMessage ( );
+            message.setBackgroundColor ( "blue" );
+            message.setCanvasHeight ( 450 );
+            message.setCanvasWidth ( 350 );
+         
+            r = new SmilRegion ( "text_region1", "yellow", 100, 75, 150, 25 );
+            c = new SmilTextComponent ( "text.txt", r, 0, 5 );
+            message.addComponent ( c );
+         
+            r = new SmilRegion ( "image_region1", "yellow", 100, 100, 250, 250 );
+            c = new SmilImageComponent ( "image.jpg", r, 5, 10 );
+            message.addComponent ( c );
+         
+            message.saveAsXML ( SmilConstants.ROOT_PATH + "my_file.smil" );
+*******************************************/            
+         
+   	        loadVideos ( );                     
+         
+   	    }
+   	    catch ( Exception e )
+   	    {
+   	        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+   	        Log.e("Exception", "error occurred while creating xml file", e);
+   	    }
    	}
 
     MediaController.MediaPlayerControl playerInterface = new MediaController.MediaPlayerControl ( ) 
@@ -239,19 +348,19 @@ public class SmilPlayerActivity extends Activity implements Callback
     		{
     			view.playPlayer ( message );
     		}
-    		else if ( view.getPlayState ( ) == SmilView.PLAYED )
-    		{
-    			restartPlayer ( );
-    		}
+    		//else if ( view.getPlayState ( ) == SmilView.PLAYED )
+    		//{
+    		//	restartPlayer ( );
+    		//}
     		else if ( view.getPlayState ( ) == SmilView.PAUSED )
     		{
     			view.resumePlayer ( );
     		}
     	}
-    		
+
     	@Override public void seekTo ( int pos ) 
     	{
-
+    	    view.setRuntime ( pos );
     	}
         
     	@Override public void pause ( ) 
@@ -317,6 +426,5 @@ public class SmilPlayerActivity extends Activity implements Callback
 
     @Override public void surfaceDestroyed ( SurfaceHolder holder ) 
     {
-        
     }
 }
