@@ -83,6 +83,10 @@ public class MediaPropertiesActivity extends Activity
                     this, R.array.font_size_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
+            
+            //This will set the default selected item to the current font size.
+            spinner.setSelection(media.getFontSize()/10 - 1);
+            
             spinner.setOnItemSelectedListener(new OnItemSelectedListener()
             {
                 @Override
