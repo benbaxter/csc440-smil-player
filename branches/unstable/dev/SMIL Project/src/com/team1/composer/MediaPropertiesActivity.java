@@ -4,12 +4,16 @@ package com.team1.composer;
 import com.team1.composer.R;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.provider.MediaStore;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
@@ -31,16 +35,18 @@ public class MediaPropertiesActivity extends Activity
 
         Button okBtn = ( Button ) findViewById( R.id.okBtn );
         Button cancelBtn = ( Button ) findViewById( R.id.cancelBtn );
+        Button backBtn = ( Button ) findViewById( R.id.backBtn );
+        Button rotateBtn = ( Button ) findViewById( R.id.rotateBtn );
+        Button leftBtn = ( Button ) findViewById( R.id.leftBtn );
+        Button rightBtn = ( Button ) findViewById( R.id.rightBtn );
 
         okBtn.setOnClickListener( mClick );
         cancelBtn.setOnClickListener( mClick );
-
-        Button backBtn = ( Button ) findViewById( R.id.backBtn );
         backBtn.setOnClickListener( mClick );
-        
-        Button rotateBtn = ( Button ) findViewById( R.id.rotateBtn );
         rotateBtn.setOnClickListener( mClick );
-        
+        leftBtn.setOnClickListener( mClick );
+        rightBtn.setOnClickListener( mClick );
+
         Bundle extras = getIntent().getExtras();
         
         if(extras != null)
@@ -53,29 +59,69 @@ public class MediaPropertiesActivity extends Activity
         
         if( media.getMediaType() == Media.AUDIO_TYPE) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
-            
-            TextView tv = (TextView)findViewById( R.id.Title );
-            tv.setText(media.getFileName());
-            
-            MediaPlayer mp = new MediaPlayer();
-            try
+            if(extras != null)
             {
-                mp.setDataSource(media.getPath());
-            }
-            catch ( Exception e )
+                int count = 0;
+                for(int i=0; i<ComposerActivity.getMedia().size(); i++) {
+                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                       count++;
+                    }
+                }
+                
+                if(count > 1)
+                {
+                    findViewById( R.id.audioSearch ).setVisibility( View.VISIBLE );
+                }
+            }   
+            else
             {
-                toast("Audio Failed");
+                int duration = 0;
+                MediaPlayer mp = new MediaPlayer();
+                try
+                {
+                    mp.setDataSource(media.getPath());
+                    mp.prepare();
+                    duration = mp.getDuration();
+                }
+                catch ( Exception e )
+                {
+                    toast("Bad path for Audio");
+                }
+                double durationDouble = duration/1000.0;
+                duration = ( int ) Math.ceil( durationDouble );
+                media.setDuration( duration );
+                media.setStartTime( 0 );
             }
             
-            double duration =  mp.getDuration() ;
-            toast("Duration : " + duration);
-//            duration = Math.ceil(duration);
-            toast(Integer.toString(mp.getDuration()));
-            toast(mp.getDuration()+" with out Integer Class");
-            EditText et = (EditText)findViewById( R.id.duration);
-            et.setText( Double.toString( duration ) ); //( int ) duration ) );
+            EditText et = (EditText)findViewById( R.id.startTime );
+            et.setText( Integer.toString( media.getStartTime() ) );
+            et = (EditText)findViewById( R.id.duration);
+            et.setText( Integer.toString( media.getDuration() ) );
+            
         } 
         else if ( media.getMediaType() == Media.TEXT_TYPE ) {
+            EditText et;
+            if(extras != null)
+            {
+                et = (EditText)findViewById( R.id.inputString );
+                et.setText( media.getText() );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( Integer.toString( media.getX() ) );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( Integer.toString( media.getY() ) );
+            }
+            else
+            {
+                et = (EditText)findViewById( R.id.inputString );
+                et.setText( null );
+                media.setDuration( 1 );
+                media.setStartTime( 0 );
+            }
+            
+            et = (EditText)findViewById( R.id.duration);
+            et.setText( Integer.toString( media.getDuration() ) );
+            et = (EditText)findViewById( R.id.startTime );
+            et.setText( Integer.toString( media.getStartTime() ) );
             //font size drop down.
             //This code will also set the font size
             Spinner spinner = (Spinner) findViewById(R.id.fontSizeSpinner);
@@ -83,10 +129,6 @@ public class MediaPropertiesActivity extends Activity
                     this, R.array.font_size_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
-            
-            //This will set the default selected item to the current font size.
-            spinner.setSelection(media.getFontSize()/10 - 1);
-            
             spinner.setOnItemSelectedListener(new OnItemSelectedListener()
             {
                 @Override
@@ -111,18 +153,7 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.fontSizeInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.orientationInfo ).setVisibility( View.VISIBLE );
             
-            EditText et = (EditText)findViewById(R.id.inputString);
             
-            if(extras != null)
-            {
-                et.setText( media.getText() );
-                et = (EditText)findViewById( R.id.x );
-                et.setText( Integer.toString( media.getX() ) );
-                et = (EditText)findViewById( R.id.y );
-                et.setText( Integer.toString( media.getY() ) );
-            }
-            else
-                et.setText( null );
         } 
         else if (media.getMediaType() == Media.IMAGE_TYPE ) {
             if(extras != null)
@@ -144,27 +175,81 @@ public class MediaPropertiesActivity extends Activity
                 et = (EditText)findViewById( R.id.width );
                 et.setText( "150" );
                 image = BitmapFactory.decodeFile( media.getPath() );
+                media.setDuration( 1 );
+                media.setStartTime( 0 );
             }
+            
+            EditText et = (EditText)findViewById( R.id.duration);
+            et.setText( Integer.toString( media.getDuration() ) );
+            et = (EditText)findViewById( R.id.startTime );
+            et.setText( Integer.toString( media.getStartTime() ) ); 
             
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.rotation).setVisibility( View.VISIBLE );
-            
-            TextView tv = (TextView)findViewById( R.id.Title );
-            tv.setText(media.getFileName());
-            
         } 
         else if (media.getMediaType() == Media.VIDEO_TYPE) {
-            findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
+            if(extras != null)
+            {
+                EditText et = (EditText)findViewById( R.id.height);
+                et.setText( Integer.toString( media.getHeight() ) );
+                et = (EditText)findViewById( R.id.width );
+                et.setText( Integer.toString( media.getWidth() ) );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( Integer.toString( media.getX() ) );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( Integer.toString( media.getY() ) );
+            }
+            else
+            {
+                EditText et = (EditText)findViewById( R.id.height);
+                et.setText( "150" );
+                et = (EditText)findViewById( R.id.width );
+                et.setText( "150" );
+                ContentResolver cr = getContentResolver();
+                int duration = 0;
+
+                String[] proj={MediaStore.Video.VideoColumns.DURATION, BaseColumns._ID};
+                Cursor c = MediaStore.Video.query(cr, media.getMediaUri(), proj);
+                if (c.moveToFirst()) {
+                    int durationIndex = c.getColumnIndex( MediaStore.Video.VideoColumns.DURATION );
+                    int idIndex = c.getColumnIndex( BaseColumns._ID );
+                    
+                    duration = c.getInt( durationIndex );
+                    int id = c.getInt( idIndex );
+                    Bitmap b = MediaStore.Video.Thumbnails.getThumbnail(cr, 
+                    id, MediaStore.Video.Thumbnails.MINI_KIND, null);
+                    media.setImage( b );
+                }
+                c.close();
+                
+                double durationDouble = duration/1000.0;
+                duration = ( int ) Math.ceil( durationDouble );
+                media.setDuration( duration );
+                media.setStartTime( 0 );
+                
+                et = (EditText)findViewById( R.id.startTime );
+                et.setText( "0" ); 
+            }
+            
+            EditText et = (EditText)findViewById( R.id.duration);
+            et.setText( Integer.toString( media.getDuration() ) );
+            et = (EditText)findViewById( R.id.startTime );
+            et.setText( Integer.toString( media.getStartTime() ) ); 
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
+           
         }
         
-        
-        findViewById( R.id.x ).setEnabled( false );
-        findViewById( R.id.y ).setEnabled( false );
-        findViewById( R.id.xLabel ).setEnabled( false );
-        findViewById( R.id.yLabel ).setEnabled( false );
-        findViewById( R.id.xyInfo ).setEnabled( false );
-        findViewById( R.id.optional ).setEnabled( false );
+        if(media.getMediaType() == Media.AUDIO_TYPE)
+            findViewById( R.id.optional ).setVisibility( View.GONE );
+        else
+        {
+            findViewById( R.id.x ).setEnabled( false );
+            findViewById( R.id.y ).setEnabled( false );
+            findViewById( R.id.xLabel ).setEnabled( false );
+            findViewById( R.id.yLabel ).setEnabled( false );
+            findViewById( R.id.xyInfo ).setEnabled( false );
+            findViewById( R.id.optional ).setEnabled( false );
+        }
         
         TextView tv = (TextView)findViewById( R.id.Title );
         tv.setText(media.getFileName());
@@ -215,9 +300,9 @@ public class MediaPropertiesActivity extends Activity
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
                     //set default width and height here
                     if( height.equals( "" ))
-                        height = "200";
+                        height = "150";
                     if( width.equals( "" ))
-                        width = "200";
+                        width = "150";
                     media.setHeight( Integer.parseInt( height ));
                     media.setWidth( Integer.parseInt( width ));
                     media.setImage( image );
@@ -229,9 +314,9 @@ public class MediaPropertiesActivity extends Activity
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
                     //set default width and height here
                     if( height.equals( "" ))
-                        height = "40";
+                        height = "150";
                     if( width.equals( "" ))
-                        width = "40";
+                        width = "150";
                     media.setHeight( Integer.parseInt( height ));
                     media.setWidth( Integer.parseInt( width ));
                 }
@@ -241,7 +326,7 @@ public class MediaPropertiesActivity extends Activity
                 if( startTime.equals( "" ))
                     startTime= "0";
                 if( dur.equals( "" ))
-                    dur = "0";
+                    dur = "1";
                 media.setStartTime( Integer.parseInt(startTime) );
                 media.setDuration( Integer.parseInt(dur) );
                 
@@ -259,6 +344,62 @@ public class MediaPropertiesActivity extends Activity
                 mtx.postRotate(90);
                 image = Bitmap.createBitmap(image, 0, 0, w, h, mtx, true);
                 toast("Image rotated 90 degrees");
+            }
+            else if ( v.getId() == R.id.leftBtn )
+            {
+                for(int i=index-1; i>=0; i--) {
+                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                        index = i;
+                        break;
+                    }
+                }
+                media = ComposerActivity.getMedia().get( index );
+                
+                findViewById( R.id.rightBtn ).setVisibility( View.VISIBLE );
+
+                TextView tv = (TextView)findViewById( R.id.Title );
+                tv.setText(media.getFileName());
+                EditText et = (EditText)findViewById( R.id.startTime );
+                et.setText( Integer.toString( media.getStartTime() ) );
+                et = (EditText)findViewById( R.id.duration);
+                et.setText( Integer.toString( media.getDuration() ) );
+                
+                int count =0;
+                for(int i=index-1; i>=0; i--) {
+                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                        count++;
+                    }
+                }
+                if(count == 0)
+                    findViewById( R.id.leftBtn ).setVisibility( View.INVISIBLE );
+            }
+            else if ( v.getId() == R.id.rightBtn )
+            {
+                for(int i=index+1; i<ComposerActivity.getMedia().size(); i++) {
+                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                        index = i;
+                        break;
+                    }
+                }
+                media = ComposerActivity.getMedia().get( index );
+                
+                findViewById( R.id.leftBtn ).setVisibility( View.VISIBLE );
+                
+                TextView tv = (TextView)findViewById( R.id.Title );
+                tv.setText(media.getFileName());
+                EditText et = (EditText)findViewById( R.id.startTime );
+                et.setText( Integer.toString( media.getStartTime() ) );
+                et = (EditText)findViewById( R.id.duration);
+                et.setText( Integer.toString( media.getDuration() ) );
+                
+                int count =0;
+                for(int i=index+1; i<ComposerActivity.getMedia().size(); i++) {
+                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                        count++;
+                    }
+                }
+                if(count == 0)
+                    findViewById( R.id.rightBtn ).setVisibility( View.INVISIBLE );
             }
             else if ( v.getId() == R.id.cancelBtn )
             {

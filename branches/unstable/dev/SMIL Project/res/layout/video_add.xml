@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VideoView xmlns:android="http://schemas.android.com/apk/res/android"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/video" 
 	android:layout_gravity="top"
-	android:background="#666666"/> 
+	android:src="@drawable/play"/> 

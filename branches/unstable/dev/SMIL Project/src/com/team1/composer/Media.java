@@ -1,6 +1,7 @@
 package com.team1.composer;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class Media {
     
@@ -26,6 +27,7 @@ public class Media {
     private String path;
     private boolean repeat;
     private Bitmap image;
+    private Uri mediaUri;
     
     
     public Media( int mediaType, String mediaTag )
@@ -184,5 +186,15 @@ public class Media {
     public Bitmap getImage()
     {
         return image;
+    }
+
+    public void setMediaUri( Uri mediaUri )
+    {
+        this.mediaUri = mediaUri;
+    }
+
+    public Uri getMediaUri()
+    {
+        return mediaUri;
     }
 }

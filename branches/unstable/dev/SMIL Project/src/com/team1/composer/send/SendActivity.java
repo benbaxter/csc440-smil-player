@@ -87,7 +87,7 @@ public class SendActivity extends Activity{
                 if (c.moveToFirst()) {
                     name = c.getString(c.getColumnIndex(Contacts.DISPLAY_NAME));
                     number = c.getString(c.getColumnIndex(Phone.DATA));
-                    if(number.equals("") )
+                    if(number.matches( ".*[0-9]*" ) )
                     {
                         toast("Contact has no Number");
                     }
