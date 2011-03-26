@@ -108,7 +108,9 @@
 				android:layout_height="wrap_content" android:gravity="right"
 				android:layout_marginLeft="15px" android:numeric="integer"
 				android:maxLength="4" android:width="70dip" />
-		</TableRow>
+		</TableRow><TableRow android:layout_toLeftOf="@+id/bottomButtons" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/audioSearch" android:visibility="gone"><Button android:layout_width="wrap_content" android:layout_toLeftOf="@+id/bottomButtons" android:layout_height="wrap_content" android:id="@+id/leftBtn" android:text="&lt;" android:layout_gravity="left" android:visibility="invisible"></Button><Button android:text="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="invisible" android:id="@+id/pad"></Button><Button android:layout_height="wrap_content" android:id="@+id/rightBtn" android:text="&gt;" android:layout_width="wrap_content"></Button>
+
+</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/rotation" android:visibility="gone"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rotate" android:layout_gravity="center" android:gravity="center" android:id="@+id/rotateBtn"></Button></TableRow><TableLayout android:id="@+id/optional"
 			android:layout_height="wrap_content" android:fadingEdge="none"
 			android:layout_centerHorizontal="true" android:layout_width="fill_parent">
@@ -155,4 +157,6 @@
 			android:layout_toRightOf="@+id/okBtn" android:gravity="right"
 			android:layout_alignParentBottom="true" android:layout_marginLeft="15px" />
 	</RelativeLayout>
+
+
 </RelativeLayout>
