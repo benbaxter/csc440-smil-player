@@ -1,11 +1,11 @@
 package com.team1.composer;
 
 import java.util.LinkedList;
-import java.util.StringTokenizer;
-
 import android.app.*;
 import android.content.*;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,11 +18,10 @@ import android.widget.*;
 
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
+import com.team1.composer.generator.SMILGenerator;
 import com.team1.composer.send.SendActivity;
 
 public class ComposerActivity extends Activity {
-	//comment
-	/** Called when the activity is first created. */
 	private static final int AUDIO = 0;
 	private static final int IMAGE = 1;
 	private static final int TEXT = 2;
@@ -30,7 +29,7 @@ public class ComposerActivity extends Activity {
 
 	private static final int ADD_DIALOG = 4;
 	private static final int SAVE_CONFIRM = 5;
-	private static final int AUDIO_DIALOG = 6;
+//	private static final int AUDIO_DIALOG = 6;
 
 	private static final int CLEAR = 7;
     private static final int MAIN = 8;
@@ -104,42 +103,25 @@ public class ComposerActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
+    
 	OnClickListener viewClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 		    int index = 0;
-		    for(int i=0; i<media.size(); i++)
-            {
-                if(media.get( i ).getMediaTag().equals( v.getTag() ))
-                {
+		    for(int i=0; i<media.size(); i++) {
+                if(media.get( i ).getMediaTag().equals( v.getTag() )) {
                    index = i;
                 }
             }
 
 		    if(v.getId() == R.id.audio){
-		        int audioCount = 0;
-		        for(int i=0; i<media.size(); i++)
-	            {
-	                if(media.get( i ).getMediaType() == Media.AUDIO_TYPE)
-	                {
-	                   audioCount++;
+	            for(int i=0; i<media.size(); i++) {
+	                if(media.get( i ).getMediaType() == Media.AUDIO_TYPE) {
+	                   index = i;
+	                   break;
 	                }
-	            }
-
-		        if(audioCount == 1) {
-		            for(int i=0; i<media.size(); i++)
-		            {
-		                if(media.get( i ).getMediaTag().equals( v.getTag() ))
-		                {
-		                   index = i;
-		                }
-		            }
-		            editMediaPropertiesActivity(index);
 		        }
-		        else {
-		            //showDialog(AUDIO_DIALOG);
-		        }
+	            editMediaPropertiesActivity(index);
 		    }
 		    else if(v.getId() == R.id.editText)
 			    editMediaPropertiesActivity(index);
@@ -156,7 +138,8 @@ public class ComposerActivity extends Activity {
 			if (v.getId() == R.id.addBtn) {
 				showDialog(ADD_DIALOG);
 			} else if (v.getId() == R.id.saveBtn) {
-				toast("Clicking this button allows the user save their current message.");
+				SMILGenerator.generateSMILFile(media);
+				toast("Generating SMIL file");
 			} else if (v.getId() == R.id.undoBtn) {
 				toast("Clicking this button allows the user undo thier last change.");
 			} else if (v.getId() == R.id.sendBtn) {
@@ -247,7 +230,13 @@ public class ComposerActivity extends Activity {
 	                            media.get( index ).getX(), media.get( index ).getY());
 	                    mDragLayer.updateViewLayout(tv, lp);
 	                } else if (type == Media.VIDEO_TYPE) {
-	                    toast( "Video comming soon" );
+	                    ImageView iv = (ImageView)mDragLayer.findViewWithTag (media.get( index ).getMediaTag() );
+                        iv.setMaxWidth( media.get( index ).getWidth());
+                        iv.setMaxHeight( media.get( index ).getHeight());
+                        DragLayer.LayoutParams lp = new DragLayer.LayoutParams (
+                                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+                                media.get( index ).getX(), media.get( index ).getY());
+                        mDragLayer.updateViewLayout(iv, lp);
 	                }
 	            } else if ( resultCode == Activity.RESULT_CANCELED) {
 	                //media.removeLast();
@@ -262,8 +251,8 @@ public class ComposerActivity extends Activity {
 	            if (resultCode == Activity.RESULT_OK) {
     	            Uri selectedUri = data.getData();
                     String selectedPath = null;
-
                     String dataType = null;
+                    
                     if(media.getLast().getMediaType() == Media.AUDIO_TYPE) {
                         dataType = MediaStore.Audio.Media.DATA;
                     } else if(media.getLast().getMediaType() == Media.IMAGE_TYPE) {
@@ -285,10 +274,10 @@ public class ComposerActivity extends Activity {
                         selectedPath = selectedUri.getPath();
                     }
 
-                    media.getLast().setPath( selectedPath );
-
                     String[] fileName = selectedPath.split( "/" );
                     media.getLast().setFileName(fileName[fileName.length - 1]);
+                    media.getLast().setMediaUri( selectedUri );
+                    media.getLast().setPath( selectedPath );
 
                     openMediaPropertiesActivity();
 
@@ -301,13 +290,14 @@ public class ComposerActivity extends Activity {
 	    }
 	}
 
+	@Override
     protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case ADD_DIALOG:
 			final String[] items = { "Audio", "Image", "Text", "Video" };
 
 			AlertDialog.Builder buildSelecter = new AlertDialog.Builder(this);
-			buildSelecter.setTitle("Pick a Thing");
+			buildSelecter.setTitle("Pick Media");
 			buildSelecter.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					addToCanvas(item);
@@ -331,29 +321,6 @@ public class ComposerActivity extends Activity {
             buidSave.setNegativeButton(R.string.no, null);
             dialog = buidSave.create();
 		    break;
-		case AUDIO_DIALOG:
-            final String[] audioItems = new String[5];
-            int count = 0;
-            for(int i=0; i<media.size(); i++)
-            {
-                if(media.get( i ).getMediaType() == Media.AUDIO_TYPE)
-                {
-                   audioItems[count] = "stuff";//media.get( i ).getFileName();
-                   count++;
-                }
-            }
-
-
-            toast(count+"");
-            AlertDialog.Builder buildAudio = new AlertDialog.Builder(this);
-            buildAudio.setTitle("Pick Audio to Edit");
-            buildAudio.setItems(audioItems, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    //addToCanvas(item);
-                }
-            });
-            dialog = buildAudio.create();
-            break;
 		}
 		return dialog;
 	}
@@ -386,11 +353,12 @@ public class ComposerActivity extends Activity {
 	public void addImageToCanvas() {
 	    ImageView newView;
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.image_add, null);
+	    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View itemView = inflater.inflate(R.layout.video_add, null);
 
-        newView = (ImageView) itemView.findViewById(R.id.image);
+        newView = (ImageView) itemView.findViewById(R.id.video);
         newView.setImageBitmap(media.getLast().getImage());
+        
         newView.setAdjustViewBounds( true );
         newView.setMaxHeight( media.getLast().getHeight() );
         newView.setMaxWidth( media.getLast().getWidth() );
@@ -427,25 +395,26 @@ public class ComposerActivity extends Activity {
     }
 
 	public void addVideoToCanvas() {
-	    VideoView newView;
+	    ImageView newView;
 
-	    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-	    View itemView = inflater.inflate (R.layout.video_add, null);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View itemView = inflater.inflate(R.layout.video_add, null);
 
-	    newView = (VideoView) itemView.findViewById(R.id.video);
-//	    newView.setAdjustViewBounds( true );
-//	    newView.setMaxHeight( media.getLast().getHeight() );
-//	    newView.setMaxWidth( media.getLast().getWidth() );
-//
-	    newView.setVideoPath((media.getLast().getPath()));
+        newView = (ImageView) itemView.findViewById(R.id.video);
+        Resources res = getResources();
+        BitmapDrawable thumb = new BitmapDrawable(res, media.getLast().getImage());
+        newView.setBackgroundDrawable( thumb );
+        
+        newView.setAdjustViewBounds( true );
+        newView.setMaxHeight( media.getLast().getHeight() );
+        newView.setMaxWidth( media.getLast().getWidth() );
 
-	    newView.setTag( media.getLast().getMediaTag() );
+        newView.setTag( media.getLast().getMediaTag() );
 
-	    newView.stopPlayback();
-	    mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT,
-	            LayoutParams.WRAP_CONTENT, 0, 0));
+        mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT, 0, 0));
 
-	    newView.setOnClickListener(viewClick);
+        newView.setOnClickListener(viewClick);
         newView.setOnLongClickListener(viewLongClick);
         mDragLayer.invalidate();
 	}
