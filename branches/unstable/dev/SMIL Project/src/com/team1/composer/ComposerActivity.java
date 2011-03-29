@@ -128,6 +128,7 @@ public class ComposerActivity extends Activity {
 		    }
 		    else if(v.getId() == R.id.editText)
 			    editMediaPropertiesActivity(index);
+//		        toast("test");
 			else if(v.getId() == R.id.image)
 			    editMediaPropertiesActivity(index);
 			else if(v.getId() == R.id.video)
@@ -477,6 +478,11 @@ public class ComposerActivity extends Activity {
 
         mDragLayer.addView(itemView, new DragLayer.LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT, 0, 0));
+        
+        SmilRegion region = new SmilRegion(media.getLast().getTag(), "#000000", 0, 
+                0, newView.getWidth(), newView.getHeight() ); 
+        
+        media.getLast().setRegion( region );
 
         newView.setOnClickListener(viewClick);
         newView.setOnLongClickListener(viewLongClick);
