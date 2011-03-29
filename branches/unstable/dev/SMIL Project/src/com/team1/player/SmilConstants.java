@@ -13,9 +13,9 @@ public class SmilConstants
     public static final int SERIES_TYPE_PARALLEL = 1;
 
     public static final int COMPONENT_TYPE_NONE = -1;
-    public static final int COMPONENT_TYPE_TEXT = 0;
+    public static final int COMPONENT_TYPE_AUDIO = 0;
     public static final int COMPONENT_TYPE_IMAGE = 1;
-    public static final int COMPONENT_TYPE_AUDIO = 2;
+    public static final int COMPONENT_TYPE_TEXT = 2;
     public static final int COMPONENT_TYPE_VIDEO = 3;
 
     public static final String MESSAGE = "message";

@@ -28,7 +28,8 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
     private int videoWidth;
     private int videoHeight;
     private boolean tryAtPlay = false;
-
+    private Bitmap image;
+    
     public SmilVideoComponent ( ) 
     {
         super ( null, null, 0, 0 );
@@ -128,11 +129,12 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
     
     @Override public Bitmap getImage ( )
     {
-        return null;
+        return image;
     }
 
     @Override public void setImage ( Bitmap image )
     {
+        this.image = image;
     }
 
     @Override public int getFontSize ( )
