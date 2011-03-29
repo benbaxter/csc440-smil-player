@@ -15,11 +15,11 @@
 			android:layout_centerVertical="true" 
 			android:text="SMIL Player - Main Menu"/>
 			
-		<Button android:id="@+id/newBtn" 
+		<!-- Button android:id="@+id/newBtn" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:background="@drawable/newbutton" 
-			android:layout_alignParentRight="true" />
+			android:layout_alignParentRight="true" /-->
 	</RelativeLayout>
 	
 	<RelativeLayout android:layout_width="fill_parent" 

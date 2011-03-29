@@ -22,7 +22,7 @@ package com.team1.composer.drag;
 import java.util.LinkedList;
 
 import com.team1.composer.ComposerActivity;
-import com.team1.composer.Media;
+import com.team1.player.*;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -117,7 +117,7 @@ public class DragLayer extends MyAbsoluteLayout
 public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
         DragView dragView, Object dragInfo)
 {
-    LinkedList<Media> media = ComposerActivity.getMedia();
+    LinkedList<SmilComponent> media = ComposerActivity.getMedia();
 
     View v = (View) dragInfo;
     int w = v.getWidth ();
@@ -125,12 +125,18 @@ public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
     int left = x - xOffset;
     int top = y - yOffset;
     
-    for(int i=0; i<media.size(); i++)
+    for ( int i = 0; i < media.size(); i++ )
     {
-        if(media.get( i ).getMediaTag().equals( v.getTag() ))
+        if ( media.get( i ).getTag().equals( v.getTag() ))
         {
-            media.get( i ).setX( left );
-            media.get( i ).setY( top );
+            int width = media.get(i).getRegion().getRect().width();
+            int height = media.get(i).getRegion().getRect().height();
+            String id = media.get(i).getRegion().getId();
+            
+            //media.get( i ).getRegion().getRect().set ( x, y, width, height );
+            
+            SmilRegion r = new SmilRegion ( id, "black", left, top, width, height );
+            media.get( i ).setRegion ( r );
         }
     }
     

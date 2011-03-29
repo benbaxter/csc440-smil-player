@@ -2,6 +2,7 @@
 package com.team1.composer;
 
 import com.team1.composer.R;
+import com.team1.player.*;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -23,7 +24,7 @@ public class MediaPropertiesActivity extends Activity
 {
     static final int EXIT   = 0;
 
-    private Media media;
+    private SmilComponent media;
     private int index;
     private Bitmap image;
 
@@ -55,15 +56,17 @@ public class MediaPropertiesActivity extends Activity
             media = ComposerActivity.getMedia().get( index );
         }
         else
+        {
             media = ComposerActivity.getMedia().getLast();
+        }
         
-        if( media.getMediaType() == Media.AUDIO_TYPE) {
+        if( media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
             findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
             if(extras != null)
             {
                 int count = 0;
                 for(int i=0; i<ComposerActivity.getMedia().size(); i++) {
-                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                    if(ComposerActivity.getMedia().get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
                        count++;
                     }
                 }
@@ -79,7 +82,7 @@ public class MediaPropertiesActivity extends Activity
                 MediaPlayer mp = new MediaPlayer();
                 try
                 {
-                    mp.setDataSource(media.getPath());
+                    mp.setDataSource(media.getFilePath());
                     mp.prepare();
                     duration = mp.getDuration();
                 }
@@ -89,39 +92,39 @@ public class MediaPropertiesActivity extends Activity
                 }
                 double durationDouble = duration/1000.0;
                 duration = ( int ) Math.ceil( durationDouble );
-                media.setDuration( duration );
-                media.setStartTime( 0 );
+                media.setEnd( duration );
+                media.setBegin( 0 );
             }
             
             EditText et = (EditText)findViewById( R.id.startTime );
-            et.setText( Integer.toString( media.getStartTime() ) );
+            et.setText( Integer.toString( media.getBegin() ) );
             et = (EditText)findViewById( R.id.duration);
-            et.setText( Integer.toString( media.getDuration() ) );
+            et.setText( Integer.toString( media.getEnd() ) );
             
         } 
-        else if ( media.getMediaType() == Media.TEXT_TYPE ) {
+        else if ( media.getType() == SmilConstants.COMPONENT_TYPE_TEXT ) {
             EditText et;
             if(extras != null)
             {
                 et = (EditText)findViewById( R.id.inputString );
                 et.setText( media.getText() );
                 et = (EditText)findViewById( R.id.x );
-                et.setText( Integer.toString( media.getX() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().left ) );
                 et = (EditText)findViewById( R.id.y );
-                et.setText( Integer.toString( media.getY() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().top ) );
             }
             else
             {
                 et = (EditText)findViewById( R.id.inputString );
                 et.setText( null );
-                media.setDuration( 1 );
-                media.setStartTime( 0 );
+                media.setEnd( 1 );
+                media.setBegin( 0 );
             }
             
             et = (EditText)findViewById( R.id.duration);
-            et.setText( Integer.toString( media.getDuration() ) );
+            et.setText( Integer.toString( media.getEnd() ) );
             et = (EditText)findViewById( R.id.startTime );
-            et.setText( Integer.toString( media.getStartTime() ) );
+            et.setText( Integer.toString( media.getBegin() ) );
             //font size drop down.
             //This code will also set the font size
             Spinner spinner = (Spinner) findViewById(R.id.fontSizeSpinner);
@@ -155,17 +158,17 @@ public class MediaPropertiesActivity extends Activity
             
             
         } 
-        else if (media.getMediaType() == Media.IMAGE_TYPE ) {
+        else if (media.getType() == SmilConstants.COMPONENT_TYPE_IMAGE ) {
             if(extras != null)
             {
                 EditText et = (EditText)findViewById( R.id.height);
-                et.setText( Integer.toString( media.getHeight() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().height() ) );
                 et = (EditText)findViewById( R.id.width );
-                et.setText( Integer.toString( media.getWidth() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().width() ) );
                 et = (EditText)findViewById( R.id.x );
-                et.setText( Integer.toString( media.getX() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().left ) );
                 et = (EditText)findViewById( R.id.y );
-                et.setText( Integer.toString( media.getY() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().top ) );
                 image = media.getImage();
             }
             else
@@ -174,30 +177,30 @@ public class MediaPropertiesActivity extends Activity
                 et.setText( "150" );
                 et = (EditText)findViewById( R.id.width );
                 et.setText( "150" );
-                image = BitmapFactory.decodeFile( media.getPath() );
-                media.setDuration( 1 );
-                media.setStartTime( 0 );
+                image = BitmapFactory.decodeFile( media.getFilePath() );
+                media.setEnd( 1 );
+                media.setBegin( 0 );
             }
             
             EditText et = (EditText)findViewById( R.id.duration);
-            et.setText( Integer.toString( media.getDuration() ) );
+            et.setText( Integer.toString( media.getEnd() ) );
             et = (EditText)findViewById( R.id.startTime );
-            et.setText( Integer.toString( media.getStartTime() ) ); 
+            et.setText( Integer.toString( media.getBegin() ) ); 
             
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
             findViewById( R.id.rotation).setVisibility( View.VISIBLE );
         } 
-        else if (media.getMediaType() == Media.VIDEO_TYPE) {
+        else if (media.getType() == SmilConstants.COMPONENT_TYPE_VIDEO) {
             if(extras != null)
             {
                 EditText et = (EditText)findViewById( R.id.height);
-                et.setText( Integer.toString( media.getHeight() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().height() ) );
                 et = (EditText)findViewById( R.id.width );
-                et.setText( Integer.toString( media.getWidth() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().width() ) );
                 et = (EditText)findViewById( R.id.x );
-                et.setText( Integer.toString( media.getX() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().left ) );
                 et = (EditText)findViewById( R.id.y );
-                et.setText( Integer.toString( media.getY() ) );
+                et.setText( Integer.toString( media.getRegion().getRect().top ) );
             }
             else
             {
@@ -224,22 +227,22 @@ public class MediaPropertiesActivity extends Activity
                 
                 double durationDouble = duration/1000.0;
                 duration = ( int ) Math.ceil( durationDouble );
-                media.setDuration( duration );
-                media.setStartTime( 0 );
+                media.setEnd( duration );
+                media.setBegin( 0 );
                 
                 et = (EditText)findViewById( R.id.startTime );
                 et.setText( "0" ); 
             }
             
             EditText et = (EditText)findViewById( R.id.duration);
-            et.setText( Integer.toString( media.getDuration() ) );
+            et.setText( Integer.toString( media.getEnd() ) );
             et = (EditText)findViewById( R.id.startTime );
-            et.setText( Integer.toString( media.getStartTime() ) ); 
+            et.setText( Integer.toString( media.getBegin() ) ); 
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
            
         }
         
-        if(media.getMediaType() == Media.AUDIO_TYPE)
+        if(media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
             findViewById( R.id.optional ).setVisibility( View.GONE );
         else
         {
@@ -264,15 +267,15 @@ public class MediaPropertiesActivity extends Activity
             //http://stackoverflow.com/questions/1258275/vertical-rotated-label-in-android
             //http://code.google.com/p/chartdroid/
             
-            RadioButton rb = (RadioButton) v;
-            if( rb.getText().equals( R.string.horizontal_label ) )
-            {
-                media.setOrientation( Media.HORIZONTAL );
-            }
-            else 
-            {
-                media.setOrientation( Media.VERTICAL );
-            }
+            //RadioButton rb = (RadioButton) v;
+            //if( rb.getText().equals( R.string.horizontal_label ) )
+            //{
+            //    media.setOrientation( Media.HORIZONTAL );
+            //}
+            //else 
+            //{
+            //    media.setOrientation( Media.VERTICAL );
+            //}
         }
     };
 
@@ -285,40 +288,48 @@ public class MediaPropertiesActivity extends Activity
             {
                 // media =
                 // ComposerActivity.getMedia().getLast();
-                if( media.getMediaType() == Media.AUDIO_TYPE )
+                if( media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO )
                 {
 //                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
                 }
-                else if ( media.getMediaType() == Media.TEXT_TYPE )
+                else if ( media.getType() == SmilConstants.COMPONENT_TYPE_TEXT )
                 {
                     media.setText( ( (EditText)findViewById( R.id.inputString ) ).getText().toString() );
 //                    Log.i( "TEXT2", ComposerActivity.getMedia().getLast().getText() );
                 }
-                else if( media.getMediaType() == Media.IMAGE_TYPE)
+                else if( media.getType() == SmilConstants.COMPONENT_TYPE_IMAGE)
                 {
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
+                    
                     //set default width and height here
                     if( height.equals( "" ))
                         height = "150";
                     if( width.equals( "" ))
                         width = "150";
-                    media.setHeight( Integer.parseInt( height ));
-                    media.setWidth( Integer.parseInt( width ));
+
+                    // construct SmilRegion object
+                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", 0, 0, Integer.parseInt ( width  ), Integer.parseInt ( height ) );
+                    media.setRegion( region );
+
                     media.setImage( image );
                 }
-                else if( media.getMediaType() == Media.VIDEO_TYPE)
+                else if( media.getType() == SmilConstants.COMPONENT_TYPE_VIDEO)
                 {
                     media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
+                    
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
+                    
                     //set default width and height here
                     if( height.equals( "" ))
                         height = "150";
                     if( width.equals( "" ))
                         width = "150";
-                    media.setHeight( Integer.parseInt( height ));
-                    media.setWidth( Integer.parseInt( width ));
+                    
+                    // construct SmilRegion object
+                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", 0, 0, Integer.parseInt ( width  ), Integer.parseInt ( height ) );
+                    media.setRegion( region ); 
                 }
                 
                 String startTime = ((EditText)findViewById( R.id.startTime )).getText().toString();
@@ -327,8 +338,8 @@ public class MediaPropertiesActivity extends Activity
                     startTime= "0";
                 if( dur.equals( "" ))
                     dur = "1";
-                media.setStartTime( Integer.parseInt(startTime) );
-                media.setDuration( Integer.parseInt(dur) );
+                media.setBegin( Integer.parseInt(startTime) );
+                media.setEnd( Integer.parseInt(dur) );
                 
                 Intent data = new Intent();
                 data.putExtra("INDEX", index);
@@ -348,7 +359,7 @@ public class MediaPropertiesActivity extends Activity
             else if ( v.getId() == R.id.leftBtn )
             {
                 for(int i=index-1; i>=0; i--) {
-                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                    if(ComposerActivity.getMedia().get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
                         index = i;
                         break;
                     }
@@ -360,13 +371,13 @@ public class MediaPropertiesActivity extends Activity
                 TextView tv = (TextView)findViewById( R.id.Title );
                 tv.setText(media.getFileName());
                 EditText et = (EditText)findViewById( R.id.startTime );
-                et.setText( Integer.toString( media.getStartTime() ) );
+                et.setText( Integer.toString( media.getBegin() ) );
                 et = (EditText)findViewById( R.id.duration);
-                et.setText( Integer.toString( media.getDuration() ) );
+                et.setText( Integer.toString( media.getEnd() ) );
                 
                 int count =0;
                 for(int i=index-1; i>=0; i--) {
-                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                    if(ComposerActivity.getMedia().get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
                         count++;
                     }
                 }
@@ -376,7 +387,7 @@ public class MediaPropertiesActivity extends Activity
             else if ( v.getId() == R.id.rightBtn )
             {
                 for(int i=index+1; i<ComposerActivity.getMedia().size(); i++) {
-                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                    if(ComposerActivity.getMedia().get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
                         index = i;
                         break;
                     }
@@ -388,13 +399,13 @@ public class MediaPropertiesActivity extends Activity
                 TextView tv = (TextView)findViewById( R.id.Title );
                 tv.setText(media.getFileName());
                 EditText et = (EditText)findViewById( R.id.startTime );
-                et.setText( Integer.toString( media.getStartTime() ) );
+                et.setText( Integer.toString( media.getBegin() ) );
                 et = (EditText)findViewById( R.id.duration);
-                et.setText( Integer.toString( media.getDuration() ) );
+                et.setText( Integer.toString( media.getEnd() ) );
                 
                 int count =0;
                 for(int i=index+1; i<ComposerActivity.getMedia().size(); i++) {
-                    if(ComposerActivity.getMedia().get( i ).getMediaType() == Media.AUDIO_TYPE) {
+                    if(ComposerActivity.getMedia().get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
                         count++;
                     }
                 }

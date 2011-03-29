@@ -28,13 +28,13 @@ public class Main extends Activity
         Button drafts = ( Button ) findViewById( R.id.draftsMain );
         Button inbox = ( Button ) findViewById( R.id.inboxMain );
         Button outbox = ( Button ) findViewById( R.id.outboxMain );
-        Button newBtn = ( Button ) findViewById( R.id.newBtn );
+        //Button newBtn = ( Button ) findViewById( R.id.newBtn );
 
         newMessage.setOnClickListener( mClick );
         drafts.setOnClickListener( mClick );
         inbox.setOnClickListener( mClick );
         outbox.setOnClickListener( mClick );
-        newBtn.setOnClickListener( mClick );
+        //newBtn.setOnClickListener( mClick );
         
     }
 
