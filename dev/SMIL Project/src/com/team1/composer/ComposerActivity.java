@@ -515,7 +515,6 @@ public class ComposerActivity extends Activity {
 		return true;
 	}
 
-	
 	private void setupListeners() {
 		DragController dragController = mDragController;
 
