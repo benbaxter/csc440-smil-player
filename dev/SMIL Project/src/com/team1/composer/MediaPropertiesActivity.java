@@ -117,6 +117,10 @@ public class MediaPropertiesActivity extends Activity
             {
                 et = (EditText)findViewById( R.id.inputString );
                 et.setText( null );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( "0" );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( "0" );
                 media.setEnd( 1 );
                 media.setBegin( 0 );
             }
@@ -132,6 +136,7 @@ public class MediaPropertiesActivity extends Activity
                     this, R.array.font_size_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
+            spinner.setSelection(media.getFontSize()/10 - 1);
             spinner.setOnItemSelectedListener(new OnItemSelectedListener()
             {
                 @Override
@@ -177,6 +182,10 @@ public class MediaPropertiesActivity extends Activity
                 et.setText( "150" );
                 et = (EditText)findViewById( R.id.width );
                 et.setText( "150" );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( "0" );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( "0" );
                 image = BitmapFactory.decodeFile( media.getFilePath() );
                 media.setEnd( 1 );
                 media.setBegin( 0 );
@@ -208,6 +217,10 @@ public class MediaPropertiesActivity extends Activity
                 et.setText( "150" );
                 et = (EditText)findViewById( R.id.width );
                 et.setText( "150" );
+                et = (EditText)findViewById( R.id.x );
+                et.setText( "0" );
+                et = (EditText)findViewById( R.id.y );
+                et.setText( "0" );
                 ContentResolver cr = getContentResolver();
                 int duration = 0;
 
@@ -301,6 +314,9 @@ public class MediaPropertiesActivity extends Activity
                 {
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
+                    String top = ((EditText)findViewById( R.id.y )).getText().toString();
+                    String left = ((EditText)findViewById( R.id.x )).getText().toString();
+
                     
                     //set default width and height here
                     if( height.equals( "" ))
@@ -309,7 +325,8 @@ public class MediaPropertiesActivity extends Activity
                         width = "150";
 
                     // construct SmilRegion object
-                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", 0, 0, Integer.parseInt ( width  ), Integer.parseInt ( height ) );
+                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", Integer.parseInt ( left ), 
+                            Integer.parseInt ( top ), Integer.parseInt ( width  ), Integer.parseInt ( height ) );
                     media.setRegion( region );
 
                     media.setImage( image );
@@ -320,6 +337,8 @@ public class MediaPropertiesActivity extends Activity
                     
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
+                    String top = ((EditText)findViewById( R.id.y )).getText().toString();
+                    String left = ((EditText)findViewById( R.id.x )).getText().toString();
                     
                     //set default width and height here
                     if( height.equals( "" ))
@@ -328,7 +347,8 @@ public class MediaPropertiesActivity extends Activity
                         width = "150";
                     
                     // construct SmilRegion object
-                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", 0, 0, Integer.parseInt ( width  ), Integer.parseInt ( height ) );
+                    SmilRegion region = new SmilRegion(media.getTag(), "#000000", Integer.parseInt ( left ), 
+                            Integer.parseInt ( top ), Integer.parseInt ( width  ), Integer.parseInt ( height ) );
                     media.setRegion( region ); 
                 }
                 

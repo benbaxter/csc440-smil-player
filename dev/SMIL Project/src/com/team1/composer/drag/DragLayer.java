@@ -129,13 +129,13 @@ public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
     {
         if ( media.get( i ).getTag().equals( v.getTag() ))
         {
-            int width = media.get(i).getRegion().getRect().width();
-            int height = media.get(i).getRegion().getRect().height();
+           // int width = media.get(i).getRegion().getRect().width();
+           // int height = media.get(i).getRegion().getRect().height();
             String id = media.get(i).getRegion().getId();
             
             //media.get( i ).getRegion().getRect().set ( x, y, width, height );
             
-            SmilRegion r = new SmilRegion ( id, "black", left, top, width, height );
+            SmilRegion r = new SmilRegion ( id, left, top, w, h );
             media.get( i ).setRegion ( r );
         }
     }

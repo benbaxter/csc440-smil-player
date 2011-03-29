@@ -13,7 +13,7 @@ public class SmilRegion
 	
     private static final String DEFAULT_BACKGROUND_COLOR = "#000000";
 
-	public SmilRegion ( String id, int top, int left, int width, int height ) 
+	public SmilRegion ( String id, int left, int top, int width, int height ) 
 	{
 		this.id = id;
 		region = new Rect ( left, top, left + width, top + height );
