@@ -151,7 +151,6 @@ public class ComposerActivity extends Activity {
 			else if ( v.getId() == R.id.undoBtn ) 
 			{
 			    previewSmilFile ( );
-				toast ( "Clicking this button allows the user undo thier last change." );
 			} 
 			else if ( v.getId() == R.id.sendBtn ) 
 			{
