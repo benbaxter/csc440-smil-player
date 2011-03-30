@@ -18,24 +18,25 @@ public class Main extends Activity
 {
     Toast toast;
 
+    private static final String BROWSE_TYPE_DRAFT  = "Browse Drafts";
+    private static final String BROWSE_TYPE_INBOX  = "Browse Inbox";
+    private static final String BROWSE_TYPE_OUTBOX = "Browse Outbox";
+    
     @Override
     public void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.main );
 
-        Button newMessage = ( Button ) findViewById( R.id.newMain );
-        Button drafts = ( Button ) findViewById( R.id.draftsMain );
-        Button inbox = ( Button ) findViewById( R.id.inboxMain );
-        Button outbox = ( Button ) findViewById( R.id.outboxMain );
-        //Button newBtn = ( Button ) findViewById( R.id.newBtn );
+        Button newMessage = ( Button ) findViewById ( R.id.newMain    );
+        Button drafts     = ( Button ) findViewById ( R.id.draftsMain );
+        Button inbox      = ( Button ) findViewById ( R.id.inboxMain  );
+        Button outbox     = ( Button ) findViewById ( R.id.outboxMain );
 
-        newMessage.setOnClickListener( mClick );
-        drafts.setOnClickListener( mClick );
-        inbox.setOnClickListener( mClick );
-        outbox.setOnClickListener( mClick );
-        //newBtn.setOnClickListener( mClick );
-        
+        newMessage.setOnClickListener ( mClick );
+        drafts.setOnClickListener     ( mClick );
+        inbox.setOnClickListener      ( mClick );
+        outbox.setOnClickListener     ( mClick );
     }
 
     OnClickListener mClick = new OnClickListener()
@@ -51,32 +52,24 @@ public class Main extends Activity
            }
            else if ( v.getId() == R.id.draftsMain )
            {
-               toast.setText( "Clicking this button allows the user to view their drafts." );
-               toast.show();
+               openFileBrowserActivity ( BROWSE_TYPE_DRAFT );
            }
            else if ( v.getId() == R.id.inboxMain )
            {
-               toast.setText( "Clicking this button allows the user to view their inbox." );
-               toast.show();
+               openFileBrowserActivity ( BROWSE_TYPE_INBOX );
            }
            else if ( v.getId() == R.id.outboxMain )
            {
-               toast.setText( "Clicking this button allows the user to view their outbox." );
-               toast.show();
-           }
-           else
-           {
-               // Open the Hello World form
-               openHelloActivity();
+               openFileBrowserActivity ( BROWSE_TYPE_OUTBOX );
            }
        }
    };
 
-    private void openHelloActivity()
+    private void openFileBrowserActivity ( String type )
     {
-        Intent mHelloIntent = new Intent( getApplicationContext(), HelloActivity.class );
-        mHelloIntent.putExtra( "Hello Activity", "" );
-        startActivity( mHelloIntent );
+        Intent mBrowseIntent = new Intent( getApplicationContext(), FileBrowserActivity.class );
+        mBrowseIntent.putExtra( "browseType", type );
+        startActivity ( mBrowseIntent );
     }
 
     private void openComposerActivity()
