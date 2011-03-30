@@ -65,45 +65,4 @@
 		
 	</RelativeLayout>
 	
-	<RelativeLayout android:id="@+id/MiddleBar"
-		android:layout_below="@+id/ButtonSpacer" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:background="@drawable/bar" 
-		android:fadingEdge="none">
-		
-		<TextView android:id="@+id/Title" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_centerVertical="true" 
-			android:text="Recent Messages"/>
-	</RelativeLayout>
-	
-	<LinearLayout android:layout_below="@+id/MiddleBar" 
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content" 
-		android:id="@+id/RecentMessages" 
-		android:orientation="vertical">
-		
-		<TextView android:layout_height="wrap_content" 
-			android:id="@+id/TextView01" 
-			android:text="example_message1.smil" 
-			android:layout_width="wrap_content"/>
-			
-		<TextView android:layout_height="wrap_content" 
-			android:id="@+id/TextView02" 
-			android:text="example_message2.smil" 
-			android:layout_width="wrap_content"/>
-			
-		<TextView android:layout_height="wrap_content" 
-			android:id="@+id/TextView03" 
-			android:text="example_message3.smil" 
-			android:layout_width="wrap_content"/>
-			
-		<TextView android:layout_height="wrap_content" 
-			android:id="@+id/TextView04" 
-			android:text="example_message4.smil" 
-			android:layout_width="wrap_content"/>
-	</LinearLayout>
-
 </RelativeLayout>
