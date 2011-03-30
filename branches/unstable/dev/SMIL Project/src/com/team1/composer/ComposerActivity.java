@@ -128,7 +128,6 @@ public class ComposerActivity extends Activity {
 		    }
 		    else if(v.getId() == R.id.editText)
 			    editMediaPropertiesActivity(index);
-//		        toast("test");
 			else if(v.getId() == R.id.image)
 			    editMediaPropertiesActivity(index);
 			else if(v.getId() == R.id.video)

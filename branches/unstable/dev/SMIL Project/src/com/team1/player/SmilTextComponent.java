@@ -29,12 +29,13 @@ public class SmilTextComponent extends SmilComponent
         this.fontSize = 12;
     }
     
+    //public SmilTextComponent ( String source, SmilRegion region, int begin, int end ) 
     public SmilTextComponent ( String source, SmilRegion region, int begin, int end ) 
     {
-        super ( source, region, begin, end );
+        super ( null, region, begin, end );
         this.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
         this.fontSize = 12;
-        getTextFromSource ( );
+        this.text = source;  //getTextFromSource ( );
         textColor = new Paint ( );
         updateText ( );
     }
@@ -120,13 +121,13 @@ public class SmilTextComponent extends SmilComponent
             {
                 line = toBreak.substring ( 0, end );
                 cutOff = line.lastIndexOf ( ' ' );
-                if ( cutOff != -1 && end < toBreak.length() )
-                {
-                    end = cutOff;
-                    line = line.substring ( 0, cutOff );
-                    toBreak = toBreak.substring ( end + 1 );
-                }
-                else
+                //if ( cutOff != -1 && end < toBreak.length() )
+                //{
+                //    end = cutOff;
+                //    line = line.substring ( 0, cutOff );
+                //    toBreak = toBreak.substring ( end + 1 );
+                //}
+                //else
                 {
                     toBreak = toBreak.substring ( end );
                 }
@@ -155,6 +156,16 @@ public class SmilTextComponent extends SmilComponent
     @Override public void setText ( String text )
     {
         this.text = text;
+    }
+
+    @Override public String getSource ( ) 
+    {
+        return this.text;
+    }
+
+    @Override public String getFileName ( ) 
+    {
+        return this.text;
     }
 
     @Override public Bitmap getImage ( )
