@@ -28,6 +28,10 @@
 		<activity android:name=".SmilPlayerActivity" android:screenOrientation="portrait"
 			android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
 		</activity>
+
+		<activity android:name=".FileBrowserActivity" android:screenOrientation="portrait"
+			android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
+		</activity>
 		
 		<activity android:name=".send.SendActivity" android:screenOrientation="portrait"
 			android:label="Send Message" android:theme="@android:style/Theme.Dialog">
