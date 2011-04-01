@@ -20,6 +20,7 @@ public class SMILGenerator
     
     public static void generateSMILFile(List<SmilComponent> list)
     {
+        boolean debug = true;
         figureOutFile();
         try {
             BufferedWriter br = new BufferedWriter( new FileWriter(file) );
@@ -27,7 +28,7 @@ public class SMILGenerator
             Collections.sort( list, START_TIME_ORDER);
             //define standards?
             //xmlns="http://www.w3.org/ns/smil" version="3.0"
-            br.write("<smil>\n<head>\n");
+            br.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<smil>\n<head>\n");
             //need to prepare for text attributes
 //            <textStyle xml:id="HeadlineStyle" textFontFamily="serif" textFontSize="12px" 
 //                textFontWeight="bold" textFontStyle="italic"          
@@ -38,11 +39,15 @@ public class SMILGenerator
             StringBuilder par = new StringBuilder();
             for( SmilComponent item : list)
             {
-                layout.append("<region id=\"" + item.getTag() + "\" background-color=\"gray\" ");
-                layout.append( "top=\"" + item.getRegion().getRect().left + "px\" left=\"" + 
-                        item.getRegion().getRect().top + "px\" " );
-                layout.append( "width=\"" + item.getRegion().getRect().width() + "\" height=\"" +
-                        item.getRegion().getRect().height() + "\" fit=\"meet\" />\n" );
+                if(item.getType() != SmilConstants.COMPONENT_TYPE_AUDIO)
+                {
+                    layout.append("<region id=\"" + item.getTag() + "\" ");
+                    layout.append( "top=\"" + item.getRegion().getRect().top + "\" left=\"" + 
+                            item.getRegion().getRect().left + "\" " );
+                    layout.append( "width=\"" + item.getRegion().getRect().width() + "\" height=\"" +
+                            item.getRegion().getRect().height() );
+                    layout.append("\" background-color=\"black\" />\n" );
+                }
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
                     par.append("<audio ");
                 else if(item.getType() == SmilConstants.COMPONENT_TYPE_IMAGE)
@@ -55,19 +60,29 @@ public class SMILGenerator
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_TEXT)
                     par.append("src=\"data:," + item.getText() + "\" ");
                 else
-                    par.append("src=\"" + item.getFilePath() + "\" ");
+                    par.append("src=\"" + item.getFileName() + "\" ");
                 
-                par.append("region=\"" + item.getTag() + "\" ");
-                par.append("dur=\"" + item.getEnd() + "s\" ");
-                par.append("begin=\"" + item.getBegin() + "s\" ");
+                if(item.getType() != SmilConstants.COMPONENT_TYPE_AUDIO)
+                    par.append("region=\"" + item.getTag() + "\" ");
                 
+                par.append("begin=\"" + item.getBegin() + "\" ");
+                par.append("end=\"" + (item.getEnd()+item.getBegin()) + "\" ");
                 par.append( " />\n" );
             }
             br.write( layout.toString() );
-            br.write("</layout>\n</head>\n<body>\n<par>");
+            br.write("</layout>\n</head>\n<body>\n<par>\n");
             br.write(par.toString());
-            br.write("</par>\n</body>\n</smil>\n");
+            br.write("</par>\n</body>\n</smil>");
             br.close();
+            if(debug)
+            {
+                Log.i("DEBUG SMIL GEN", "About to read produced SMIL");
+                BufferedReader brDebug = new BufferedReader( new FileReader(file) );
+                String line = "";
+                while((line=brDebug.readLine()) != null)
+                    Log.i("DEBUG SMIL GEN", line);
+                brDebug.close();
+            }
         } catch (Exception e) {
             Log.i("FILE", "we fucked up the file");
         }
@@ -80,7 +95,7 @@ public class SMILGenerator
         File pathDir = Environment.getExternalStorageDirectory();
         File appDir = new File(pathDir, "/Android/data/com.team1.composer.generator/files/");
         appDir.mkdirs();
-        file = new File(appDir, "test.smil");
+        file = new File(appDir, "test1.smil");
     }
     static final Comparator<SmilComponent> START_TIME_ORDER =
         new Comparator<SmilComponent>() {

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 public class SmilTextComponent extends SmilComponent
 {    
@@ -44,13 +45,26 @@ public class SmilTextComponent extends SmilComponent
     {
         try 
         {
-            BufferedReader br = new BufferedReader ( new FileReader ( new File ( super.getSource ( ) ) ) );
-            this.text = "";
-            String line = br.readLine ( );
-            while ( line != null )
+            File sourceFile = new File ( super.getSource ( ) );
+            if(sourceFile.exists())
             {
-                this.text += line;
-                line = br.readLine ( );
+                BufferedReader br = new BufferedReader ( new FileReader ( sourceFile ) );
+                this.text = "";
+                String line = br.readLine ( );
+                while ( line != null )
+                {
+                    this.text += line;
+                    line = br.readLine ( );
+                }
+            }
+            else
+            {
+                String source = super.getSource();
+                
+                if(source.startsWith( "data:," ))
+                {
+                    this.text = source.substring( 6 );
+                }
             }
         } 
         catch ( FileNotFoundException e ) 
