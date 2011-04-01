@@ -1,4 +1,4 @@
-package com.team1.player;
+package com.team1.Smil;
 
 import java.io.FileReader;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
 
 import android.os.Environment;
 import android.util.Log;

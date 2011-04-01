@@ -1,4 +1,4 @@
-package com.team1.player;
+package com.team1.Smil;
 
 import android.media.MediaPlayer;
 import android.graphics.Bitmap;
@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 
 import java.io.File;
 import java.io.IOException;
+
 
 public class SmilAudioComponent extends SmilComponent
 {    

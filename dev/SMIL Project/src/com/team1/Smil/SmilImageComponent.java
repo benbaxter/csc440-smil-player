@@ -1,6 +1,7 @@
-package com.team1.player;
+package com.team1.Smil;
 
 //import com.team1.player.*;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;

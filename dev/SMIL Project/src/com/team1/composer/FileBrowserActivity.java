@@ -3,7 +3,7 @@ package com.team1.composer;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.team1.player.SmilReader;
+import com.team1.Smil.SmilReader;
 
 import android.app.ListActivity;
 import android.app.NotificationManager;
