@@ -4,7 +4,7 @@ package com.team1.composer;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
 import com.team1.Smil.SmilRegion;
-import com.team1.composer.R;
+import com.team1.R;
 import com.team1.player.*;
 
 import android.app.Activity;

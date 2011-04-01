@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.team1.Smil.SmilReader;
-import com.team1.composer.R;
+import com.team1.R;
 
 import android.app.ListActivity;
 import android.app.NotificationManager;

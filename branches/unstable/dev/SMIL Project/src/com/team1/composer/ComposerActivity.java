@@ -16,6 +16,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
+import com.team1.R;
 import com.team1.Smil.SmilGenerator;
 import com.team1.Smil.SmilAudioComponent;
 import com.team1.Smil.SmilComponent;
