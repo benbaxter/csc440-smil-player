@@ -1,4 +1,4 @@
-package com.team1.composer;
+package com.team1;
 
 import java.util.ArrayList;
 

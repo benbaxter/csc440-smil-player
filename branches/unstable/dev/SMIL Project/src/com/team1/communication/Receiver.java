@@ -1,6 +1,6 @@
 package com.team1.communication;
 
-import com.team1.composer.Main;
+import com.team1.Main;
 import com.team1.composer.R;
 
 import android.app.Notification;
