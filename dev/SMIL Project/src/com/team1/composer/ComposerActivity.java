@@ -16,7 +16,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
-import com.team1.Smil.SMILGenerator;
+import com.team1.Smil.SmilGenerator;
 import com.team1.Smil.SmilAudioComponent;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
@@ -209,7 +209,7 @@ public class ComposerActivity extends Activity {
         {
             // Save this draft to a temporary .smil file
             //saveSmilFile (  SmilConstants.ROOT_PATH + "test.smil" );
-            SMILGenerator.generateSMILFile(media);
+            SmilGenerator.generateSMILFile(media);
             
             // Preview the temporary .smil file
             Intent mPlayerIntent = new Intent ( this, SmilPlayerActivity.class );
