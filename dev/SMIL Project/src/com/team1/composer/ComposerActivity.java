@@ -16,11 +16,11 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
+import com.team1.Smil.SMILGenerator;
+import com.team1.communication.SendActivity;
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
-import com.team1.composer.generator.SMILGenerator;
 //import com.team1.composer.generator.SMILGenerator;
-import com.team1.composer.send.SendActivity;
 import com.team1.player.*;
 
 public class ComposerActivity extends Activity {

@@ -3,7 +3,7 @@
  * Do we worry about <seq> and other tags?
  */
 
-package com.team1.composer.generator;
+package com.team1.Smil;
 
 import java.io.*;
 import java.util.*;

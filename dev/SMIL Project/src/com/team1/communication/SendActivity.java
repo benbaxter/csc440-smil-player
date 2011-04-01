@@ -1,4 +1,4 @@
-package com.team1.composer.send;
+package com.team1.communication;
 
 import com.team1.composer.R;
 import android.app.Activity;
