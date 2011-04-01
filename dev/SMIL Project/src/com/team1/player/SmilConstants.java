@@ -19,5 +19,5 @@ public class SmilConstants
     public static final int COMPONENT_TYPE_VIDEO = 3;
 
     public static final String MESSAGE = "message";
-	public static final String ROOT_PATH = "/mnt/sdcard/";
+	public static final String ROOT_PATH = "/mnt/sdcard/Android/data/com.team1.composer.generator/files/";
 }

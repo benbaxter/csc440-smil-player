@@ -14,6 +14,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Environment;
+import android.util.Log;
 
 
 public class SmilReader extends DefaultHandler
@@ -50,7 +51,7 @@ public class SmilReader extends DefaultHandler
     {
         //try
         {
-    		String rootDir = Environment.getExternalStorageDirectory().toString() + "/";
+    		String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
     		
     		if ( fileName.startsWith ( rootDir ) ) 
     		{
@@ -62,6 +63,7 @@ public class SmilReader extends DefaultHandler
     			fileName = fileName.replace ( ".smil", "" );
     		}
     		
+    		Log.i("FILENAME FOR PARSING", rootDir + fileName + ".smil");
     		FileReader f = new FileReader ( rootDir + fileName + ".smil" );
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -199,6 +201,7 @@ public class SmilReader extends DefaultHandler
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
                      
+                        Log.i("READER SOURCE", source);
                         if ( localName.equals ( "text" ) ) 
                         {
                             parsedComponent = new SmilTextComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
@@ -207,6 +210,7 @@ public class SmilReader extends DefaultHandler
                         } 
                         else if ( localName.equals ( "img" ) ) 
                         {
+                            Log.i("Source for image", source);
                             parsedComponent = new SmilImageComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_IMAGE );
                             mInImageTag = true;

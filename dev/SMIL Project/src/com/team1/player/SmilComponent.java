@@ -66,7 +66,10 @@ public abstract class SmilComponent
 
     public String getSource ( ) 
     {
-        return this.filePath + "/" + this.fileName;
+        if(this.fileName.startsWith( "data:," ))
+            return this.fileName;
+        else
+            return this.filePath + this.fileName;
     }
     
     public String getFilePath ( )

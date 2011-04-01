@@ -184,7 +184,7 @@ public class SmilMessage
     
     public void saveAsXML ( String fileName ) throws Exception
     {
-        String SDCardDir = Environment.getExternalStorageDirectory() + "/";
+        String SDCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         
         if ( fileName.startsWith ( SDCardDir ) )
         {

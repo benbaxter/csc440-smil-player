@@ -18,6 +18,7 @@ import android.widget.*;
 
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
+import com.team1.composer.generator.SMILGenerator;
 //import com.team1.composer.generator.SMILGenerator;
 import com.team1.composer.send.SendActivity;
 import com.team1.player.*;
@@ -145,7 +146,8 @@ public class ComposerActivity extends Activity {
 			} 
 			else if ( v.getId() == R.id.saveBtn ) 
 			{
-			    saveSmilFile ( SmilConstants.ROOT_PATH + "my_file.smil" );        //SMILGenerator.generateSMILFile(media);
+			    //SMILGenerator.generateSMILFile(media);
+			    saveSmilFile (  SmilConstants.ROOT_PATH + "test.smil" );
 				toast ( "Generating SMIL file" );
 			} 
 			else if ( v.getId() == R.id.undoBtn ) 
@@ -198,11 +200,12 @@ public class ComposerActivity extends Activity {
         try
         {
             // Save this draft to a temporary .smil file
-            saveSmilFile (  SmilConstants.ROOT_PATH + "temp.smil" );
+            //saveSmilFile (  SmilConstants.ROOT_PATH + "test.smil" );
+            SMILGenerator.generateSMILFile(media);
             
             // Preview the temporary .smil file
             Intent mPlayerIntent = new Intent ( this, SmilPlayerActivity.class );
-            mPlayerIntent.putExtra ( "playFile", SmilConstants.ROOT_PATH + "temp.smil" );
+            mPlayerIntent.putExtra ( "playFile", SmilConstants.ROOT_PATH + "test1.smil" );
             startActivity ( mPlayerIntent );
         }
         catch ( Exception e )
