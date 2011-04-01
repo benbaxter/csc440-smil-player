@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smil>
+<head>
+<layout>
+<root-layout height="450" width="350" background-color="blue" />
+<region id="image0" top="191" left="78" width="150" height="134" background-color="#000000" />
+</layout>
+</head>
+<body>
+<par>
+<img src="image.jpg" region="image0" begin="0" end="10" />
+<audio src="test.mp3" begin="0" end="10" />
+</par>
+</body>
+</smil>

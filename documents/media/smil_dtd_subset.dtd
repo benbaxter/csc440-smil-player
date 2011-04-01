@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT smil (head?, body?)>
+<!ELEMENT head (layout)?>
+<!ELEMENT body (par)>
+<!--The value of begin and end can only be simple second value. -->
+<!ELEMENT par (text | img | audio | video)*>
+<!ATTLIST par
+        begin CDATA #IMPLIED
+        end CDATA #IMPLIED
+>
+<!ELEMENT layout (root-layout,region*)>
+<!-- Optional
+    The value of left, top, height and width can be pixel count or "auto".
+    The value of background-color can be CSS2 color value. -->
+<!ELEMENT region EMPTY>
+<!ATTLIST region
+        id ID #REQUIRED
+        left CDATA "auto"
+        top CDATA "auto"
+        height CDATA "auto"
+        width CDATA "auto"
+        background-color CDATA #IMPLIED
+>
+<!--The value of height and width can be pixel count or "auto".
+    The value of background-color can be CSS2 color value. -->
+<!ELEMENT root-layout EMPTY>
+<!ATTLIST root-layout
+        background-color CDATA #IMPLIED
+>
+<!--The value of begin and end can only be simple second value. -->
+<!ELEMENT text EMPTY>
+<!ATTLIST text
+        src CDATA #IMPLIED
+        region CDATA #REQUIRED
+        begin CDATA #IMPLIED
+        end CDATA #IMPLIED
+>
+<!--The value of begin and end can only be simple second value. -->
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+        src CDATA #IMPLIED
+        region CDATA #REQUIRED
+        begin CDATA #IMPLIED
+        end CDATA #IMPLIED
+>
+<!--The value of begin and end can only be simple second value. -->
+<!ELEMENT audio EMPTY>
+<!ATTLIST audio
+        src CDATA #IMPLIED
+        region CDATA #REQUIRED
+        begin CDATA #IMPLIED
+        end CDATA #IMPLIED
+>
+<!--The value of begin and end can only be simple second value. -->
+<!ELEMENT video EMPTY>
+<!ATTLIST video
+        src CDATA #IMPLIED
+        region CDATA #REQUIRED
+        begin CDATA #IMPLIED
+        end CDATA #IMPLIED
+>
