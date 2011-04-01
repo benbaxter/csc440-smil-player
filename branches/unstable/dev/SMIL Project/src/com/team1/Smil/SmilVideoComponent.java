@@ -1,6 +1,8 @@
-package com.team1.player;
+package com.team1.Smil;
 
 import java.io.File;
+
+import com.team1.player.SmilView;
 
 import android.R;
 import android.graphics.Bitmap;

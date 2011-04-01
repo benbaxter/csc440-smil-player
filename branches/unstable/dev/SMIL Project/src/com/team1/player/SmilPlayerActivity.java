@@ -1,4 +1,4 @@
-package com.team1.composer;
+package com.team1.player;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,6 +15,13 @@ import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.content.Intent;
 
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilReader;
+import com.team1.Smil.SmilVideoComponent;
+import com.team1.composer.R;
+import com.team1.composer.R.id;
+import com.team1.composer.R.layout;
 import com.team1.player.*;
 
 public class SmilPlayerActivity extends Activity implements Callback

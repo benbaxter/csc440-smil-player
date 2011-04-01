@@ -14,6 +14,11 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.team1.Smil.SmilAudioComponent;
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilVideoComponent;
 import com.team1.composer.*;
 
 public class SmilView extends SurfaceView implements SurfaceHolder.Callback

@@ -21,6 +21,8 @@ package com.team1.composer.drag;
 
 import java.util.LinkedList;
 
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilRegion;
 import com.team1.composer.ComposerActivity;
 import com.team1.player.*;
 

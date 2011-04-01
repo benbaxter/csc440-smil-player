@@ -1,4 +1,4 @@
-package com.team1.player;
+package com.team1.Smil;
 
 import android.graphics.Color;
 import android.graphics.Paint;

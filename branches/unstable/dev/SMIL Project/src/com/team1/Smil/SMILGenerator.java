@@ -11,8 +11,6 @@ import java.util.*;
 import android.os.Environment;
 import android.util.Log;
 //import com.team1.composer.Media;
-import com.team1.player.SmilComponent;
-import com.team1.player.SmilConstants;
 
 public class SMILGenerator
 {

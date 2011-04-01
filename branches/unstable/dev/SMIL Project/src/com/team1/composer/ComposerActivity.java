@@ -17,6 +17,14 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
 import com.team1.Smil.SMILGenerator;
+import com.team1.Smil.SmilAudioComponent;
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilImageComponent;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilRegion;
+import com.team1.Smil.SmilTextComponent;
+import com.team1.Smil.SmilVideoComponent;
 import com.team1.communication.SendActivity;
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
