@@ -2,7 +2,7 @@
 package com.team1;
 
 import com.team1.composer.ComposerActivity;
-import com.team1.composer.R;
+import com.team1.R;
 
 import android.app.Activity;
 import android.content.Context;

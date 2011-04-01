@@ -1,6 +1,6 @@
 package com.team1.communication;
 
-import com.team1.composer.R;
+import com.team1.R;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
