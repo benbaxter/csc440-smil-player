@@ -1,0 +1,25 @@
+package com.team1.communication.cloud;
+import java.io.*;
+import java.net.*;
+
+public class Downloader {
+	
+	public static void download(String downloadURL, String filename) throws MalformedURLException, IOException
+	{
+		InputStream in = new URL(downloadURL+"?file="+filename).openStream();
+		
+		File file = new File(filename);
+		BufferedOutputStream fOut = null;
+
+		fOut = new BufferedOutputStream(new FileOutputStream(file));
+		byte[] buffer = new byte[32 * 1024];
+		int bytesRead = 0;
+		while ((bytesRead = in.read(buffer)) != -1)
+		{
+		  fOut.write(buffer, 0, bytesRead);
+		}
+		fOut.flush();
+	   fOut.close();
+
+	}
+}
