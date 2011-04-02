@@ -8,8 +8,9 @@ public class Uploader {
 	public static boolean upload(String urp, File file)
 	{
 		String uploadURL = HTTPRequestPoster.sendGetRequest(urp, "");
+		System.out.println(uploadURL);
 		try {
-			ClientHttpRequest.post(new URL(uploadURL), new Object[] {"myFile", file });
+			InputStream in = ClientHttpRequest.post(new URL(uploadURL), new Object[] {"myFile", file });
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
