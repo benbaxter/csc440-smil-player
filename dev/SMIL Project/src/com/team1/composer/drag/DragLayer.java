@@ -21,11 +21,10 @@ package com.team1.composer.drag;
 
 import java.util.LinkedList;
 
+import com.team1.R;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilRegion;
 import com.team1.composer.ComposerActivity;
-import com.team1.player.*;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -142,9 +141,11 @@ public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
         }
     }
     
+    
     DragLayer.LayoutParams lp = new DragLayer.LayoutParams (w, h, left, top);
     this.updateViewLayout(v, lp);
     
+    findViewById(R.id.delete).setVisibility( View.GONE );
 }
 
 public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -160,6 +161,7 @@ public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset
 public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
         DragView dragView, Object dragInfo)
 {
+
 }
 
 /**

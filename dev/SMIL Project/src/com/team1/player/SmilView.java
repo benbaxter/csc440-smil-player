@@ -19,7 +19,6 @@ import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
 import com.team1.Smil.SmilMessage;
 import com.team1.Smil.SmilVideoComponent;
-import com.team1.composer.*;
 
 public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 {

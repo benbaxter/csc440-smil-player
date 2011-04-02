@@ -34,6 +34,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 
+import com.team1.R;
+
 /**
  * This class is used to initiate a drag within a view or across multiple views.
  * When a drag starts it creates a special view (a DragView) that moves around the screen
@@ -301,7 +303,7 @@ public class DragController {
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
-
+        
         if (action == MotionEvent.ACTION_DOWN) {
             recordScreenSize();
         }
@@ -325,6 +327,7 @@ public class DragController {
                 if (mDragging) {
                     drop(screenX, screenY);
                 }
+                
                 endDrag();
                 break;
         }

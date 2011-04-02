@@ -20,9 +20,6 @@ import com.team1.Smil.SmilMessage;
 import com.team1.Smil.SmilReader;
 import com.team1.Smil.SmilVideoComponent;
 import com.team1.R;
-import com.team1.R.id;
-import com.team1.R.layout;
-import com.team1.player.*;
 
 public class SmilPlayerActivity extends Activity implements Callback
 {

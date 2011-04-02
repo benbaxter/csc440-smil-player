@@ -34,6 +34,29 @@
 		android:layout_below="@+id/TopBar" 
 		android:layout_margin="10px"
 		android:background="#C4C4C4">
+		
+		<RelativeLayout android:id="@+id/delete"
+			android:visibility="gone"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent">
+		    
+				<com.team1.composer.drag.DropSpot
+		        android:id="@+id/deleteSpot"
+		        android:background="@color/deleteSpot"
+		        android:adjustViewBounds="true"
+		        android:padding="8px"
+		        android:layout_width="50px"
+		        android:layout_height="50px" 
+		        android:layout_alignParentBottom="true" 
+		        android:layout_alignParentRight="true" />		
+		        
+		        <TextView 
+		        android:text="DELETE"
+		        android:layout_width="50px"
+		        android:layout_height="50px" 
+		        android:layout_alignParentBottom="true" 
+		        android:layout_alignParentRight="true" />
+		</RelativeLayout>
 
 	</com.team1.composer.drag.DragLayer>
 
