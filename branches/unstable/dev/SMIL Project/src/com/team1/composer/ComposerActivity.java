@@ -17,6 +17,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 
+import com.team1.composer.drag.DropSpot;
 import com.team1.R;
 import com.team1.Smil.*;
 import com.team1.communication.SendActivity;
@@ -536,6 +537,7 @@ public class ComposerActivity extends Activity {
 	}
 
 	public boolean startDrag(View v) {
+	    findViewById(R.id.delete).setVisibility( View.VISIBLE );
 		Object dragInfo = v;
 		mDragController.startDrag(v, mDragLayer, dragInfo,
 				DragController.DRAG_ACTION_MOVE);
@@ -548,6 +550,9 @@ public class ComposerActivity extends Activity {
 		mDragLayer = (DragLayer) findViewById(R.id.Canvas);
 		mDragLayer.setDragController(dragController);
 		dragController.addDropTarget(mDragLayer);
+		
+		DropSpot deleteSpot = (DropSpot) mDragLayer.findViewById (R.id.deleteSpot);
+		deleteSpot.setup (mDragLayer, dragController, R.color.deleteSpot);
 
 		
 		Button add = (Button) findViewById(R.id.addBtn);

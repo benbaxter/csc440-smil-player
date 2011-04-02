@@ -5,8 +5,6 @@ import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
 import com.team1.Smil.SmilRegion;
 import com.team1.R;
-import com.team1.player.*;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
