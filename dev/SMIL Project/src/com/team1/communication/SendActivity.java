@@ -1,12 +1,14 @@
 package com.team1.communication;
 
+import java.io.File;
+import java.util.*;
 import com.team1.R;
+import com.team1.communication.cloud.CloudConstants;
+import com.team1.communication.cloud.Uploader;
+
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ public class SendActivity extends Activity{
                     {
                         number = addrTxt.getText().toString();
                     }
+                    uploadToCloud();
                     sendSMSMessage(number, msg);
                     
                     
@@ -164,7 +167,45 @@ public class SendActivity extends Activity{
 //        unregisterReceiver( sentReceiver );
 //        unregisterReceiver( deliveredReceiver );
         setResult(RESULT_OK);
+        
         finish();
+    }
+    
+    private void uploadToCloud()
+    {
+        Intent in = getIntent ( );
+        if ( in.hasExtra ( "mediaFiles" ) )
+        {
+            ArrayList<String> fileNames = in.getExtras().getStringArrayList( "mediaFiles" );
+            for( String f : fileNames )
+            {
+                File file = new File(f);
+                toast( "does file exist: " + f );
+                if(file.exists())
+                {
+                    toast( "About to upload" );
+                    try {
+                    boolean uploaded = Uploader.upload( CloudConstants.uploadURL, file );
+                    if(uploaded)
+                    {
+                        toast( "File uploaded: " + f );
+                    }
+                    else
+                    {
+                        toast( "Failed to upload: " + f );
+                    }
+                    } 
+                    catch (Exception e)
+                    {
+                        toast( e.toString());
+                    }
+                }
+                else
+                {
+                    toast( "file does not exist: " + f);
+                }
+            }
+        }
     }
     
     public void toast(String msg) {
