@@ -58,7 +58,7 @@ public class SmilGenerator
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_TEXT)
                     par.append("src=\"data:," + item.getText() + "\" ");
                 else
-                    par.append("src=\"" + item.getFileName() + "\" ");
+                    par.append("src=\"" + item.getFilePath() + "\" ");
                 
                 if(item.getType() != SmilConstants.COMPONENT_TYPE_AUDIO)
                     par.append("region=\"" + item.getTag() + "\" ");

@@ -202,7 +202,6 @@ public class SmilReader extends DefaultHandler
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
                      
-                        Log.i("SOURCE", source);
                         if ( localName.equals ( "text" ) ) 
                         {
                             parsedComponent = new SmilTextComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
@@ -211,7 +210,7 @@ public class SmilReader extends DefaultHandler
                         } 
                         else if ( localName.equals ( "img" ) ) 
                         {
-                            Log.i("Source for image", source);
+                            Log.i("imgSource-Reader", source);
                             parsedComponent = new SmilImageComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_IMAGE );
                             mInImageTag = true;

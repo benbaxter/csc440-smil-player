@@ -32,7 +32,7 @@ public abstract class SmilComponent
         this.begin    = begin;
         this.end      = end;
         this.fileName = fileName;
-        this.filePath = SmilConstants.ROOT_PATH;
+        this.filePath = fileName;
         this.region   = region;
         this.repeat   = false;
     }
