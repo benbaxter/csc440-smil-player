@@ -248,9 +248,17 @@ public class ComposerActivity extends Activity {
     }
 
 	private void openMediaChooserActivity(String type){
-        Intent intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
-        intentBrowseFiles.setType(type);
-        startActivityForResult( Intent.createChooser(intentBrowseFiles, "Make a Selection"), MEDIA_PICK);
+	    Intent intentBrowseFiles;
+        if(type == "video/*") {
+            intentBrowseFiles = new Intent(Intent.ACTION_PICK);
+            intentBrowseFiles.setType(type);
+            startActivityForResult ( intentBrowseFiles, MEDIA_PICK );
+        }
+        else {
+            intentBrowseFiles = new Intent(Intent.ACTION_GET_CONTENT);
+            intentBrowseFiles.setType(type);
+            startActivityForResult( Intent.createChooser(intentBrowseFiles, "Make a Selection"), MEDIA_PICK);
+        }
     }
 
 	private void editMediaPropertiesActivity( int index ) {
@@ -349,7 +357,7 @@ public class ComposerActivity extends Activity {
                     if(selectedPath == null){
                         selectedPath = selectedUri.getPath();
                     }
-
+                    Log.i("VIDEO", selectedUri.toString());
                     String[] fileName = selectedPath.split( "/" );
                     media.getLast().setFileName(fileName[fileName.length - 1]);
                     media.getLast().setMediaUri( selectedUri );
