@@ -202,7 +202,7 @@ public class SmilReader extends DefaultHandler
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
                      
-                        Log.i("READER SOURCE", source);
+                        Log.i("SOURCE", source);
                         if ( localName.equals ( "text" ) ) 
                         {
                             parsedComponent = new SmilTextComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );

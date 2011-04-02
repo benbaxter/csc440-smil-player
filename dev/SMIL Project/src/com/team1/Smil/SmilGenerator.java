@@ -91,7 +91,7 @@ public class SmilGenerator
     private static void figureOutFile()
     {
         File pathDir = Environment.getExternalStorageDirectory();
-        File appDir = new File(pathDir, "/Android/data/com.team1.composer.generator/files/");
+        File appDir = new File(pathDir, "/Android/data/com.team1/files/");
         appDir.mkdirs();
         file = new File(appDir, "test1.smil");
     }
