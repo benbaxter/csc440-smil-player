@@ -6,7 +6,7 @@ public class Downloader {
 	
 	public static void download(String downloadURL, String filename) throws MalformedURLException, IOException
 	{
-		InputStream in = new URL(downloadURL+"?file="+filename).openStream();
+		InputStream in = new URL(downloadURL+"?file="+URLEncoder.encode(filename, "UTF-8")).openStream();
 		
 		File file = new File(filename);
 		BufferedOutputStream fOut = null;
@@ -22,4 +22,5 @@ public class Downloader {
 	   fOut.close();
 
 	}
+	
 }
