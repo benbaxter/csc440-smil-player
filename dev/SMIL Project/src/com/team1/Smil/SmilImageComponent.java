@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 
 public class SmilImageComponent extends SmilComponent
@@ -27,6 +28,7 @@ public class SmilImageComponent extends SmilComponent
     
     private void loadImageFromSource ( )
     {
+        Log.i("imgSource-Component", super.getSource());
         // Decode the image file
         image = BitmapFactory.decodeFile ( super.getSource());
         if ( image == null )

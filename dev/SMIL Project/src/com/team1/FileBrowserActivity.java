@@ -39,7 +39,7 @@ public class FileBrowserActivity extends ListActivity {
         //this will allow for the background to show through when scrolling is happening
         this.getListView().setCacheColorHint ( Color.TRANSPARENT );
         
-        File sdcard = new File ( Environment.getExternalStorageDirectory().toString() );
+        File sdcard = Environment.getExternalStorageDirectory();
 		
 		String[] allFiles = sdcard.list ( );
 		
