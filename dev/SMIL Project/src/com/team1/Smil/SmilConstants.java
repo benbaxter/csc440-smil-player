@@ -20,4 +20,7 @@ public class SmilConstants
 
     public static final String MESSAGE = "message";
 	public static final String ROOT_PATH = "/Android/data/com.team1/files/";
+    public static final String DRAFT_PATH = "/Android/data/com.team1/files/draft/";
+    public static final String INBOX_PATH = "/Android/data/com.team1/files/inbox/";
+    public static final String OUTBOX_PATH = "/Android/data/com.team1/files/outbox/";
 }

@@ -37,7 +37,7 @@ public class SmilRegion
 	{
 		Rect rect = region.getRect ( );
 		this.id = region.getId ( );
-		this.region = new Rect ( rect.top, rect.left, rect.width ( ), rect.height ( ) );
+		this.region = new Rect ( rect.left, rect.top, rect.right, rect.bottom );
 		color.setStyle ( region.getColor ( ).getStyle ( ) );
 		color.setColor ( region.getColor ( ).getColor ( ) );
 	}

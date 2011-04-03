@@ -14,26 +14,27 @@ import android.util.Log;
 
 public class SmilGenerator
 {
-    private static File file;
+    private String filePath = SmilConstants.ROOT_PATH;
+    private String fileName = "test1.smil";
+    private File file;
     
-    public static void generateSMILFile(List<SmilComponent> list, String fileName)
+    public void generateSMILFile(List<SmilComponent> list)
     {
         boolean debug = true;
-        figureOutFile(fileName);
-        file = new File( fileName );
+        figureOutFile();
         try {
             BufferedWriter br = new BufferedWriter( new FileWriter(file) );
             //sort by start time
             Collections.sort( list, START_TIME_ORDER);
             //define standards?
             //xmlns="http://www.w3.org/ns/smil" version="3.0"
-            br.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<smil>\n<head>\n");
+            br.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<smil>\r\n<head>\r\n");
             //need to prepare for text attributes
 //            <textStyle xml:id="HeadlineStyle" textFontFamily="serif" textFontSize="12px" 
 //                textFontWeight="bold" textFontStyle="italic"          
 //                textWrapOption="noWrap" textColor="blue" textBackgroundColor="white" />
 //            </textStyling>
-            br.write("<layout>\n<root-layout height=\"450\" width=\"300\" background-color=\"gray\" />\n");
+            br.write("<layout>\r\n<root-layout height=\"450\" width=\"300\" background-color=\"gray\" />\r\n");
             StringBuilder layout = new StringBuilder();
             StringBuilder par = new StringBuilder();
             for( SmilComponent item : list)
@@ -45,7 +46,7 @@ public class SmilGenerator
                             item.getRegion().getRect().left + "\" " );
                     layout.append( "width=\"" + item.getRegion().getRect().width() + "\" height=\"" +
                             item.getRegion().getRect().height() );
-                    layout.append("\" background-color=\"black\" />\n" );
+                    layout.append("\" background-color=\"black\" />\r\n" );
                 }
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
                     par.append("<audio ");
@@ -66,12 +67,12 @@ public class SmilGenerator
                 
                 par.append("begin=\"" + item.getBegin() + "\" ");
                 par.append("end=\"" + (item.getEnd()+item.getBegin()) + "\" ");
-                par.append( " />\n" );
+                par.append( " />\r\n" );
             }
             br.write( layout.toString() );
-            br.write("</layout>\n</head>\n<body>\n<par>\n");
+            br.write("</layout>\r\n</head>\r\n<body>\r\n<par>\r\n");
             br.write(par.toString());
-            br.write("</par>\n</body>\n</smil>");
+            br.write("</par>\r\n</body>\r\n</smil>");
             br.close();
             if(debug)
             {
@@ -89,17 +90,28 @@ public class SmilGenerator
         
     }
     
-    private static void figureOutFile(String fileName)
+    private void figureOutFile ( )
     {
-        File pathDir = Environment.getExternalStorageDirectory();
-        File appDir = new File(pathDir, SmilConstants.ROOT_PATH);
-        appDir.mkdirs();
-        file = new File(appDir, "test1.smil");
+        File pathDir = Environment.getExternalStorageDirectory ( );
+        File appDir = new File ( pathDir, filePath );
+        appDir.mkdirs ( );
+        file = new File ( appDir, fileName );
     }
-    static final Comparator<SmilComponent> START_TIME_ORDER =
+    
+    final Comparator<SmilComponent> START_TIME_ORDER =
         new Comparator<SmilComponent>() {
         public int compare(SmilComponent m1, SmilComponent m2) {
             return m1.getBegin() - m2.getBegin();
         }
     };
+    
+    public void setFileName ( String fileName )
+    {
+        this.fileName = fileName;
+    }
+
+    public void setFilePath ( String filePath )
+    {
+        this.filePath = filePath;
+    }
 }
