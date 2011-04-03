@@ -68,6 +68,10 @@ public class SmilTextComponent extends SmilComponent
                     this.text = source.substring( 6 );
                     Log.i("Souce for text", ""+text);
                 }
+                else
+                {
+                    this.text = source;
+                }
             }
         } 
         catch ( FileNotFoundException e ) 
@@ -167,7 +171,7 @@ public class SmilTextComponent extends SmilComponent
 
     @Override public String getText ( )
     {
-        return text;
+        return this.text;
     }
 
     @Override public void setText ( String text )

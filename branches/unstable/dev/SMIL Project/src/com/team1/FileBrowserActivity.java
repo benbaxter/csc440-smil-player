@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.team1.R;
+import com.team1.Smil.SmilConstants;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -22,47 +23,64 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FileBrowserActivity extends ListActivity {
+public class FileBrowserActivity extends ListActivity 
+{
+	private String filePath;
+	private ArrayList<String> smilFiles = new ArrayList<String>();
 	
-	private ArrayList<String> mSmilFiles = new ArrayList<String>();
-	private String mFileNameKey;
-	private String mFileNameValue;
-	private boolean mReturnValue;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) 
+	protected void onCreate ( Bundle savedInstanceState ) 
 	{
-		super.onCreate(savedInstanceState);
+		super.onCreate ( savedInstanceState );
 		
-		// look up the notification manager service
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		// Look up the notification manager service
+        NotificationManager manager = (NotificationManager) getSystemService ( NOTIFICATION_SERVICE );
     
-        // cancel the notification that we started in IncomingMessage
-        nm.cancel(9);
+        // Cancel the notification that we started in IncomingMessage
+        manager.cancel ( 9 );
 		
-        //this will allow for the background to show through when scrolling is happening
+        // Allow for the background to show through when scrolling is happening
         this.getListView().setCacheColorHint ( Color.TRANSPARENT );
+
+        // Determine where to look (ie Inbox, Outbox, Drafts )
+        File pathDir = Environment.getExternalStorageDirectory ( );
+        File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
         
-        File sdcard = Environment.getExternalStorageDirectory();
-		
-		String[] allFiles = sdcard.list ( );
-		
-		//are there any files in the sd card root directory
+        Intent in = getIntent ( );
+        if ( in.hasExtra ( "browseType" ) )
+        {
+            String type = in.getExtras().getString ( "browseType" );
+            if ( Main.BROWSE_TYPE_OUTBOX == type )
+            {
+                filePath = SmilConstants.OUTBOX_PATH;
+                dir = new File ( pathDir, filePath );
+            }
+            else if ( Main.BROWSE_TYPE_INBOX == type )
+            {
+                filePath = SmilConstants.INBOX_PATH;
+                dir = new File ( pathDir, filePath );                
+            }
+        }
+
+        filePath = dir.getAbsolutePath().toString();
+        
+		String[] allFiles = dir.list ( );
 		if ( allFiles != null )
 		{
-			//filter them based upon file type
+			// Find all of the .smil files in this directory
 			for ( int index = 0; index < allFiles.length; index++ )
 			{
 				if ( allFiles[index].endsWith ( ".smil" ) == true )
-					mSmilFiles.add ( allFiles[index] );
+					smilFiles.add ( allFiles[index] );
 			}
 		}
 
 		setContentView ( R.layout.simple_list );
-		FileBrowserAdapter adapter = new FileBrowserAdapter ( this, android.R.layout.simple_list_item_1, mSmilFiles );
+		FileBrowserAdapter adapter = new FileBrowserAdapter ( this, android.R.layout.simple_list_item_1, smilFiles );
 		setListAdapter ( adapter );
 
-        Intent in = getIntent ( );
+		// Set the title
         if ( in.hasExtra ( "browseType" ) )
         {
             String title = in.getExtras().getString ( "browseType" );
@@ -74,32 +92,27 @@ public class FileBrowserActivity extends ListActivity {
 		
 		messageView.setOnItemClickListener ( new OnItemClickListener ( ) 
 		{
-		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+		    public void onItemClick ( AdapterView<?> parent, View view, int position, long id ) 
 		    {
-		    		mFileNameValue = ((TextView) view).getText().toString();
-		    		
-		    		//for use by another activity
-			    	if ( mReturnValue )
-			    	{
-			    		Intent file = new Intent();
-			    		file.putExtra(mFileNameKey, mFileNameValue);
-			    		setResult(RESULT_OK, file);
-			    		finish();
-			    	}
+                Intent returnIntent = new Intent ( );
+
+			    returnIntent.putExtra ( "fileName", filePath + "/" + ((TextView) view).getText().toString ( ) );
+			    setResult ( RESULT_OK, returnIntent );
+			    finish ( );
 		    }
 		});
 	}
 	
 	private class FileBrowserAdapter extends ArrayAdapter<String> 
 	{
-	    private Activity mContext;
-	    private ArrayList<String> mItems;
+	    private Activity context;
+	    private ArrayList<String> items;
 	    
-	    public FileBrowserAdapter ( Activity context, int textViewResourceId, ArrayList<String> items ) 
+	    public FileBrowserAdapter ( Activity context, int textViewId, ArrayList<String> items ) 
 	    {
-	        super ( context, textViewResourceId, items );
-	        this.mContext = context;
-	        this.mItems = items;
+	        super ( context, textViewId, items );
+	        this.context = context;
+	        this.items = items;
 	    }
 	    
 	    @Override
@@ -108,12 +121,12 @@ public class FileBrowserActivity extends ListActivity {
 	        View view = convertView;
 	        if ( view == null ) 
 	        {
-	            LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	            view = vi.inflate ( android.R.layout.simple_list_item_1, null );
+	            LayoutInflater layout = (LayoutInflater)context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
+	            view = layout.inflate ( android.R.layout.simple_list_item_1, null );
 	        }
 	        
 	        TextView text = (TextView)view.findViewById ( android.R.id.text1 );
-	        text.setText ( mItems.get ( position ) );
+	        text.setText ( items.get ( position ) );
 	        
 	        return view;
 	    }
