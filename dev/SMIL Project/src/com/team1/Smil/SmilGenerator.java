@@ -16,10 +16,11 @@ public class SmilGenerator
 {
     private static File file;
     
-    public static void generateSMILFile(List<SmilComponent> list)
+    public static void generateSMILFile(List<SmilComponent> list, String fileName)
     {
         boolean debug = true;
-        figureOutFile();
+        figureOutFile(fileName);
+        file = new File( fileName );
         try {
             BufferedWriter br = new BufferedWriter( new FileWriter(file) );
             //sort by start time
@@ -88,10 +89,10 @@ public class SmilGenerator
         
     }
     
-    private static void figureOutFile()
+    private static void figureOutFile(String fileName)
     {
         File pathDir = Environment.getExternalStorageDirectory();
-        File appDir = new File(pathDir, "/Android/data/com.team1/files/");
+        File appDir = new File(pathDir, SmilConstants.ROOT_PATH);
         appDir.mkdirs();
         file = new File(appDir, "test1.smil");
     }

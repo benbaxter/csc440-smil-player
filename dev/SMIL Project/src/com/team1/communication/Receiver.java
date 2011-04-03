@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 
 import com.team1.Main;
 import com.team1.R;
+import com.team1.Smil.SmilConstants;
 import com.team1.communication.cloud.CloudConstants;
 import com.team1.communication.cloud.Downloader;
 import com.team1.player.SmilPlayerActivity;
@@ -16,14 +17,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
  
 public class Receiver extends BroadcastReceiver
 {
+    Context toastContext;
+    String smilFile;
     @Override
     public void onReceive(Context context, Intent intent) 
     {    
+        toastContext = context;
         //this stops notifications to others
         this.abortBroadcast();
 
@@ -42,36 +47,32 @@ public class Receiver extends BroadcastReceiver
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
                 if(msgs[i].getMessageBody().toString().equals( "You have just received a new SMIL message! Go to our application to check it out!" ))
                 {
-                    str += "SMS from " + msgs[i].getOriginatingAddress();   
+                    str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
                     str += " :";
                     str += msgs[i].getMessageBody().toString();
                     str += "\n";    
                     ++numOfSMIL;
                     
-                    String from = msgs[i].getOriginatingAddress();
+                    String from = msgs[i].getOriginatingAddress().replace( "+", "" );
                     //file name of the form "from-timestamp"
-                    try
+                    smilFile = from + ".smil";
+                    Toast.makeText( toastContext, "About to download: " + smilFile, Toast.LENGTH_LONG );
+                    boolean downloaded = downloadFromCloud( smilFile );
+                    if(downloaded)
                     {
-                        Downloader.download( CloudConstants.downloadURL, "test1.smil" );
+                        Toast.makeText( toastContext, "Received: " + from + ".smil", Toast.LENGTH_LONG );
                     }
-                    catch ( MalformedURLException e )
+                    else
                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        Toast.makeText( context, "URL to cloud is wrong", Toast.LENGTH_LONG );
+                        Toast.makeText( toastContext, "Did not download: " + from + ".smil", Toast.LENGTH_LONG );
                     }
-                    catch ( IOException e )
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                       Toast.makeText( context, "File not found on cloud", Toast.LENGTH_LONG );
-                    }
+                    
                 }
             }
             ticker = "You have " + numOfSMIL + " new SMIL message(s)";
             //---display the new SMS message---
             if(numOfSMIL > 0){                
-                Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 displayNotification( ticker, "SMIL Messages!", context );
             }
             else{
@@ -79,6 +80,29 @@ public class Receiver extends BroadcastReceiver
                 this.clearAbortBroadcast();
             }
         } 
+    }
+    
+    private boolean downloadFromCloud(String filename)
+    {
+        try
+        {
+            Downloader.download( CloudConstants.downloadURL, filename );
+        }
+        catch ( MalformedURLException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText( toastContext, "URL to cloud is wrong", Toast.LENGTH_LONG );
+            return false;
+        }
+        catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+           Toast.makeText( toastContext, "File not found on cloud", Toast.LENGTH_LONG );
+           return false;
+        }
+        return true;
     }
     
     public void displayNotification( String ticker, String msg, Context context)
@@ -108,6 +132,8 @@ public class Receiver extends BroadcastReceiver
         CharSequence contentText = "Click here to check them out!";
         //this will take us to the inbox activity
         Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
+        smilFile = Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + smilFile;
+        notificationIntent.putExtra( "RecievedSmil", smilFile );
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
@@ -116,5 +142,4 @@ public class Receiver extends BroadcastReceiver
 
         manager.notify( 1, notification );
     }
-    
  }

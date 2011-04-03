@@ -152,7 +152,7 @@ public class ComposerActivity extends Activity {
 			else if ( v.getId() == R.id.saveBtn ) 
 			{
 			    //SMILGenerator.generateSMILFile(media);
-			    saveSmilFile (  SmilConstants.ROOT_PATH + "test.smil" );
+			    saveSmilFile (  Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "test1.smil" );
 				toast ( "Generating SMIL file" );
 			} 
 			else if ( v.getId() == R.id.undoBtn ) 
@@ -206,11 +206,14 @@ public class ComposerActivity extends Activity {
         {
             // Save this draft to a temporary .smil file
             //saveSmilFile (  SmilConstants.ROOT_PATH + "test.smil" );
-            SmilGenerator.generateSMILFile(media);
+            String smilFile = Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH;
+            smilFile += "test1";
+            smilFile += ".smil";
+            SmilGenerator.generateSMILFile(media, smilFile);
             
             // Preview the temporary .smil file
             Intent mPlayerIntent = new Intent ( this, SmilPlayerActivity.class );
-            mPlayerIntent.putExtra ( "playFile", SmilConstants.ROOT_PATH + "test1.smil" );
+            mPlayerIntent.putExtra ( "playFile", smilFile );
             startActivity ( mPlayerIntent );
         }
         catch ( Exception e )
@@ -240,10 +243,12 @@ public class ComposerActivity extends Activity {
 
 	private void openSendActivity() {
 	    
-	    String smileFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.team1.composer.generator/files/";
-        smileFile += "test1.smil";
+	    String smilFile = Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH;
+        //smileFile += "test1.smil";
+        smilFile += getMyPhoneNumber();
+        smilFile += ".smil";
         
-	    saveSmilFile( getMyPhoneNumber() + ".smil" );
+        SmilGenerator.generateSMILFile(media, smilFile);
 	    
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -256,8 +261,8 @@ public class ComposerActivity extends Activity {
             }
         }
         mSendIntent.putStringArrayListExtra( "mediaFiles",  fileNames );
-        Log.i("SMILE FILE TO BE SENT", smileFile);
-        mSendIntent.putExtra( "smilFile",   smileFile);
+        Log.i("SMILE FILE TO BE SENT", smilFile);
+        mSendIntent.putExtra( "smilFile",   smilFile);
         startActivityForResult( mSendIntent, SEND_MESSAGE );
     }
 

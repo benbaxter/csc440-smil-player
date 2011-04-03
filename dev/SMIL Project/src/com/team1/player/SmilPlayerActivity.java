@@ -240,7 +240,15 @@ public class SmilPlayerActivity extends Activity implements Callback
                 loadVideos ( );
                 
                 time = 0;
-            }            
+            }
+            else if ( in.hasExtra( "RecievedSmil" ))
+            {
+                String fileName = in.getExtras().getString ( "RecievedSmil" );
+                Toast.makeText( getApplicationContext(), "Received: " + fileName, Toast.LENGTH_LONG );
+                message = SmilReader.parseMessage ( fileName );
+                loadVideos ( );
+                time = 0;
+            }
         }
         catch ( Exception e )
         {
