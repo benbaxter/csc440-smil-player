@@ -9,7 +9,9 @@ import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.*;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -237,6 +239,12 @@ public class ComposerActivity extends Activity {
     }
 
 	private void openSendActivity() {
+	    
+	    String smileFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.team1.composer.generator/files/";
+        smileFile += "test1.smil";
+        
+	    saveSmilFile( getMyPhoneNumber() + ".smil" );
+	    
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
         for( SmilComponent item : media )
@@ -248,6 +256,8 @@ public class ComposerActivity extends Activity {
             }
         }
         mSendIntent.putStringArrayListExtra( "mediaFiles",  fileNames );
+        Log.i("SMILE FILE TO BE SENT", smileFile);
+        mSendIntent.putExtra( "smilFile",   smileFile);
         startActivityForResult( mSendIntent, SEND_MESSAGE );
     }
 
@@ -270,6 +280,16 @@ public class ComposerActivity extends Activity {
         mMediaPropIntent.putExtra("INDEX", index);
         startActivityForResult( mMediaPropIntent, EDIT_MEDIA );
     }
+	
+	private String getMyPhoneNumber(){
+	    TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
+	    return mTelephonyMgr.getLine1Number();
+	}
+
+	private String getMy10DigitPhoneNumber(){
+	    String s = getMyPhoneNumber();
+	    return s.substring(2);
+	}
 
 	@Override
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {

@@ -33,21 +33,21 @@
 	<Button android:id="@+id/playBtn" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
-		android:background="@drawable/playbuttonplayer"
+		android:background="@drawable/pausebuttonplayer"
 		android:layout_alignParentBottom="true" />
-
+	<!--  
 	<Button android:id="@+id/pauseBtn" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:background="@drawable/pausebuttonplayer"
 		android:layout_toRightOf="@+id/playBtn"
 		android:layout_alignParentBottom="true" />
-
+	 -->
 	<Button android:id="@+id/replayBtn" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:background="@drawable/replaybuttonplayer"
-		android:layout_toRightOf="@+id/pauseBtn"
+		android:layout_toRightOf="@+id/playBtn"
 		android:layout_alignParentBottom="true" />
 
 	<Button android:id="@+id/respondBtn" 
@@ -55,6 +55,15 @@
 		android:layout_height="wrap_content" 
 		android:background="@drawable/respondbuttonplayer"
 		android:layout_toRightOf="@+id/replayBtn"
+		android:layout_alignParentBottom="true" />
+		
+	<TextView android:id="@+id/timerLbl" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@+id/respondBtn"
+		android:background="#efefef"
+		android:textColor="#000"
+		android:text="About to start"
 		android:layout_alignParentBottom="true" />
 		
 </RelativeLayout>
