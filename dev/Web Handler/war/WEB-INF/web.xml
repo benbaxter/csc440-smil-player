@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+  <servlet>
+    <servlet-name>Upload</servlet-name>
+    <servlet-class>com.sample.Upload</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ProvideUploadURL</servlet-name>
+    <servlet-class>com.sample.ProvideUploadURL</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ProvideDownload</servlet-name>
+    <servlet-class>com.sample.ProvideDownload</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Upload</servlet-name>
+    <servlet-class>com.sample.Upload</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Android</servlet-name>
+    <servlet-class>com.sample.Android</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>Serve</servlet-name>
+    <servlet-class>com.sample.Serve</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProvideUploadURL</servlet-name>
+    <url-pattern>/anupload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ProvideDownload</servlet-name>
+    <url-pattern>/andownload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Upload</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Upload</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>Android</servlet-name>
+    <url-pattern>/android</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Serve</servlet-name>
+    <url-pattern>/serve</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
