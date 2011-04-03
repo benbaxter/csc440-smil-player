@@ -79,8 +79,9 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	                    {
 	                    	SmilComponentLoadThread t = new SmilComponentLoadThread ( c );
 	                    	t.start ( );	        
-	                    	Thread.sleep ( 1000 );	
+	                    	Thread.sleep ( 100 );	
 	                    	draw ( c );			    
+                            Thread.sleep ( 900 );    
 	                    }
 	                } 
 	                catch ( InterruptedException e ) 
