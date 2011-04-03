@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 public class SmilTextComponent extends SmilComponent
 {    
@@ -47,6 +48,7 @@ public class SmilTextComponent extends SmilComponent
             File sourceFile = new File ( super.getSource ( ) );
             if(sourceFile.exists())
             {
+                Log.i("SOURCE FOR TEXT", "source is a file");
                 BufferedReader br = new BufferedReader ( new FileReader ( sourceFile ) );
                 this.text = "";
                 String line = br.readLine ( );
@@ -59,10 +61,12 @@ public class SmilTextComponent extends SmilComponent
             else
             {
                 String source = super.getSource();
-                
+                Log.i("SOURCE FOR TEXT", "source is " + source);
                 if(source.startsWith( "data:," ))
                 {
+                    Log.i("Souce for text", ""+text);
                     this.text = source.substring( 6 );
+                    Log.i("Souce for text", ""+text);
                 }
             }
         } 

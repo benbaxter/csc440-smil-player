@@ -12,6 +12,7 @@ import com.team1.communication.cloud.Uploader;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
@@ -52,6 +53,7 @@ public class SendActivity extends Activity{
             if(v.getId() == R.id.browseBtn){
                 getContact();
             }else if(v.getId() == R.id.sendBtn){
+                //ProgressDialog dialog = ProgressDialog.show(getApplicationContext(), "", "Please wait for few seconds...", true);
                 EditText addrTxt = (EditText) SendActivity.this.findViewById(R.id.addrText);
                 addrTxt.setFocusable(false);
 
@@ -69,6 +71,7 @@ public class SendActivity extends Activity{
                     toast("Failed to send SMS ");
                     e.printStackTrace();
                 }
+                //dialog.dismiss();
                 
             }else if(v.getId() == R.id.cancelBtn){
                 finish();
@@ -175,17 +178,34 @@ public class SendActivity extends Activity{
         unregisterReceiver( sentReceiver );
         unregisterReceiver( deliveredReceiver );
         
-//        Intent in = getIntent ( );
-//        if ( in.hasExtra ( "smilFile" ) )
-//        {
-//            String smilURL = in.getExtras().getString( "smilFile" );
-//            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
+        Intent in = getIntent ( );
+        if ( in.hasExtra ( "smilFile" ) )
+        {
+            String smilURL = in.getExtras().getString( "smilFile" );
+            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
+            File file = new File(smilURL);
+            toast( "About to upload: " + smilURL );
+            try {
+                boolean uploaded = Uploader.upload( file );
+                if(uploaded)
+                {
+                    toast( "File uploaded: " + smilURL );
+                }
+                else
+                {
+                    toast( "Failed to upload: " + smilURL );
+                }
+            } 
+            catch (Exception e)
+            {
+                toast( e.toString());
+            }
 //            Intent sendIntent = new Intent(Intent.ACTION_SEND); 
 //            sendIntent.putExtra("sms_body", "some text");     
 //            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(smilURL));
 //            sendIntent.setType("text/plain");
 //            startActivity(sendIntent); 
-//        }
+        }
          
         
         setResult(RESULT_OK);

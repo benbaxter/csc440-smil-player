@@ -18,9 +18,13 @@ public class Uploader {
 	public static boolean upload(File file)
 	{
 		String uploadURL = HTTPRequestPoster.sendGetRequest(CloudConstants.uploadURL, "");
+		Log.i("UPLOADER", "got the url");
+		Log.i("UPLOADER", uploadURL + "");
 		System.out.println(uploadURL);
 		try {
+		    Log.i("UPLOADER", "About to make a post");
 			InputStream in = ClientHttpRequest.post(new URL(uploadURL), new Object[] {"myFile", file });
+			Log.i("UPLOADER", "got the post");
 			in.close();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
