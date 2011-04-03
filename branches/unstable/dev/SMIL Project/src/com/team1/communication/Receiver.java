@@ -1,7 +1,13 @@
 package com.team1.communication;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import com.team1.Main;
 import com.team1.R;
+import com.team1.communication.cloud.CloudConstants;
+import com.team1.communication.cloud.Downloader;
+import com.team1.player.SmilPlayerActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,34 +24,59 @@ public class Receiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {    
+        //this stops notifications to others
+        this.abortBroadcast();
+
         //---get the SMS message passed in---
-        Bundle bundle = intent.getExtras();        
+        Bundle bundle = intent.getExtras();   
         SmsMessage[] msgs = null;
-        String str = "";            
+        String str = "";         
         String ticker = "";
         if (bundle != null)
         {
             //---retrieve the SMS message received---
             Object[] pdus = (Object[]) bundle.get("pdus");
-            msgs = new SmsMessage[pdus.length];
+            msgs = new SmsMessage[pdus.length];            
             int numOfSMIL = 0;
             for (int i=0; i<msgs.length; i++){
-                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-                if(msgs[i].getMessageBody().toString().equals( "You have just received a new SMIL " +
-                		"message! Go to our application to check it out!" ))
+                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
+                if(msgs[i].getMessageBody().toString().equals( "You have just received a new SMIL message! Go to our application to check it out!" ))
                 {
                     str += "SMS from " + msgs[i].getOriginatingAddress();   
                     str += " :";
                     str += msgs[i].getMessageBody().toString();
                     str += "\n";    
                     ++numOfSMIL;
+                    
+                    String from = msgs[i].getOriginatingAddress();
+                    //file name of the form "from-timestamp"
+                    try
+                    {
+                        Downloader.download( CloudConstants.downloadURL, "test1.smil" );
+                    }
+                    catch ( MalformedURLException e )
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Toast.makeText( context, "URL to cloud is wrong", Toast.LENGTH_LONG );
+                    }
+                    catch ( IOException e )
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                       Toast.makeText( context, "File not found on cloud", Toast.LENGTH_LONG );
+                    }
                 }
             }
             ticker = "You have " + numOfSMIL + " new SMIL message(s)";
             //---display the new SMS message---
             if(numOfSMIL > 0){                
                 Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                displayNotification( ticker, "SMIL MEssages!", context );
+                displayNotification( ticker, "SMIL Messages!", context );
+            }
+            else{
+                //continue the normal process of sms and will get alert and reaches inbox
+                this.clearAbortBroadcast();
             }
         } 
     }
@@ -65,7 +96,7 @@ public class Receiver extends BroadcastReceiver
         notification.defaults |= Notification.DEFAULT_LIGHTS;
         
         long[] vibrate = {0,100,200,300};
-//        notification.vibrate = vibrate;
+        notification.vibrate = vibrate;
         
         notification.ledARGB = 0xff00ff00;
         notification.ledOnMS = 300;
@@ -76,7 +107,7 @@ public class Receiver extends BroadcastReceiver
         CharSequence contentTitle = "New SMIL Messages!";
         CharSequence contentText = "Click here to check them out!";
         //this will take us to the inbox activity
-        Intent notificationIntent = new Intent(context, Main.class);
+        Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);

@@ -1,6 +1,10 @@
 package com.team1.communication;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import com.team1.R;
 import com.team1.communication.cloud.CloudConstants;
@@ -15,6 +19,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -162,10 +167,27 @@ public class SendActivity extends Activity{
         //---when the SMS has been delivered---
         registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
         
+        short SMS_PORT = ( short ) 50009;
+        
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
-//        unregisterReceiver( sentReceiver );
-//        unregisterReceiver( deliveredReceiver );
+//        sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
+        unregisterReceiver( sentReceiver );
+        unregisterReceiver( deliveredReceiver );
+        
+//        Intent in = getIntent ( );
+//        if ( in.hasExtra ( "smilFile" ) )
+//        {
+//            String smilURL = in.getExtras().getString( "smilFile" );
+//            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
+//            Intent sendIntent = new Intent(Intent.ACTION_SEND); 
+//            sendIntent.putExtra("sms_body", "some text");     
+//            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(smilURL));
+//            sendIntent.setType("text/plain");
+//            startActivity(sendIntent); 
+//        }
+         
+        
         setResult(RESULT_OK);
         
         finish();
@@ -185,7 +207,7 @@ public class SendActivity extends Activity{
                 {
                     toast( "About to upload" );
                     try {
-                    boolean uploaded = Uploader.upload( CloudConstants.uploadURL, file );
+                    boolean uploaded = Uploader.upload( file );
                     if(uploaded)
                     {
                         toast( "File uploaded: " + f );

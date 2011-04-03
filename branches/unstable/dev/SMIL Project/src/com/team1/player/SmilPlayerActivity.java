@@ -1,24 +1,17 @@
 package com.team1.player;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
+import android.view.*;
 import android.graphics.Color;
-import android.widget.Button;
-import android.widget.Toast;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.widget.*;
 import android.view.SurfaceHolder.Callback;
-import android.widget.FrameLayout;
-import android.widget.MediaController;
 import android.content.Intent;
 
-import com.team1.Smil.SmilConstants;
-import com.team1.Smil.SmilMessage;
-import com.team1.Smil.SmilReader;
-import com.team1.Smil.SmilVideoComponent;
+import com.team1.Smil.*;
 import com.team1.R;
 
 public class SmilPlayerActivity extends Activity implements Callback
@@ -27,56 +20,63 @@ public class SmilPlayerActivity extends Activity implements Callback
 	private SmilView view;
 	private MediaController mediaController;
 	private SmilMessage message;
-	
 	private Bundle instance;
 
-	   private class DisplaySurfaceRunnable implements Runnable
-	   {
-	        private SurfaceView surface;
-	        private FrameLayout.LayoutParams newParams;
-	        
-	        public DisplaySurfaceRunnable ( SurfaceView sv, 
-	                                        FrameLayout.LayoutParams lp )
-	        {
-	            this.surface = sv;
-	            this.newParams = lp;
-	        }
-	        
-	        @Override public void run ( )
-	        {
-	            if ( surface != null )
-	            {
-	                if ( newParams == null )
-	                {
-	                    surface.setVisibility ( View.INVISIBLE );
-	                    surface.invalidate ( );
-	                }
-	                else
-	                {
-	                    FrameLayout.LayoutParams videoParams = new FrameLayout.LayoutParams ( surface.getWidth ( ), 
-	                                                                                          surface.getHeight ( ) );
-	                    videoParams.gravity = Gravity.TOP;
-	                    videoParams.topMargin = newParams.topMargin;
-	                    videoParams.leftMargin = newParams.leftMargin;
-	                    surface.setLayoutParams ( videoParams );
-	                    surface.invalidate ( );
-	                }
-	            }
-	        }
-	    }
-	    
-	    public synchronized void displaySurface ( SurfaceView v, 
-	                                              FrameLayout.LayoutParams p )
-	    {
-	        DisplaySurfaceRunnable hvr = new DisplaySurfaceRunnable ( v, p );
-	        runOnUiThread ( hvr );
-	    }
+   private class DisplaySurfaceRunnable implements Runnable
+   {
+        private SurfaceView surface;
+        private FrameLayout.LayoutParams newParams;
+        
+        public DisplaySurfaceRunnable ( SurfaceView sv, 
+                                        FrameLayout.LayoutParams lp )
+        {
+            this.surface = sv;
+            this.newParams = lp;
+        }
+        
+        @Override public void run ( )
+        {
+            if ( surface != null )
+            {
+                if ( newParams == null )
+                {
+                    surface.setVisibility ( View.INVISIBLE );
+                    surface.invalidate ( );
+                }
+                else
+                {
+                    FrameLayout.LayoutParams videoParams = new FrameLayout.LayoutParams ( surface.getWidth ( ), 
+                                                                                          surface.getHeight ( ) );
+                    videoParams.gravity = Gravity.TOP;
+                    videoParams.topMargin = newParams.topMargin;
+                    videoParams.leftMargin = newParams.leftMargin;
+                    surface.setLayoutParams ( videoParams );
+                    surface.invalidate ( );
+                }
+            }
+        }
+    }
+    
+    public synchronized void displaySurface ( SurfaceView v, 
+                                              FrameLayout.LayoutParams p )
+    {
+        DisplaySurfaceRunnable hvr = new DisplaySurfaceRunnable ( v, p );
+        runOnUiThread ( hvr );
+    }
 
 	    
     @Override
     public void onCreate ( Bundle savedInstanceState )
     {
         instance = savedInstanceState;
+        myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                TimerMethod();
+            }
+
+        }, 0, 1000);
         startPlayer ( );
     }
 
@@ -124,7 +124,6 @@ public class SmilPlayerActivity extends Activity implements Callback
         super.onCreate ( instance );
         
         setContentView ( R.layout.player );
-
         frameLayout = (FrameLayout) findViewById ( R.id.frame );
         frameLayout.setWillNotDraw ( true );
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -155,10 +154,20 @@ public class SmilPlayerActivity extends Activity implements Callback
                     if ( view.getPlayState ( ) == view.PAUSED )
                     {
                         view.resumePlayer ( );
+                        Button playPause = (Button)findViewById( R.id.playBtn );
+                        playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.pausebuttonplayer));
                     }
-                    else
+                    else if ( view.getPlayState ( ) == view.PLAYING )
                     {
-                        view.playPlayer ( message );
+                        view.pausePlayer ( );
+                        //view.playPlayer ( message );
+                        Button playPause = (Button)findViewById( R.id.playBtn );
+                        playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.playbuttonplayer));
+                    }
+                    else if ( view.getPlayState ( ) == view.PLAYED )
+                    {
+                        Button playPause = (Button)findViewById( R.id.playBtn );
+                        playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.playbuttonplayer));
                     }
                 }
                 else
@@ -168,17 +177,17 @@ public class SmilPlayerActivity extends Activity implements Callback
             }
         });
 
-        ((Button)findViewById(R.id.pauseBtn)).setOnClickListener(new View.OnClickListener ( ) 
-        {
-            @Override
-            public void onClick ( View v ) 
-            {
-                if ( message != null )
-                {
-                    view.pausePlayer ( );
-                }             
-            }
-        });
+//        ((Button)findViewById(R.id.pauseBtn)).setOnClickListener(new View.OnClickListener ( ) 
+//        {
+//            @Override
+//            public void onClick ( View v ) 
+//            {
+//                if ( message != null )
+//                {
+//                    //view.pausePlayer ( );
+//                }             
+//            }
+//        });
 
         ((Button)findViewById(R.id.replayBtn)).setOnClickListener(new View.OnClickListener ( ) 
         {
@@ -198,7 +207,7 @@ public class SmilPlayerActivity extends Activity implements Callback
                 Toast.makeText(getApplicationContext(), "Respond", Toast.LENGTH_SHORT).show();
             }
         });
-
+        
         try
         {
             Intent in = getIntent ( );
@@ -229,6 +238,8 @@ public class SmilPlayerActivity extends Activity implements Callback
 *******************************************/            
             
                 loadVideos ( );
+                
+                time = 0;
             }            
         }
         catch ( Exception e )
@@ -237,6 +248,7 @@ public class SmilPlayerActivity extends Activity implements Callback
             Log.e("Exception", "error occurred while creating xml file", e);
         }
     }
+
    	
     private void restartPlayer ( )
    	{
@@ -331,4 +343,50 @@ public class SmilPlayerActivity extends Activity implements Callback
     @Override public void surfaceDestroyed ( SurfaceHolder holder ) 
     {
     }
+    
+    private Timer myTimer;
+    private int time = 0;
+
+
+    private void TimerMethod()
+    {
+        this.runOnUiThread(Timer_Tick);
+    }
+
+    private Runnable Timer_Tick = new Runnable() {
+        public void run() {
+            String timeDisplay = "";
+            if( time == -1 )
+            {
+                timeDisplay = "Click repeat to play again.";
+            } 
+            else if ( time < 10 )
+            {
+                timeDisplay = "00:0" + time;
+            }
+            else if( time < 60 )
+            {
+                timeDisplay = "00:" + time;
+            }
+            else if ( time < 70 )
+            {
+                timeDisplay = (time / 60) + ":0" + (time % 60);
+            }
+            else 
+            {
+                timeDisplay = (time / 60) + ":" + (time % 60);
+            }
+            
+            ((TextView)findViewById( R.id.timerLbl )).setText( "     " +  timeDisplay + "          " );
+            
+            if ( view.getPlayState ( ) == view.PLAYING )
+            {
+                time++;
+            }
+            else if ( view.getPlayState ( ) == view.PLAYED )
+            {
+                time = -1;
+            }
+        }
+    };
 }
