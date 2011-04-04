@@ -38,7 +38,7 @@
 		</activity>
 		
 		<receiver android:name=".communication.Receiver" android:screenOrientation="portrait">
-			<intent-filter android:priority="100">
+			<intent-filter>
 	        <!--  <action android:name="android.intent.action.DATA_SMS_RECEIVED" /> -->
 	        <!--  <data android:port="50009" /> -->
 	        <!-- <data android:scheme="sms" /> -->

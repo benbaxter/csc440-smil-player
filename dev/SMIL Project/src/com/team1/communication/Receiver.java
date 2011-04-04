@@ -1,5 +1,6 @@
 package com.team1.communication;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -29,8 +30,8 @@ public class Receiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent) 
     {    
         toastContext = context;
-        //this stops notifications to others
-        this.abortBroadcast();
+//        //this stops notifications to others
+//        this.abortBroadcast();
 
         //---get the SMS message passed in---
         Bundle bundle = intent.getExtras();   
@@ -75,10 +76,10 @@ public class Receiver extends BroadcastReceiver
                 //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 displayNotification( ticker, "SMIL Messages!", context );
             }
-            else{
-                //continue the normal process of sms and will get alert and reaches inbox
-                this.clearAbortBroadcast();
-            }
+//            else{
+//                //continue the normal process of sms and will get alert and reaches inbox
+//                this.clearAbortBroadcast();
+//            }
         } 
     }
     
@@ -87,6 +88,9 @@ public class Receiver extends BroadcastReceiver
         try
         {
             Downloader.download( CloudConstants.downloadURL, filename );
+            //move to inbox
+            //File file = new File( filename );
+            //file.renameTo( new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "inbox/" + filename) );
         }
         catch ( MalformedURLException e )
         {
