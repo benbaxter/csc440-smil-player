@@ -35,6 +35,7 @@
 		android:layout_height="wrap_content" 
 		android:background="@drawable/pausebuttonplayer"
 		android:layout_alignParentBottom="true" />
+	
 	<!--  
 	<Button android:id="@+id/pauseBtn" 
 		android:layout_width="wrap_content"
@@ -43,6 +44,7 @@
 		android:layout_toRightOf="@+id/playBtn"
 		android:layout_alignParentBottom="true" />
 	 -->
+	 
 	<Button android:id="@+id/replayBtn" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
@@ -58,12 +60,13 @@
 		android:layout_alignParentBottom="true" />
 		
 	<TextView android:id="@+id/timerLbl" 
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
-		android:layout_toRightOf="@+id/respondBtn"
+		android:layout_above="@+id/playBtn"
+		android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true"
 		android:background="#efefef"
 		android:textColor="#000"
-		android:text="About to start"
-		android:layout_alignParentBottom="true" />
+		android:text="                                 Loading..." />
 		
 </RelativeLayout>

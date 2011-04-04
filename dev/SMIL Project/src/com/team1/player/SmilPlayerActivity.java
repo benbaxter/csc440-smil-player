@@ -247,7 +247,7 @@ public class SmilPlayerActivity extends Activity implements Callback
 
     	@Override public void seekTo ( int pos ) 
     	{
-    	    view.setRuntime ( pos );
+    	    view.setRunTime ( pos );
     	}
         
     	@Override public void pause ( ) 
@@ -330,23 +330,26 @@ public class SmilPlayerActivity extends Activity implements Callback
             NumberFormat format;
             
             String timeDisplay = "";
-            long time = view.getRuntime ( );
+            int time = view.getRuntime ( );
     
             format = NumberFormat.getNumberInstance();
             format.setMinimumIntegerDigits(2); // pad with 0 if necessary
 
 
-            if( time < 0 )
+            if ( ( time < 0 ) ||
+                 ( view.getPlayState ( ) == view.STOPPED ) )
             {
-                timeDisplay = "Click repeat to play again.";
+                timeDisplay = "                     Click repeat to play again.";
             } 
             else
             {
-                timeDisplay = format.format( time / 60 ) + ":" + format.format( time % 60  );
+                int length = view.getRunLength ( );
+                timeDisplay = "                              " +  
+                              format.format ( time / 60 ) + ":" + format.format ( time % 60  ) + " / " + 
+                              format.format ( length / 60 ) + ":" + format.format ( length % 60  );
             }
             
-            
-            ((TextView)findViewById( R.id.timerLbl )).setText( "     " +  timeDisplay + "          " );
+            ((TextView)findViewById( R.id.timerLbl )).setText( timeDisplay );
         }
     };
 }

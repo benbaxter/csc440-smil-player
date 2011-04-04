@@ -205,7 +205,12 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
                 endIndex = 0;
             }
 		}
-		
+
+		public int getRunLength ( )
+	    {
+		    return message.getLength ( );
+	    }
+
 		private class SmilAudioThread extends Thread
 		{
 			private SmilAudioComponent audio;
@@ -418,10 +423,15 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 		return time.getRunTime ( );
 	}
 
-	public void setRuntime ( int pos )
+	public void setRunTime ( int pos )
 	{
 	    time.setRunTime ( pos );
 	}
+	
+	public int getRunLength ( )
+    {
+	    return time.getRunLength ( );
+    }
 	
 	@Override public void surfaceCreated ( SurfaceHolder arg0 ) 
 	{
