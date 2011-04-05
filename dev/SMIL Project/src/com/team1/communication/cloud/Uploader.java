@@ -1,4 +1,5 @@
 package com.team1.communication.cloud;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -32,11 +33,6 @@ public class Uploader {
 			return false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		catch (Exception e)
-		{
 			e.printStackTrace();
 			return false;
 		}

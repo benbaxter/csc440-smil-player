@@ -87,7 +87,7 @@ public class Receiver extends BroadcastReceiver
     {
         try
         {
-            Downloader.download( CloudConstants.downloadURL, filename );
+            Downloader.download( CloudConstants.downloadURL, filename, filename );
             //move to inbox
             //File file = new File( filename );
             //file.renameTo( new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "inbox/" + filename) );
