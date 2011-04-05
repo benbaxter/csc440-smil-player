@@ -4,11 +4,11 @@ import java.net.*;
 
 public class Downloader {
 	
-	public static void download(String downloadURL, String filename) throws MalformedURLException, IOException
+	public static void download(String downloadURL, String filename, String saveAs) throws MalformedURLException, IOException
 	{
 		InputStream in = new URL(downloadURL+"?file="+URLEncoder.encode(filename, "UTF-8")).openStream();
 		
-		File file = new File(filename);
+		File file = new File(saveAs);
 		BufferedOutputStream fOut = null;
 
 		fOut = new BufferedOutputStream(new FileOutputStream(file));
