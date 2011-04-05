@@ -23,4 +23,9 @@ public class Downloader {
 
 	}
 	
+	public static void download(String downloadURL, String filename) throws MalformedURLException, IOException
+	{
+	    download(downloadURL, filename, filename);
+	}
+	
 }
