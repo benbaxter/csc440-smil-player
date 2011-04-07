@@ -1,15 +1,7 @@
 package com.team1.communication;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import com.team1.Main;
-import com.team1.R;
-import com.team1.Smil.SmilConstants;
-import com.team1.communication.cloud.CloudConstants;
-import com.team1.communication.cloud.Downloader;
-import com.team1.player.SmilPlayerActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,7 +12,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.team1.R;
+import com.team1.Smil.SmilConstants;
+import com.team1.communication.cloud.CloudConstants;
+import com.team1.communication.cloud.Downloader;
+import com.team1.player.SmilPlayerActivity;
  
 public class Receiver extends BroadcastReceiver
 {
@@ -31,7 +30,7 @@ public class Receiver extends BroadcastReceiver
     {    
         toastContext = context;
 //        //this stops notifications to others
-//        this.abortBroadcast();
+        this.abortBroadcast();
 
         //---get the SMS message passed in---
         Bundle bundle = intent.getExtras();   
@@ -51,12 +50,14 @@ public class Receiver extends BroadcastReceiver
                     str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
                     str += " :";
                     str += msgs[i].getMessageBody().toString();
+                    Log.i("DOWNLOADER", msgs[i].getTimestampMillis() +"");
                     str += "\n";    
                     ++numOfSMIL;
                     
                     String from = msgs[i].getOriginatingAddress().replace( "+", "" );
                     //file name of the form "from-timestamp"
                     smilFile = from + ".smil";
+                    smilFile = "test1.smil";
                     Toast.makeText( toastContext, "About to download: " + smilFile, Toast.LENGTH_LONG );
                     boolean downloaded = downloadFromCloud( smilFile );
                     if(downloaded)
@@ -76,10 +77,10 @@ public class Receiver extends BroadcastReceiver
                 //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 displayNotification( ticker, "SMIL Messages!", context );
             }
-//            else{
-//                //continue the normal process of sms and will get alert and reaches inbox
-//                this.clearAbortBroadcast();
-//            }
+            else{
+                //continue the normal process of sms and will get alert and reaches inbox
+                this.clearAbortBroadcast();
+            }
         } 
     }
     
@@ -87,7 +88,9 @@ public class Receiver extends BroadcastReceiver
     {
         try
         {
+            Log.i("DOWNLOADER", filename);
             Downloader.download( CloudConstants.downloadURL, filename, filename );
+
             //move to inbox
             //File file = new File( filename );
             //file.renameTo( new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "inbox/" + filename) );

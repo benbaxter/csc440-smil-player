@@ -2,15 +2,17 @@ package com.team1.communication.cloud;
 import java.io.*;
 import java.net.*;
 
+import android.util.Log;
+
 public class Downloader {
 	
 	public static void download(String downloadURL, String filename, String saveAs) throws MalformedURLException, IOException
 	{
 		InputStream in = new URL(downloadURL+"?file="+URLEncoder.encode(filename, "UTF-8")).openStream();
-		
+		Log.i("DOWNLOADER", saveAs);
 		File file = new File(saveAs);
 		BufferedOutputStream fOut = null;
-
+		
 		fOut = new BufferedOutputStream(new FileOutputStream(file));
 		byte[] buffer = new byte[32 * 1024];
 		int bytesRead = 0;

@@ -7,8 +7,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import com.team1.R;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilGenerator;
 import com.team1.communication.cloud.CloudConstants;
 import com.team1.communication.cloud.Uploader;
+import com.team1.composer.ComposerActivity;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -17,9 +20,11 @@ import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +69,9 @@ public class SendActivity extends Activity{
                         number = addrTxt.getText().toString();
                     }
                     uploadToCloud();
+                    Log.i("DOWNLOADER", "sent at: " + System.currentTimeMillis());
                     sendSMSMessage(number, msg);
+                    Log.i("DOWNLOADER", "sent at: " + System.currentTimeMillis());
                     
                     
                 } catch (Exception e) {
@@ -177,11 +184,14 @@ public class SendActivity extends Activity{
 //        sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
         unregisterReceiver( sentReceiver );
         unregisterReceiver( deliveredReceiver );
-        
+        //will get rid of extras if this works
         Intent in = getIntent ( );
         if ( in.hasExtra ( "smilFile" ) )
         {
             String smilURL = in.getExtras().getString( "smilFile" );
+            //hope this works
+            smilURL = getMyPhoneNumber() + ".smil";
+            saveSmilFile( smilURL );
             Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
             File file = new File(smilURL);
             toast( "About to upload: " + smilURL );
@@ -248,6 +258,30 @@ public class SendActivity extends Activity{
                 }
             }
         }
+    }
+    
+    
+    private void saveSmilFile ( String fileName )
+    {
+        try
+        {
+            // Save this draft
+            SmilGenerator sg = new SmilGenerator ( );
+            sg.setFileName ( fileName );
+            sg.setFilePath ( SmilConstants.OUTBOX_PATH );
+            sg.generateSMILFile ( ComposerActivity.getMedia() );
+        }
+        catch ( Exception e )
+        {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Exception", "error occurred while creating xml file", e);
+        }
+    }
+    
+    
+    private String getMyPhoneNumber(){
+        TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
+        return mTelephonyMgr.getLine1Number();
     }
     
     public void toast(String msg) {
