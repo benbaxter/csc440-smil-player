@@ -32,6 +32,9 @@ import com.team1.player.*;
 
 public class ComposerActivity extends Activity {
 
+    private static final int DRAFT = 1;
+    private static final int SEND = 2;
+    
     private static final int ADD_DIALOG = 4;
 	private static final int SAVE_CONFIRM = 5;
 
@@ -271,7 +274,7 @@ public class ComposerActivity extends Activity {
                 
                 String file = "draft_" + format.format ( fileIndex ) + ".smil";
 			    
-                saveSmilFile ( file  );
+                saveSmilFile ( file , DRAFT );
 			} 
 			else if ( v.getId() == R.id.undoBtn ) 
 			{
@@ -339,14 +342,17 @@ public class ComposerActivity extends Activity {
         }
 	}
 	
-	private void saveSmilFile ( String fileName )
+	private void saveSmilFile ( String fileName, int mode )
     {
         try
         {
             // Save this draft
             SmilGenerator sg = new SmilGenerator ( );
             sg.setFileName ( fileName );
-            sg.setFilePath ( SmilConstants.DRAFT_PATH );
+            if(mode == SEND)
+                sg.setFilePath ( SmilConstants.OUTBOX_PATH );
+            else if (mode == DRAFT)
+                sg.setFilePath ( SmilConstants.DRAFT_PATH );
             sg.generateSMILFile ( media );
         }
         catch ( Exception e )
@@ -363,9 +369,11 @@ public class ComposerActivity extends Activity {
 
 	private void openSendActivity ( ) 
 	{
-        String smilFile = Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "test1.smil";
+//        String smilFile = SmilConstants.OUTBOX_PATH;
+//        smilFile += getMyPhoneNumber() + ".smil";
+	    String smilFile = getMyPhoneNumber() + ".smil";
         
-        saveSmilFile( getMyPhoneNumber() + ".smil" );
+        saveSmilFile( smilFile, SEND);
 
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -454,7 +462,7 @@ public class ComposerActivity extends Activity {
 	                
 	                if( type == SmilConstants.COMPONENT_TYPE_AUDIO )
 	                {
-	                    toast( "AUDIO EDITED" );
+	                    //toast( "AUDIO EDITED" );
 	                } 
 	                else if ( type == SmilConstants.COMPONENT_TYPE_IMAGE ) 
 	                {
@@ -535,6 +543,10 @@ public class ComposerActivity extends Activity {
 
     	            break;
 	            }
+	            else if ( resultCode == Activity.RESULT_CANCELED ) 
+                {
+                    media.removeLast ( );
+                }
 	        default :
 	            Log.i("CODE", Integer.toString( reqCode ) );
 	            Log.i("CODE", Integer.toString( resultCode) );
