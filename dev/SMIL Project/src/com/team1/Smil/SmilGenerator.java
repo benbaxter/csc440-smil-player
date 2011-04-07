@@ -96,6 +96,8 @@ public class SmilGenerator
         File appDir = new File ( pathDir, filePath );
         appDir.mkdirs ( );
         file = new File ( appDir, fileName );
+        Log.i("GENERATOR", appDir.toString());
+        Log.i("GENERATOR", fileName);
     }
     
     final Comparator<SmilComponent> START_TIME_ORDER =
