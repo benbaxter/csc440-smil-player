@@ -74,14 +74,14 @@
 					android:layout_height="wrap_content" />	
 			</RelativeLayout>	
 			
-			<RelativeLayout android:id="@+id/audioSearch" android:visibility="gone" android:layout_width="fill_parent"
-				 android:layout_height="wrap_content" android:layout_marginBottom="5px" android:layout_below="@+id/repeatInfo">
+			<RelativeLayout android:id="@+id/audioSearch" android:layout_width="fill_parent"
+				 android:layout_height="wrap_content" android:layout_marginBottom="5px" android:layout_below="@+id/repeatInfo" android:visibility="gone">
 				<Button android:id="@+id/leftBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
-				 android:text="&lt;" android:visibility="invisible" />
-				<Button android:id="@+id/pad" android:layout_width="wrap_content" android:layout_height="wrap_content"
-				 android:text="@+id/Button01" android:visibility="invisible" android:layout_toRightOf="@+id/leftBtn"/>
+				 android:text="&lt;" android:visibility="invisible"/>
+				<Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+				 android:visibility="visible" android:layout_centerInParent="true" android:text="Delete" android:id="@+id/deleteBtn"/>
 				<Button android:id="@+id/rightBtn" android:layout_height="wrap_content" android:layout_width="wrap_content"
-				 android:text="&gt;" android:visibility="invisible" android:layout_toRightOf="@+id/pad"/>
+				 android:text="&gt;" android:layout_alignParentRight="true" android:visibility="invisible"/>
 			</RelativeLayout>
 			
 			<RelativeLayout android:id="@+id/hwInfo" android:visibility="gone" android:layout_below="@+id/repeatInfo"
@@ -102,14 +102,10 @@
 					android:maxLength="4" android:width="70dip" />			
 			</RelativeLayout>
 			
-			<RelativeLayout android:id="@+id/rotation" android:visibility="gone" android:layout_below="@+id/hwInfo"
-				 android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="5px">
-				<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rotate" 	
-				 android:layout_gravity="center" android:gravity="center" android:id="@+id/rotateBtn"/>
-			</RelativeLayout>
 			
-			<RelativeLayout android:id="@+id/xyInfo" android:layout_below="@+id/rotation" android:layout_marginBottom="5px"
-				 android:layout_width="fill_parent" android:layout_height="wrap_content">				
+			
+			<RelativeLayout android:id="@+id/xyInfo" android:layout_marginBottom="5px"
+				 android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@+id/hwInfo" android:visibility="visible">				
 				<TextView android:id="@+id/optionalLabel" android:layout_marginBottom="5px"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:text="Position (optional):" android:gravity="left" />			
