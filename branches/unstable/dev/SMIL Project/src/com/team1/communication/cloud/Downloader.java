@@ -6,7 +6,8 @@ import android.util.Log;
 
 public class Downloader {
 	
-	public static void download(String downloadURL, String filename, String saveAs) throws MalformedURLException, IOException
+    static String downloadURL = CloudConstants.downloadURL;
+	public static void download(String filename, String saveAs) throws MalformedURLException, IOException
 	{
 		InputStream in = new URL(downloadURL+"?file="+URLEncoder.encode(filename, "UTF-8")).openStream();
 		Log.i("DOWNLOADER", saveAs);
@@ -25,9 +26,9 @@ public class Downloader {
 
 	}
 	
-	public static void download(String downloadURL, String filename) throws MalformedURLException, IOException
+	public static void download(String filename) throws MalformedURLException, IOException
 	{
-	    download(downloadURL, filename, filename);
+	    download(filename, filename);
 	}
 	
 }
