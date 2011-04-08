@@ -7,28 +7,24 @@
 
   <servlet>
     <servlet-name>Upload</servlet-name>
-    <servlet-class>com.sample.Upload</servlet-class>
+    <servlet-class>com.team1.communication.cloud.Upload</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ProvideUploadURL</servlet-name>
-    <servlet-class>com.sample.ProvideUploadURL</servlet-class>
+    <servlet-class>com.team1.communication.cloud.ProvideUploadURL</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ProvideDownload</servlet-name>
-    <servlet-class>com.sample.ProvideDownload</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>Upload</servlet-name>
-    <servlet-class>com.sample.Upload</servlet-class>
+    <servlet-class>com.team1.communication.cloud.ProvideDownload</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>Android</servlet-name>
-    <servlet-class>com.sample.Android</servlet-class>
+    <servlet-class>com.team1.communication.cloud.Android</servlet-class>
   </servlet>
   
   <servlet>
     <servlet-name>Serve</servlet-name>
-    <servlet-class>com.sample.Serve</servlet-class>
+    <servlet-class>com.team1.communication.cloud.Serve</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ProvideUploadURL</servlet-name>
