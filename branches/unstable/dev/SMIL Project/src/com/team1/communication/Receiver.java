@@ -89,7 +89,7 @@ public class Receiver extends BroadcastReceiver
         try
         {
             Log.i("DOWNLOADER", filename);
-            Downloader.download( CloudConstants.downloadURL, filename, filename );
+            Downloader.download(filename, filename );
 
             //move to inbox
             //File file = new File( filename );
