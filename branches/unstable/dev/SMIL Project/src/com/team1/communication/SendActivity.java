@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.*;
 import com.team1.R;
 import com.team1.Smil.SmilConstants;
@@ -20,6 +21,7 @@ import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -244,6 +246,7 @@ public class SendActivity extends Activity{
                     }
                     else
                     {
+                        
                         toast( "Failed to upload: " + f );
                     }
                     } 

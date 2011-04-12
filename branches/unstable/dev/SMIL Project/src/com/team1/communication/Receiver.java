@@ -93,7 +93,7 @@ public class Receiver extends BroadcastReceiver
 
             //move to inbox
             //File file = new File( filename );
-            //file.renameTo( new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.ROOT_PATH + "inbox/" + filename) );
+            //file.renameTo( new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SmilConstants.INBOX_PATH + filename) );
         }
         catch ( MalformedURLException e )
         {
