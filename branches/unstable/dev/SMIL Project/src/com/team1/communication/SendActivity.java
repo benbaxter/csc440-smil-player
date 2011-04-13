@@ -119,6 +119,21 @@ public class SendActivity extends Activity{
         }
     }
     
+    public void sendSMILMessage(String number, File SMILfile)
+    {
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
+        SmsManager sms = SmsManager.getDefault();
+        
+        try {
+        sms.sendTextMessage(number, null, SMILfile.getName(), sentPI, deliveredPI); 
+        } catch (Exception e) {toast("There was a problem sending SMIL message to " + number);}
+        
+        boolean itworked = Uploader.upload(SMILfile);
+        if (itworked) toast(SMILfile.getName() + "uploaded to cloud");
+        else toast("There was a problem uploading the file");
+    }
+    
     private void sendSMSMessage(String phoneNumber, String message)
     {        
         String SENT = "SMS_SENT";
@@ -157,6 +172,7 @@ public class SendActivity extends Activity{
                 }
             }
         };
+        
         BroadcastReceiver deliveredReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context arg0, Intent arg1) {
