@@ -32,9 +32,6 @@ import com.team1.player.*;
 
 public class ComposerActivity extends Activity {
 
-    private static final int DRAFT = 1;
-    private static final int SEND = 2;
-    
     private static final int ADD_DIALOG = 4;
 	private static final int SAVE_CONFIRM = 5;
 
@@ -92,7 +89,8 @@ public class ComposerActivity extends Activity {
 		            int type = message.getResourcesByBeginTime().get(idx).getType ( );
 		            String source = message.getResourcesByBeginTime().get(idx).getSource ( );
 		            int begin = message.getResourcesByBeginTime().get(idx).getBegin ( );
-		            int end = message.getResourcesByBeginTime().get(idx).getEnd ( );		            
+		            int end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
+		                message.getResourcesByBeginTime().get(idx).getBegin ( );	            
 		            
 		            if ( SmilConstants.COMPONENT_TYPE_AUDIO == type ) 
 		            {
@@ -274,7 +272,7 @@ public class ComposerActivity extends Activity {
                 
                 String file = "draft_" + format.format ( fileIndex ) + ".smil";
 			    
-                saveSmilFile ( file , DRAFT );
+                saveSmilFile ( file , SmilConstants.MODE_DRAFT );
 			} 
 			else if ( v.getId() == R.id.previewBtn ) 
 			{
@@ -327,7 +325,7 @@ public class ComposerActivity extends Activity {
         {
             // Save this draft to a temporary .smil file
             SmilGenerator sg = new SmilGenerator ( );
-            sg.generateSMILFile ( media );
+            sg.generateSMILFile ( media, SmilConstants.MODE_DRAFT );
             
             
             // Preview the temporary .smil file
@@ -342,18 +340,20 @@ public class ComposerActivity extends Activity {
         }
 	}
 	
-	private void saveSmilFile ( String fileName, int mode )
+	public void saveSmilFile ( String fileName, int mode )
     {
         try
         {
             // Save this draft
             SmilGenerator sg = new SmilGenerator ( );
             sg.setFileName ( fileName );
-            if(mode == SEND)
+            if(mode == SmilConstants.MODE_SEND) {
                 sg.setFilePath ( SmilConstants.OUTBOX_PATH );
-            else if (mode == DRAFT)
+                sg.generateSMILFile ( media, SmilConstants.MODE_SEND );
+            } else if (mode == SmilConstants.MODE_DRAFT) {
                 sg.setFilePath ( SmilConstants.DRAFT_PATH );
-            sg.generateSMILFile ( media );
+                sg.generateSMILFile ( media, SmilConstants.MODE_DRAFT );
+            }
         }
         catch ( Exception e )
         {
@@ -371,9 +371,8 @@ public class ComposerActivity extends Activity {
 	{
 //        String smilFile = SmilConstants.OUTBOX_PATH;
 //        smilFile += getMyPhoneNumber() + ".smil";
-	    String smilFile = getMyPhoneNumber() + ".smil";
-        
-        saveSmilFile( smilFile, SEND);
+	    String smilFile = getMyPhoneNumber() + "_" + System.currentTimeMillis() + ".smil";
+        //saveSmilFile( smilFile, SmilConstants.MODE_SEND);
 
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -387,14 +386,13 @@ public class ComposerActivity extends Activity {
         }
         
         mSendIntent.putStringArrayListExtra ( "mediaFiles",  fileNames );
-        Log.i ( "SMILE FILE TO BE SENT", smilFile );
         mSendIntent.putExtra ( "smilFile",   smilFile );
         startActivityForResult ( mSendIntent, SEND_MESSAGE );
     }
 
 	private void openMediaChooserActivity(String type){
 	    Intent intentBrowseFiles;
-        if(type == "video/*") {
+        if(type.startsWith( "video/*" ) ) {
             intentBrowseFiles = new Intent(Intent.ACTION_PICK);
             intentBrowseFiles.setType(type);
             startActivityForResult ( intentBrowseFiles, MEDIA_PICK );

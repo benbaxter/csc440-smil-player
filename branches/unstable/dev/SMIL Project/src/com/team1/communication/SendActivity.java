@@ -1,28 +1,20 @@
 package com.team1.communication;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.*;
 import com.team1.R;
 import com.team1.Smil.SmilConstants;
 import com.team1.Smil.SmilGenerator;
-import com.team1.communication.cloud.CloudConstants;
 import com.team1.communication.cloud.Uploader;
 import com.team1.composer.ComposerActivity;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
@@ -63,6 +55,9 @@ public class SendActivity extends Activity{
                 //ProgressDialog dialog = ProgressDialog.show(getApplicationContext(), "", "Please wait for few seconds...", true);
                 EditText addrTxt = (EditText) SendActivity.this.findViewById(R.id.addrText);
                 addrTxt.setFocusable(false);
+                Intent in = getIntent ( );
+                String smilURL = in.getExtras().getString( "smilFile" );
+
 
                 try {
                     String msg = "You have just received a new SMIL message! Go to our application to check it out!";
@@ -70,17 +65,14 @@ public class SendActivity extends Activity{
                     {
                         number = addrTxt.getText().toString();
                     }
-                    uploadToCloud();
-                    Log.i("DOWNLOADER", "sent at: " + System.currentTimeMillis());
+                    msg += " Look for the file in your inbox called " + smilURL;
                     sendSMSMessage(number, msg);
-                    Log.i("DOWNLOADER", "sent at: " + System.currentTimeMillis());
                     
                     
                 } catch (Exception e) {
                     toast("Failed to send SMS ");
                     e.printStackTrace();
                 }
-                //dialog.dismiss();
                 
             }else if(v.getId() == R.id.cancelBtn){
                 finish();
@@ -195,8 +187,6 @@ public class SendActivity extends Activity{
         //---when the SMS has been delivered---
         registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
         
-        short SMS_PORT = ( short ) 50009;
-        
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
 //        sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
@@ -207,11 +197,11 @@ public class SendActivity extends Activity{
         if ( in.hasExtra ( "smilFile" ) )
         {
             String smilURL = in.getExtras().getString( "smilFile" );
-            //hope this works
-            smilURL = getMyPhoneNumber() + ".smil";
             saveSmilFile( smilURL );
             Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
-            File file = new File(smilURL);
+            File file = new File(Environment.getExternalStorageDirectory ( ) 
+                    + SmilConstants.OUTBOX_PATH + smilURL);
+            Log.i ( "SEND", file.getAbsolutePath() );
             toast( "About to upload: " + smilURL );
             try {
                 boolean uploaded = Uploader.upload( file );
@@ -241,54 +231,53 @@ public class SendActivity extends Activity{
         finish();
     }
     
-    private void uploadToCloud()
-    {
-        Intent in = getIntent ( );
-        if ( in.hasExtra ( "mediaFiles" ) )
-        {
-            ArrayList<String> fileNames = in.getExtras().getStringArrayList( "mediaFiles" );
-            for( String f : fileNames )
-            {
-                File file = new File(f);
-                toast( "does file exist: " + f );
-                if(file.exists())
-                {
-                    toast( "About to upload" );
-                    try {
-                    boolean uploaded = Uploader.upload( file );
-                    if(uploaded)
-                    {
-                        toast( "File uploaded: " + f );
-                    }
-                    else
-                    {
-                        
-                        toast( "Failed to upload: " + f );
-                    }
-                    } 
-                    catch (Exception e)
-                    {
-                        toast( e.toString());
-                    }
-                }
-                else
-                {
-                    toast( "file does not exist: " + f);
-                }
-            }
-        }
-    }
+//    private void uploadToCloud()
+//    {
+//        Intent in = getIntent ( );
+//        if ( in.hasExtra ( "mediaFiles" ) )
+//        {
+//            ArrayList<String> fileNames = in.getExtras().getStringArrayList( "mediaFiles" );
+//            for( String f : fileNames )
+//            {
+//                File file = new File(f);
+//                toast( "does file exist: " + f );
+//                if(file.exists())
+//                {
+//                    Log.i("FILENAME", f);
+//                    toast( "About to upload" );
+//                    try {
+//                        boolean uploaded = Uploader.upload( file );
+//                        if(uploaded)
+//                        {
+//                            toast( "File uploaded: " + f );
+//                        }
+//                        else
+//                        {
+//                            toast( "Failed to upload: " + f );
+//                        }
+//                    } 
+//                    catch (Exception e)
+//                    {
+//                        toast( e.toString());
+//                    }
+//                }
+//                else
+//                {
+//                    toast( "file does not exist: " + f);
+//                }
+//            }
+//        }
+//    }
     
     
     private void saveSmilFile ( String fileName )
     {
         try
         {
-            // Save this draft
             SmilGenerator sg = new SmilGenerator ( );
             sg.setFileName ( fileName );
             sg.setFilePath ( SmilConstants.OUTBOX_PATH );
-            sg.generateSMILFile ( ComposerActivity.getMedia() );
+            sg.generateSMILFile ( ComposerActivity.getMedia(), SmilConstants.MODE_SEND );
         }
         catch ( Exception e )
         {

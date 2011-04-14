@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -19,7 +18,6 @@ import android.provider.MediaStore;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MediaPropertiesActivity extends Activity
 {
@@ -38,14 +36,12 @@ public class MediaPropertiesActivity extends Activity
         Button okBtn = ( Button ) findViewById( R.id.okBtn );
         Button cancelBtn = ( Button ) findViewById( R.id.cancelBtn );
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
-        Button rotateBtn = ( Button ) findViewById( R.id.rotateBtn );
         Button leftBtn = ( Button ) findViewById( R.id.leftBtn );
         Button rightBtn = ( Button ) findViewById( R.id.rightBtn );
 
         okBtn.setOnClickListener( mClick );
         cancelBtn.setOnClickListener( mClick );
         backBtn.setOnClickListener( mClick );
-        rotateBtn.setOnClickListener( mClick );
         leftBtn.setOnClickListener( mClick );
         rightBtn.setOnClickListener( mClick );
 
@@ -130,35 +126,8 @@ public class MediaPropertiesActivity extends Activity
             et.setText( Integer.toString( media.getEnd() ) );
             et = (EditText)findViewById( R.id.startTime );
             et.setText( Integer.toString( media.getBegin() ) );
-            //font size drop down.
-            //This code will also set the font size
-            Spinner spinner = (Spinner) findViewById(R.id.fontSizeSpinner);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                    this, R.array.font_size_array, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-            spinner.setSelection(media.getFontSize()/10 - 1);
-            spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-            {
-                @Override
-                public void onItemSelected( AdapterView<?> parent, View view, int pos, long id )
-                {
-                    int size = Integer.parseInt( parent.getItemAtPosition(pos).toString() );
-                    media.setFontSize( size );
-                }
-                @Override
-                public void onNothingSelected( AdapterView<?> arg0 )
-                {
-                    
-                }
-              });
-            
-                     
            
             findViewById( R.id.textInfo).setVisibility( View.VISIBLE );
-            findViewById( R.id.fontSizeInfo ).setVisibility( View.VISIBLE );
-              
-            
         } 
         else if (media.getType() == SmilConstants.COMPONENT_TYPE_IMAGE ) {
             if(extras != null)
@@ -194,7 +163,6 @@ public class MediaPropertiesActivity extends Activity
             et.setText( Integer.toString( media.getBegin() ) ); 
             
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
-            findViewById( R.id.rotation).setVisibility( View.VISIBLE );
         } 
         else if (media.getType() == SmilConstants.COMPONENT_TYPE_VIDEO) {
             if(extras != null)
@@ -267,27 +235,6 @@ public class MediaPropertiesActivity extends Activity
         tv.setText(media.getFileName());
     }
     
-    //radio button listener
-    //this code will also set the orientation of the text
-    private OnClickListener radio_listener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //Reference for vertical text
-            //http://stackoverflow.com/questions/1258275/vertical-rotated-label-in-android
-            //http://code.google.com/p/chartdroid/
-            
-            //RadioButton rb = (RadioButton) v;
-            //if( rb.getText().equals( R.string.horizontal_label ) )
-            //{
-            //    media.setOrientation( Media.HORIZONTAL );
-            //}
-            //else 
-            //{
-            //    media.setOrientation( Media.VERTICAL );
-            //}
-        }
-    };
-
     OnClickListener  mClick = new OnClickListener()
     {
         @Override
@@ -362,15 +309,6 @@ public class MediaPropertiesActivity extends Activity
                 
                 setResult(RESULT_OK, data);
                 finish();
-            }
-            else if ( v.getId() == R.id.rotateBtn )
-            {
-                int w = image.getWidth();
-                int h = image.getHeight();
-                Matrix mtx = new Matrix();
-                mtx.postRotate(90);
-                image = Bitmap.createBitmap(image, 0, 0, w, h, mtx, true);
-                toast("Image rotated 90 degrees");
             }
             else if ( v.getId() == R.id.leftBtn )
             {

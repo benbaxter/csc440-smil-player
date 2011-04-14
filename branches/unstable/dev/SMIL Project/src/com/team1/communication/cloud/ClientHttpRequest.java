@@ -211,7 +211,7 @@ public class ClientHttpRequest {
    * @throws IOException
    */
   public void setParameter(String name, File file) throws IOException {
-    setParameter(name, file.getPath(), new FileInputStream(file));
+    setParameter(name, file.getName(), new FileInputStream(file));
   }
 
   /**
