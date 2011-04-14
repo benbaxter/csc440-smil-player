@@ -59,6 +59,8 @@ public class Main extends Activity
             appDir.mkdirs ( );
             appDir = new File ( pathDir, SmilConstants.OUTBOX_PATH );
             appDir.mkdirs ( );
+            appDir = new File ( pathDir, SmilConstants.MEDIA_PATH );
+            appDir.mkdirs ( );
         }
         catch ( Exception e )
         {

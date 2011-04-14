@@ -27,12 +27,18 @@ public abstract class SmilComponent
         this.repeat   = false;
     }
 
-    public SmilComponent ( String fileName, SmilRegion region, int begin, int end ) 
+    public SmilComponent ( String source, SmilRegion region, int begin, int end ) 
     {
         this.begin    = begin;
         this.end      = end;
-        this.fileName = fileName;
-        this.filePath = fileName;
+        if ( source != null ) {
+            String[] derivingName = source.split( "/" );
+            if( derivingName.length > 1){
+                this.fileName = derivingName[derivingName.length - 1];
+            }
+        }
+        fileName = source;
+        filePath = source;
         this.region   = region;
         this.repeat   = false;
     }

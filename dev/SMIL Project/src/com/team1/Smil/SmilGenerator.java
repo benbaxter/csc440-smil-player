@@ -8,9 +8,13 @@ package com.team1.Smil;
 import java.io.*;
 import java.util.*;
 
+import com.team1.communication.cloud.Uploader;
+import com.team1.composer.ComposerActivity;
+
 import android.os.Environment;
 import android.util.Log;
 //import com.team1.composer.Media;
+import android.widget.Toast;
 
 public class SmilGenerator
 {
@@ -18,7 +22,7 @@ public class SmilGenerator
     private String fileName = "test1.smil";
     private File file;
     
-    public void generateSMILFile(List<SmilComponent> list)
+    public void generateSMILFile(List<SmilComponent> list, int mode)
     {
         boolean debug = true;
         figureOutFile();
@@ -59,8 +63,23 @@ public class SmilGenerator
                 //need to look at how/where the src is
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_TEXT)
                     par.append("src=\"data:," + item.getText() + "\" ");
-                else
-                    par.append("src=\"" + item.getFilePath() + "\" ");
+                else{
+                    if( mode == SmilConstants.MODE_DRAFT)
+                        par.append("src=\"" + item.getFilePath() + "\" ");
+                    else if( mode == SmilConstants.MODE_SEND){
+                        File file = copyFile(item.getFilePath(), item.getFileName() );
+                        item.setFilePath( file.getCanonicalPath() );
+                        item.setFileName( file.getName() );
+                        par.append("src=\"" + file.getName() + "\" ");
+                        Log.i("GENTEST", file.getAbsolutePath());
+                        
+                        boolean uploaded = Uploader.upload( file );
+                        if(uploaded);
+                            file.delete();
+                            
+                        Log.i("GENTEST", uploaded+"");
+                    }
+                }   
                 
                 if(item.getType() != SmilConstants.COMPONENT_TYPE_AUDIO)
                     par.append("region=\"" + item.getTag() + "\" ");
@@ -98,6 +117,37 @@ public class SmilGenerator
         file = new File ( appDir, fileName );
         Log.i("GENERATOR", appDir.toString());
         Log.i("GENERATOR", fileName);
+    }
+    
+    private File copyFile(String originalStr, String fileName)
+    {
+        File pathDir = Environment.getExternalStorageDirectory ( );
+        File appDir = new File ( pathDir, SmilConstants.MEDIA_PATH );
+        appDir.mkdirs ( );
+        String[] fileArray = fileName.split("\\.");
+        String tempFileName = fileArray[0]+"_"+System.currentTimeMillis()+"."+fileArray[1];
+        File copy = new File ( appDir, tempFileName );
+        File original = new File( originalStr );
+        try{
+            
+            InputStream in = new FileInputStream(original);
+            OutputStream out = new FileOutputStream(copy);
+    
+            byte[] buf = new byte[1024];
+            int len;
+            
+            while ((len = in.read(buf)) > 0){
+              out.write(buf, 0, len);
+            }
+            
+            in.close();
+            out.close();
+            
+        } catch(FileNotFoundException ex) {
+            System.exit(0);
+        } catch(IOException e) { 
+        }
+        return copy;
     }
     
     final Comparator<SmilComponent> START_TIME_ORDER =
