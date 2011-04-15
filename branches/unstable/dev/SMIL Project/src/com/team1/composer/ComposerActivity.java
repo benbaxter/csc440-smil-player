@@ -454,15 +454,33 @@ public class ComposerActivity extends Activity {
 	        case (EDIT_MEDIA) :
 	            if (resultCode == Activity.RESULT_OK) {
 	                Bundle extras = data.getExtras();
-	                int index = extras.getInt( "INDEX" );
-
-	                int type = media.get( index ).getType ( );
-	                
-	                if( type == SmilConstants.COMPONENT_TYPE_AUDIO )
-	                {
-	                    //toast( "AUDIO EDITED" );
+	                int type = 0;
+	                int index = 0;
+	                if( extras.containsKey( "INDEX" ) ) {
+	                    index = extras.getInt( "INDEX" );
+	                    type = media.get( index ).getType ( );
 	                } 
-	                else if ( type == SmilConstants.COMPONENT_TYPE_IMAGE ) 
+	                else if( extras.containsKey( "DELETE" ) ) {
+	                    index = extras.getInt( "DELETE" );
+                        type = media.get( index ).getType ( );
+                        
+                        media.remove( index );
+                        
+                        int count = 0;
+                        for(int i=0; i<media.size(); i++) {
+                            if(media.get( i ).getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
+                                count++;
+                            }
+                        }
+                        Log.i("AUDDEL", count+"");
+                        if(count == 0)
+                        {
+                            View audio = findViewById(R.id.audio);
+                            audio.setVisibility( View.GONE );
+                        }
+	                }
+	                
+	                if ( type == SmilConstants.COMPONENT_TYPE_IMAGE ) 
 	                {
 	                    ImageView iv = (ImageView)mDragLayer.findViewWithTag (media.get( index ).getTag() );
 	                    iv.setImageBitmap( media.get( index ).getImage() );
