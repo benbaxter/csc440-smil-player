@@ -7,7 +7,7 @@
     <string name="address">5132765762</string>
     <string name="back">Back</string>
     <string name="quit">Leaving so soon?</string>
-    <string name="quit_message">Are you sure you want leave without saving?</string>
+    <string name="quit_message">Are you sure you want to leave without saving?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="enter_text_label">Enter Text: </string>
