@@ -9,7 +9,8 @@ public abstract class SmilComponent
 {    
     private int        type = SmilConstants.COMPONENT_TYPE_NONE;
     private String     fileName; 
-    private String     filePath; 
+    private String     filePath;
+    private String     title;
     private Uri        mediaUri;
     private String     tag;
     private int        begin;
@@ -59,6 +60,16 @@ public abstract class SmilComponent
     public void setType ( int type )
     {
         this.type = type;
+    }
+    
+    public String getTitle ( )
+    {
+        return title;
+    }
+    
+    public void setTitle ( String title )
+    {
+        this.title = title;
     }
 
     public String getTag ( )

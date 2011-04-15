@@ -67,17 +67,20 @@ public class SmilGenerator
                     if( mode == SmilConstants.MODE_DRAFT)
                         par.append("src=\"" + item.getFilePath() + "\" ");
                     else if( mode == SmilConstants.MODE_SEND){
-                        File file = copyFile(item.getFilePath(), item.getFileName() );
+                        File file = new File(item.getFilePath());
                         item.setFilePath( file.getCanonicalPath() );
                         item.setFileName( file.getName() );
                         par.append("src=\"" + file.getName() + "\" ");
                         Log.i("GENTEST", file.getAbsolutePath());
                         
-                        boolean uploaded = Uploader.upload( file );
-                        if(uploaded);
-                            file.delete();
-                            
-                        Log.i("GENTEST", uploaded+"");
+                        String key = Uploader.uploadGetKey( file );
+                        
+                        if(key != null)
+                        {
+                            item.setTitle( key );
+                            par.append("title=\"" + item.getTitle() + "\" ");
+                        }
+                        Log.i("GENTEST", key+"");
                     }
                 }   
                 
@@ -103,7 +106,7 @@ public class SmilGenerator
                 brDebug.close();
             }
         } catch (Exception e) {
-            Log.i("FILE", "we fucked up the file");
+            Log.i("FILE", "File creation failed.");
         }
         
         
