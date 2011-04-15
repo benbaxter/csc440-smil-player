@@ -51,12 +51,12 @@ public class FileBrowserActivity extends ListActivity
         if ( in.hasExtra ( "browseType" ) )
         {
             String type = in.getExtras().getString ( "browseType" );
-            if ( Main.BROWSE_TYPE_OUTBOX == type )
+            if ( Main.BROWSE_TYPE_OUTBOX.equals(type))
             {
                 filePath = SmilConstants.OUTBOX_PATH;
                 dir = new File ( pathDir, filePath );
             }
-            else if ( Main.BROWSE_TYPE_INBOX == type )
+            else if ( Main.BROWSE_TYPE_INBOX.equals(type))
             {
                 filePath = SmilConstants.INBOX_PATH;
                 dir = new File ( pathDir, filePath );                
