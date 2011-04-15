@@ -38,12 +38,14 @@ public class MediaPropertiesActivity extends Activity
         Button backBtn = ( Button ) findViewById( R.id.backBtn );
         Button leftBtn = ( Button ) findViewById( R.id.leftBtn );
         Button rightBtn = ( Button ) findViewById( R.id.rightBtn );
+        Button deleteBtn = ( Button ) findViewById( R.id.deleteBtn );
 
         okBtn.setOnClickListener( mClick );
         cancelBtn.setOnClickListener( mClick );
         backBtn.setOnClickListener( mClick );
         leftBtn.setOnClickListener( mClick );
         rightBtn.setOnClickListener( mClick );
+        deleteBtn.setOnClickListener( mClick );
 
         Bundle extras = getIntent().getExtras();
         
@@ -58,7 +60,6 @@ public class MediaPropertiesActivity extends Activity
         }
         
         if( media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO) {
-            findViewById( R.id.repeatInfo ).setVisibility( View.VISIBLE );
             if(extras != null)
             {
                 int count = 0;
@@ -68,10 +69,11 @@ public class MediaPropertiesActivity extends Activity
                     }
                 }
                 
-                if(count > 1)
-                {
-                    findViewById( R.id.audioSearch ).setVisibility( View.VISIBLE );
+                if(count > 1) {
+                    findViewById( R.id.rightBtn ).setVisibility( View.VISIBLE );
                 }
+                
+                findViewById( R.id.audioSearch ).setVisibility( View.VISIBLE );
             }   
             else
             {
@@ -105,10 +107,6 @@ public class MediaPropertiesActivity extends Activity
             {
                 et = (EditText)findViewById( R.id.inputString );
                 et.setText( media.getText() );
-                et = (EditText)findViewById( R.id.x );
-                et.setText( Integer.toString( media.getRegion().getRect().left ) );
-                et = (EditText)findViewById( R.id.y );
-                et.setText( Integer.toString( media.getRegion().getRect().top ) );
             }
             else
             {
@@ -242,16 +240,9 @@ public class MediaPropertiesActivity extends Activity
         {
             if ( v.getId() == R.id.okBtn )
             {
-                // media =
-                // ComposerActivity.getMedia().getLast();
-                if( media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO )
-                {
-//                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
-                }
-                else if ( media.getType() == SmilConstants.COMPONENT_TYPE_TEXT )
+                if ( media.getType() == SmilConstants.COMPONENT_TYPE_TEXT )
                 {
                     media.setText( ( (EditText)findViewById( R.id.inputString ) ).getText().toString() );
-//                    Log.i( "TEXT2", ComposerActivity.getMedia().getLast().getText() );
                 }
                 else if( media.getType() == SmilConstants.COMPONENT_TYPE_IMAGE)
                 {
@@ -276,7 +267,6 @@ public class MediaPropertiesActivity extends Activity
                 }
                 else if( media.getType() == SmilConstants.COMPONENT_TYPE_VIDEO)
                 {
-                    media.setRepeat( ((CheckBox)findViewById( R.id.repeatCheckBox )).isChecked() );
                     
                     String height = ((EditText)findViewById( R.id.height )).getText().toString();
                     String width = ((EditText)findViewById( R.id.width )).getText().toString();
@@ -365,6 +355,15 @@ public class MediaPropertiesActivity extends Activity
                 }
                 if(count == 0)
                     findViewById( R.id.rightBtn ).setVisibility( View.INVISIBLE );
+            }
+            else if ( v.getId() == R.id.deleteBtn )
+            {
+                Intent data = new Intent();
+                data.putExtra("DELETE", index);
+                
+                setResult( RESULT_OK, data );
+                finish();
+                
             }
             else if ( v.getId() == R.id.cancelBtn )
             {
