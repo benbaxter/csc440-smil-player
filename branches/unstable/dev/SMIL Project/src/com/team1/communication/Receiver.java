@@ -58,7 +58,7 @@ public class Receiver extends BroadcastReceiver
                     boolean downloaded = false;
                     try
                     {
-                        downloaded = Downloader.download(smilFile, Environment.getExternalStorageDirectory ( ) 
+                        downloaded = Downloader.downloadFilename(smilFile, Environment.getExternalStorageDirectory ( ) 
                                 + SmilConstants.INBOX_PATH + smilFile );
                     }
                     catch ( MalformedURLException e )
