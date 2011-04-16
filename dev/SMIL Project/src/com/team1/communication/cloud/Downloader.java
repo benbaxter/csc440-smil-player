@@ -12,7 +12,7 @@ public class Downloader {
 	    try
         {
 	        Log.i("DOWNLOAD", filename);
-    		InputStream in = new URL(downloadURL+"?myFile="+URLEncoder.encode(filename, "UTF-8")).openStream();
+    		InputStream in = new URL(downloadURL+"?file="+URLEncoder.encode(filename, "UTF-8")).openStream();
     		File file = new File(saveAs);
     		BufferedOutputStream fOut = new BufferedOutputStream(new FileOutputStream(file));
     		byte[] buffer = new byte[32 * 1024];
