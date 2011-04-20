@@ -5,6 +5,7 @@ import java.io.File;
 
 import com.team1.Smil.SmilConstants;
 import com.team1.composer.ComposerActivity;
+import com.team1.player.SmilPlayerActivity;
 import com.team1.R;
 
 import android.app.Activity;
@@ -117,6 +118,20 @@ public class Main extends Activity
         
         startActivity ( mComposerIntent );
     }
+    
+    private void openPlayerActivity ( String fileName )
+    {
+        Intent mPlayerIntent = new Intent( getApplicationContext(), SmilPlayerActivity.class );
+        
+        // If a file name is passed into the composer activity, the SMIL components should be 
+        // pre-loaded into the composer.
+        if ( fileName != "" )
+        {
+            mPlayerIntent.putExtra ( "playFile", fileName );
+        }
+        
+        startActivity ( mPlayerIntent );
+    }
 
 
     public boolean onCreateOptionsMenu ( Menu menu )
@@ -154,8 +169,24 @@ public class Main extends Activity
                      ( null != intent ) )
                 {
                     String fileName = intent.getExtras().getString ( "fileName" );
-                    openComposerActivity ( fileName );
+                    if(intent.hasExtra( "browseType" ))
+                    {
+                        if(intent.getExtras().getString("browseType").equals(BROWSE_TYPE_INBOX))
+                        {
+                            openPlayerActivity( fileName );
+                        }
+                        else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_OUTBOX))
+                        {
+                            openPlayerActivity( fileName );
+                        }
+                        else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_DRAFT))
+                        {
+                            openComposerActivity( fileName );
+                        }
+                    }
+                    
                 }
+                
                 break;
             }
         }
