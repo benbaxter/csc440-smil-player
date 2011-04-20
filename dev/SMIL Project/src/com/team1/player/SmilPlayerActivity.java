@@ -1,5 +1,6 @@
 package com.team1.player;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -237,13 +238,15 @@ public class SmilPlayerActivity extends Activity implements Callback
         {
             SmilComponent comp = components.get(i);
            
-            if( comp.getTitle() != null && comp.getTitle().length() > 0)
+            File f = new File(comp.getSource());
+            
+            if( !f.exists() && comp.getTitle() != null && comp.getTitle().length() > 0)
             {
-                Log.i("DOWNLOADING", "Attempting to download key " + comp.getTitle());
-                boolean downloaded = Downloader.downloadKey( comp.getTitle(), "/mnt/sdcard" + SmilConstants.MEDIA_PATH + comp.getSource() );
+                Log.i("DOWNLOAD", "Attempting to download key " + comp.getTitle());
+                boolean downloaded = Downloader.downloadKey( comp.getTitle(), comp.getSource() );
                 if ( !downloaded )
                 {
-                    Log.e( "DOWNLOADING", "File failed to download." );
+                    Log.e( "DOWNLOAD", "File failed to download." );
                 }
             }
         }
