@@ -97,7 +97,10 @@ public class FileBrowserActivity extends ListActivity
                 Intent returnIntent = new Intent ( );
 
 			    returnIntent.putExtra ( "fileName", filePath + "/" + ((TextView) view).getText().toString ( ) );
-			    returnIntent.putExtra( "browseType", in.getExtras().getString( "browseType" ) );
+			    if( in.hasExtra("browseType"))
+			    {
+			        returnIntent.putExtra( "browseType", in.getExtras().getString( "browseType" ) );
+			    }
 			    setResult ( RESULT_OK, returnIntent );
 			    finish ( );
 		    }
