@@ -177,7 +177,7 @@ public class Main extends Activity
                         }
                         else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_OUTBOX))
                         {
-                            openPlayerActivity( fileName );
+                            openComposerActivity( fileName );
                         }
                         else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_DRAFT))
                         {
