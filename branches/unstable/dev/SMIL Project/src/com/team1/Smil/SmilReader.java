@@ -201,6 +201,12 @@ public class SmilReader extends DefaultHandler
                     { // new resource to construct
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
+                        
+                        if( source != null && !source.contains( "/" ))
+                        {
+                            source = Environment.getExternalStorageDirectory() + SmilConstants.MEDIA_PATH + source;
+                        }
+                        
                         if ( localName.equals ( "text" ) ) 
                         {
                             Log.i("SOURCE IS", source);

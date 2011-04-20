@@ -2,6 +2,7 @@ package com.team1.communication;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,7 +17,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.team1.R;
+import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilReader;
 import com.team1.communication.cloud.Downloader;
 import com.team1.player.SmilPlayerActivity;
  
@@ -56,10 +60,12 @@ public class Receiver extends BroadcastReceiver
                     smilFile = from + "_" + msgs[i].getMessageBody().split("_")[msgs[i].getMessageBody().split("_").length - 1];
                     Toast.makeText( toastContext, "About to download: " + smilFile, Toast.LENGTH_LONG );
                     boolean downloaded = false;
+                    String fileName = Environment.getExternalStorageDirectory ( ) 
+                    + SmilConstants.INBOX_PATH + smilFile;
                     try
                     {
-                        downloaded = Downloader.downloadFilename(smilFile, Environment.getExternalStorageDirectory ( ) 
-                                + SmilConstants.INBOX_PATH + smilFile );
+                        
+                        downloaded = Downloader.downloadFilename(smilFile, fileName );
                     }
                     catch ( MalformedURLException e )
                     {
@@ -76,6 +82,17 @@ public class Receiver extends BroadcastReceiver
                     {
                         Toast.makeText( toastContext, "Received: " + from + ".smil", Toast.LENGTH_LONG );
                         Log.i("DOWNLOAD", "downloaded: " + downloaded);
+                        
+                        try
+                        {
+                            SmilMessage message = SmilReader.parseMessage( fileName );
+                            downloadMedia(message);
+                        }
+                        catch ( Exception e )
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                     else
                     {
@@ -97,6 +114,25 @@ public class Receiver extends BroadcastReceiver
             }
         } 
     }    
+    
+    private static void downloadMedia ( SmilMessage message )
+    {
+        ArrayList < SmilComponent > components = message.getResourcesByBeginTime();
+        for ( int i = 0; i < components.size(); i++ )
+        {
+            SmilComponent comp = components.get(i);
+           
+            if( comp.getTitle() != null && comp.getTitle().length() > 0)
+            {
+                Log.i("DOWNLOAD", "Attempting to download key " + comp.getTitle());
+                boolean downloaded = Downloader.downloadKey( comp.getTitle(), comp.getSource() );
+                if ( !downloaded )
+                {
+                    Log.e( "DOWNLOAD", "File failed to download." );
+                }
+            }
+        }
+    }
     
     public void displayNotification( String ticker, String msg, Context context)
     {
