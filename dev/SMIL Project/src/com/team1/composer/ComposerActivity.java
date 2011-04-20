@@ -369,10 +369,7 @@ public class ComposerActivity extends Activity {
 
 	private void openSendActivity ( ) 
 	{
-//        String smilFile = SmilConstants.OUTBOX_PATH;
-//        smilFile += getMyPhoneNumber() + ".smil";
 	    String smilFile = getMyPhoneNumber() + "_" + System.currentTimeMillis() + ".smil";
-        //saveSmilFile( smilFile, SmilConstants.MODE_SEND);
 
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
