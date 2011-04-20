@@ -196,33 +196,33 @@ public class SendActivity extends Activity{
         Intent in = getIntent ( );
         if ( in.hasExtra ( "smilFile" ) )
         {
-            String smilURL = in.getExtras().getString( "smilFile" );
-            saveSmilFile( smilURL );
-            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilURL+":");
+            String smilName = in.getExtras().getString( "smilFile" );
+            saveSmilFile( smilName, SmilConstants.MODE_SEND );
+            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilName+":");
             File file = new File(Environment.getExternalStorageDirectory ( ) 
-                    + SmilConstants.OUTBOX_PATH + smilURL);
+                    + SmilConstants.OUTBOX_PATH + smilName);
             Log.i ( "SEND", file.getAbsolutePath() );
-            toast( "About to upload: " + smilURL );
+            toast( "About to upload: " + smilName );
             try {
                 boolean uploaded = Uploader.upload( file );
                 if(uploaded)
                 {
-                    toast( "File uploaded: " + smilURL );
+                    toast( "File uploaded: " + smilName );
                 }
                 else
                 {
-                    toast( "Failed to upload: " + smilURL );
+                    toast( "Failed to upload: " + smilName );
                 }
             } 
             catch (Exception e)
             {
                 toast( e.toString());
             }
-//            Intent sendIntent = new Intent(Intent.ACTION_SEND); 
-//            sendIntent.putExtra("sms_body", "some text");     
-//            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(smilURL));
-//            sendIntent.setType("text/plain");
-//            startActivity(sendIntent); 
+            
+            file.delete();
+            String[] fileName = smilName.split( "_" );
+            smilName = phoneNumber + "_" + fileName[1];
+            saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
         }
          
         
@@ -231,53 +231,21 @@ public class SendActivity extends Activity{
         finish();
     }
     
-//    private void uploadToCloud()
-//    {
-//        Intent in = getIntent ( );
-//        if ( in.hasExtra ( "mediaFiles" ) )
-//        {
-//            ArrayList<String> fileNames = in.getExtras().getStringArrayList( "mediaFiles" );
-//            for( String f : fileNames )
-//            {
-//                File file = new File(f);
-//                toast( "does file exist: " + f );
-//                if(file.exists())
-//                {
-//                    Log.i("FILENAME", f);
-//                    toast( "About to upload" );
-//                    try {
-//                        boolean uploaded = Uploader.upload( file );
-//                        if(uploaded)
-//                        {
-//                            toast( "File uploaded: " + f );
-//                        }
-//                        else
-//                        {
-//                            toast( "Failed to upload: " + f );
-//                        }
-//                    } 
-//                    catch (Exception e)
-//                    {
-//                        toast( e.toString());
-//                    }
-//                }
-//                else
-//                {
-//                    toast( "file does not exist: " + f);
-//                }
-//            }
-//        }
-//    }
     
     
-    private void saveSmilFile ( String fileName )
+    private void saveSmilFile ( String fileName, int mode )
     {
         try
         {
             SmilGenerator sg = new SmilGenerator ( );
             sg.setFileName ( fileName );
-            sg.setFilePath ( SmilConstants.OUTBOX_PATH );
-            sg.generateSMILFile ( ComposerActivity.getMedia(), SmilConstants.MODE_SEND );
+            if(mode == SmilConstants.MODE_SEND) {
+                sg.setFilePath ( SmilConstants.OUTBOX_PATH );
+                sg.generateSMILFile ( ComposerActivity.getMedia(), SmilConstants.MODE_SEND );
+            } else if (mode == SmilConstants.MODE_DRAFT) {
+                sg.setFilePath ( SmilConstants.OUTBOX_PATH );
+                sg.generateSMILFile ( ComposerActivity.getMedia(), SmilConstants.MODE_DRAFT );
+            }
         }
         catch ( Exception e )
         {
