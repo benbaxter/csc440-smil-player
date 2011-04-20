@@ -12,7 +12,7 @@ public class Downloader {
         try
         {
             Log.i("DOWNLOAD", parameters);
-            InputStream in = new URL(downloadURL+URLEncoder.encode(parameters, "UTF-8")).openStream();
+            InputStream in = new URL(downloadURL+parameters).openStream();
             File file = new File(saveAs);
             BufferedOutputStream fOut = new BufferedOutputStream(new FileOutputStream(file));
             byte[] buffer = new byte[32 * 1024];
@@ -50,7 +50,7 @@ public class Downloader {
     }
 	public static boolean downloadFilename(String filename, String saveAs) throws MalformedURLException, IOException
 	{
-	    return download("?file="+filename, saveAs);
+	    return download("?file="+URLEncoder.encode( filename, "UTF-8"), saveAs);
 	}
 	
 	public static void downloadFilename(String filename) throws MalformedURLException, IOException

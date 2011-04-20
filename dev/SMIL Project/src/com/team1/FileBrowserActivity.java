@@ -27,7 +27,7 @@ public class FileBrowserActivity extends ListActivity
 {
 	private String filePath;
 	private ArrayList<String> smilFiles = new ArrayList<String>();
-	
+	private Intent in;
 	
 	@Override
 	protected void onCreate ( Bundle savedInstanceState ) 
@@ -47,7 +47,7 @@ public class FileBrowserActivity extends ListActivity
         File pathDir = Environment.getExternalStorageDirectory ( );
         File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
         
-        Intent in = getIntent ( );
+        in = getIntent ( );
         if ( in.hasExtra ( "browseType" ) )
         {
             String type = in.getExtras().getString ( "browseType" );
@@ -97,6 +97,7 @@ public class FileBrowserActivity extends ListActivity
                 Intent returnIntent = new Intent ( );
 
 			    returnIntent.putExtra ( "fileName", filePath + "/" + ((TextView) view).getText().toString ( ) );
+			    returnIntent.putExtra( "browseType", in.getExtras().getString( "browseType" ) );
 			    setResult ( RESULT_OK, returnIntent );
 			    finish ( );
 		    }

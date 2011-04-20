@@ -1,6 +1,7 @@
 package com.team1.player;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.app.Activity;
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.view.SurfaceHolder.Callback;
 
 import com.team1.Smil.*; 
+import com.team1.communication.cloud.Downloader;
 import com.team1.R;
 
 public class SmilPlayerActivity extends Activity implements Callback
@@ -203,11 +205,13 @@ public class SmilPlayerActivity extends Activity implements Callback
 
         try
         {
+            
             Intent in = getIntent ( );
             if ( in.hasExtra ( "playFile" ) )
             {
                 String fileName = in.getExtras().getString ( "playFile" );
                 message = SmilReader.parseMessage ( fileName );
+                downloadMedia( message );
                 loadVideos ( );
             }            
             else if ( in.hasExtra( "RecievedSmil" ))
@@ -215,6 +219,7 @@ public class SmilPlayerActivity extends Activity implements Callback
                 String fileName = in.getExtras().getString ( "RecievedSmil" );
                 Toast.makeText( getApplicationContext(), "Received: " + fileName, Toast.LENGTH_LONG );
                 message = SmilReader.parseMessage ( fileName );
+                downloadMedia( message );
                 loadVideos ( );
             }
         }
@@ -225,6 +230,25 @@ public class SmilPlayerActivity extends Activity implements Callback
         }
     }
    	
+    private void downloadMedia ( SmilMessage message )
+    {
+        ArrayList < SmilComponent > components = message.getResourcesByBeginTime();
+        for ( int i = 0; i < components.size(); i++ )
+        {
+            SmilComponent comp = components.get(i);
+           
+            if( comp.getTitle() != null && comp.getTitle().length() > 0)
+            {
+                Log.i("DOWNLOADING", "Attempting to download key " + comp.getTitle());
+                boolean downloaded = Downloader.downloadKey( comp.getTitle(), "/mnt/sdcard" + SmilConstants.MEDIA_PATH + comp.getSource() );
+                if ( !downloaded )
+                {
+                    Log.e( "DOWNLOADING", "File failed to download." );
+                }
+            }
+        }
+    }
+    
     private void restartPlayer ( )
    	{
         startPlayer ( );
