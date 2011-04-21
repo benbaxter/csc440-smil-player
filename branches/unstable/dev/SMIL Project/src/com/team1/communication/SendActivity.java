@@ -181,18 +181,7 @@ public class SendActivity extends Activity{
                 }
             }
         };
-        //---when the SMS has been sent---
-        registerReceiver(sentReceiver, new IntentFilter(SENT));
         
-        //---when the SMS has been delivered---
-        registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
-        
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
-//        sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
-        unregisterReceiver( sentReceiver );
-        unregisterReceiver( deliveredReceiver );
-        //will get rid of extras if this works
         Intent in = getIntent ( );
         if ( in.hasExtra ( "smilFile" ) )
         {
@@ -224,6 +213,19 @@ public class SendActivity extends Activity{
             smilName = phoneNumber + "_" + fileName[1];
             saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
         }
+        //---when the SMS has been sent---
+        registerReceiver(sentReceiver, new IntentFilter(SENT));
+        
+        //---when the SMS has been delivered---
+        registerReceiver( deliveredReceiver, new IntentFilter(DELIVERED));        
+        
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
+//        sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
+        unregisterReceiver( sentReceiver );
+        unregisterReceiver( deliveredReceiver );
+        //will get rid of extras if this works
+        
          
         
         setResult(RESULT_OK);
