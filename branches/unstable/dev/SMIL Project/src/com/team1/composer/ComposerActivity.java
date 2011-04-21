@@ -235,7 +235,6 @@ public class ComposerActivity extends Activity {
 		}
 	};
 	
-
 	OnClickListener buttonClick = new OnClickListener ( ) 
 	{
 		@Override
@@ -290,7 +289,6 @@ public class ComposerActivity extends Activity {
 		}
 	};
 	
-
 	OnLongClickListener viewLongClick = new OnLongClickListener() {
 		@Override
 		public boolean onLongClick(View v) {
@@ -371,10 +369,7 @@ public class ComposerActivity extends Activity {
 
 	private void openSendActivity ( ) 
 	{
-//        String smilFile = SmilConstants.OUTBOX_PATH;
-//        smilFile += getMyPhoneNumber() + ".smil";
 	    String smilFile = getMyPhoneNumber() + "_" + System.currentTimeMillis() + ".smil";
-        //saveSmilFile( smilFile, SmilConstants.MODE_SEND);
 
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -413,8 +408,11 @@ public class ComposerActivity extends Activity {
     }
 
 	private String getMyPhoneNumber(){
-        TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
-        return mTelephonyMgr.getLine1Number();
+        TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String number = mTelephonyMgr.getLine1Number();
+        if(mTelephonyMgr.getLine1Number().startsWith( "1" ))
+            number = number.substring( 1 );
+        return number;
     }
 
     private String getMy10DigitPhoneNumber(){
