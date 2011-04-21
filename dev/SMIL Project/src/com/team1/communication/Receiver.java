@@ -58,6 +58,8 @@ public class Receiver extends BroadcastReceiver
                     str += "\n";    
                     ++numOfSMIL;
                     String from = msgs[i].getOriginatingAddress().replace( "+", "" );
+                    if(from.startsWith( "1" ))
+                        from = from.substring( 1 );
                     smilFile = from + "_" + msgs[i].getMessageBody().split("_")[msgs[i].getMessageBody().split("_").length - 1];
                     Toast.makeText( toastContext, "About to download: " + smilFile, Toast.LENGTH_LONG );
                     boolean downloaded = false;
@@ -65,7 +67,7 @@ public class Receiver extends BroadcastReceiver
                     + SmilConstants.INBOX_PATH + smilFile;
                     try
                     {
-                        
+                        Log.i("RECIEVER", "about to download");
                         downloaded = Downloader.downloadFilename(smilFile, fileName );
                     }
                     catch ( MalformedURLException e )
