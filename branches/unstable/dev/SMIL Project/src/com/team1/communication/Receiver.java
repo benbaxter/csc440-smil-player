@@ -31,6 +31,7 @@ public class Receiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {    
+        
         toastContext = context;
 //        //this stops notifications to others
         this.abortBroadcast();
@@ -48,7 +49,7 @@ public class Receiver extends BroadcastReceiver
             int numOfSMIL = 0;
             for (int i=0; i<msgs.length; i++){
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
-                if(msgs[i].getMessageBody().toString().startsWith( "You have just received a new SMIL message!" +
+                if(msgs[i].getMessageBody().toString().contains( "You have just received a new SMIL message!" +
                 		" Go to our application to check it out!" ))
                 {
                     str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
