@@ -7,9 +7,12 @@ import com.team1.R;
 import com.team1.Smil.SmilConstants;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ public class FileBrowserActivity extends ListActivity
 	private String filePath;
 	private ArrayList<String> smilFiles = new ArrayList<String>();
 	private Intent in;
+	private Dialog dialog = null;
 	
 	@Override
 	protected void onCreate ( Bundle savedInstanceState ) 
@@ -48,15 +52,17 @@ public class FileBrowserActivity extends ListActivity
         File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
         
         in = getIntent ( );
-        if ( in.hasExtra ( "browseType" ) )
+        Bundle extras = in.getExtras();
+        final int type = extras.getInt( "BROWSE" );
+        
+        if ( in.hasExtra ( "BROWSE" ) )
         {
-            String type = in.getExtras().getString ( "browseType" );
-            if ( Main.BROWSE_TYPE_OUTBOX.equals(type))
+            if ( Main.BROWSE_TYPE_OUTBOX == type)
             {
                 filePath = SmilConstants.OUTBOX_PATH;
                 dir = new File ( pathDir, filePath );
             }
-            else if ( Main.BROWSE_TYPE_INBOX.equals(type))
+            else if ( Main.BROWSE_TYPE_INBOX == type)
             {
                 filePath = SmilConstants.INBOX_PATH;
                 dir = new File ( pathDir, filePath );                
@@ -81,11 +87,16 @@ public class FileBrowserActivity extends ListActivity
 		setListAdapter ( adapter );
 
 		// Set the title
-        if ( in.hasExtra ( "browseType" ) )
+        if ( in.hasExtra ( "BROWSE" ) )
         {
-            String title = in.getExtras().getString ( "browseType" );
             TextView tv = (TextView)findViewById ( R.id.Title );
-            tv.setText ( title );
+            
+            if( Main.BROWSE_TYPE_DRAFT == type )
+                tv.setText ( "Drafts" );
+            else if( Main.BROWSE_TYPE_INBOX == type )
+                tv.setText ( "Inbox" );
+            else if( Main.BROWSE_TYPE_OUTBOX == type )
+                tv.setText ( "Drafts" );
         }
 
 		ListView messageView = getListView ( );
@@ -94,17 +105,84 @@ public class FileBrowserActivity extends ListActivity
 		{
 		    public void onItemClick ( AdapterView<?> parent, View view, int position, long id ) 
 		    {
-                Intent returnIntent = new Intent ( );
-
-			    returnIntent.putExtra ( "fileName", filePath + "/" + ((TextView) view).getText().toString ( ) );
-			    if( in.hasExtra("browseType"))
-			    {
-			        returnIntent.putExtra( "browseType", in.getExtras().getString( "browseType" ) );
-			    }
-			    setResult ( RESULT_OK, returnIntent );
-			    finish ( );
+		        filePath = filePath + "/" + ((TextView)view).getText().toString();
+		        showDialog( type );
 		    }
 		});
+	}
+	
+	protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case Main.BROWSE_TYPE_DRAFT:
+            final String[] items = { "Edit", "Delete" };
+
+            AlertDialog.Builder buildSelecter = new AlertDialog.Builder(this);
+            buildSelecter.setTitle("Pick Option");
+            buildSelecter.setItems(items, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Intent data = new Intent();
+                    
+                    if( item == 0 )
+                        data.putExtra("ACTION", Main.ACTION_EDIT);
+                    else if ( item == 1 )
+                        data.putExtra("ACTION", Main.ACTION_DELETE);
+                    
+                    data.putExtra( "FILE", filePath );
+
+                    setResult( RESULT_OK, data );
+                    finish();
+                }
+            });
+            dialog = buildSelecter.create();
+            break;
+        case Main.BROWSE_TYPE_INBOX:
+            final String[] items1 = { "Play", "Delete" };
+
+            AlertDialog.Builder buildSelecter1 = new AlertDialog.Builder(this);
+            buildSelecter1.setTitle("Pick Option");
+            buildSelecter1.setItems(items1, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Intent data = new Intent();
+                    
+                    if( item == 0 )
+                        data.putExtra("ACTION", Main.ACTION_PLAY);
+                    else if ( item == 1 )
+                        data.putExtra("ACTION", Main.ACTION_DELETE);
+                    
+                    data.putExtra( "FILE", filePath );
+
+                    setResult( RESULT_OK, data );
+                    finish();
+                }
+            });
+            dialog = buildSelecter1.create();
+            break;
+        case Main.BROWSE_TYPE_OUTBOX:
+            final String[] items2 = { "Play", "Edit", "Delete" };
+
+            AlertDialog.Builder buildSelecter2 = new AlertDialog.Builder(this);
+            buildSelecter2.setTitle("Pick Option");
+            buildSelecter2.setItems(items2, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Intent data = new Intent();
+                    
+                    if( item == 0 )
+                        data.putExtra("ACTION", Main.ACTION_PLAY);
+                    else if ( item == 1 )
+                        data.putExtra("ACTION", Main.ACTION_EDIT);
+                    else if ( item == 2 )
+                        data.putExtra("ACTION", Main.ACTION_DELETE);
+                    
+                    data.putExtra( "FILE", filePath );
+
+                    setResult( RESULT_OK, data );
+                    finish();
+                }
+            });
+            dialog = buildSelecter2.create();
+            break;
+        }
+        return dialog;
 	}
 	
 	private class FileBrowserAdapter extends ArrayAdapter<String> 

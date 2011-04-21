@@ -234,6 +234,7 @@ public class ComposerActivity extends Activity {
 
 		}
 	};
+	
 
 	OnClickListener buttonClick = new OnClickListener ( ) 
 	{
@@ -288,6 +289,7 @@ public class ComposerActivity extends Activity {
 			}
 		}
 	};
+	
 
 	OnLongClickListener viewLongClick = new OnLongClickListener() {
 		@Override
@@ -369,7 +371,10 @@ public class ComposerActivity extends Activity {
 
 	private void openSendActivity ( ) 
 	{
+//        String smilFile = SmilConstants.OUTBOX_PATH;
+//        smilFile += getMyPhoneNumber() + ".smil";
 	    String smilFile = getMyPhoneNumber() + "_" + System.currentTimeMillis() + ".smil";
+        //saveSmilFile( smilFile, SmilConstants.MODE_SEND);
 
         Intent mSendIntent = new Intent(this.getApplicationContext(), SendActivity.class);
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -399,7 +404,7 @@ public class ComposerActivity extends Activity {
             intentBrowseFiles.setType(type);
             startActivityForResult( Intent.createChooser(intentBrowseFiles, "Make a Selection"), MEDIA_PICK);
         }
-    }
+	}
 
 	private void editMediaPropertiesActivity( int index ) {
         Intent mMediaPropIntent = new Intent(this, MediaPropertiesActivity.class);
@@ -790,6 +795,6 @@ public class ComposerActivity extends Activity {
 	}
 
 	public void toast(String msg) {
-		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+	    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
 }

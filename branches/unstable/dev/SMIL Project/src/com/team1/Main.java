@@ -25,9 +25,13 @@ public class Main extends Activity
 {
     Toast toast;
 
-    protected static final String BROWSE_TYPE_DRAFT  = "Browse Drafts";
-    protected static final String BROWSE_TYPE_INBOX  = "Browse Inbox";
-    protected static final String BROWSE_TYPE_OUTBOX = "Browse Outbox";
+    protected static final int BROWSE_TYPE_DRAFT  = 0;
+    protected static final int BROWSE_TYPE_INBOX  = 1;
+    protected static final int BROWSE_TYPE_OUTBOX = 2;
+    
+    protected static final String ACTION_EDIT = "edit";
+    protected static final String ACTION_PLAY = "play";
+    protected static final String ACTION_DELETE = "delete";
     
     private static final int COMPOSER = 1;
     private static final int EXIT     = 0;
@@ -98,10 +102,10 @@ public class Main extends Activity
        }
    };
 
-    private void openFileBrowserActivity ( String type )
+    private void openFileBrowserActivity ( int type )
     {
         Intent browseIntent = new Intent( getApplicationContext(), FileBrowserActivity.class );
-        browseIntent.putExtra( "browseType", type );
+        browseIntent.putExtra( "BROWSE", type );
         startActivityForResult ( browseIntent, FILE_BROWSER );
     }
 
@@ -168,20 +172,23 @@ public class Main extends Activity
                 if ( ( RESULT_OK == resultCode ) &&
                      ( null != intent ) )
                 {
-                    String fileName = intent.getExtras().getString ( "fileName" );
-                    if(intent.hasExtra( "browseType" ))
+                    if(intent.hasExtra( "ACTION" ))
                     {
-                        if(intent.getExtras().getString("browseType").equals(BROWSE_TYPE_INBOX))
+                        Bundle extras = intent.getExtras();
+                        String action = extras.getString( "ACTION" );
+                        String filePath = extras.getString( "FILE" );
+                        if(action.equals( ACTION_PLAY ))
                         {
-                            openPlayerActivity( fileName );
+                            openPlayerActivity( filePath );
                         }
-                        else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_OUTBOX))
+                        else if(action.equals( ACTION_EDIT ))
                         {
-                            openComposerActivity( fileName );
+                            openComposerActivity( filePath );
                         }
-                        else if(intent.getExtras().getString( "browseType").equals(BROWSE_TYPE_DRAFT))
+                        else if(action.equals( ACTION_DELETE ))
                         {
-                            openComposerActivity( fileName );
+                            File file = new File(filePath);
+                            file.delete();
                         }
                     }
                     
