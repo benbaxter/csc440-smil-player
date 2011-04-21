@@ -116,18 +116,50 @@ public class SendActivity extends Activity{
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
         PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
         SmsManager sms = SmsManager.getDefault();
-        
+        boolean itworked = Uploader.upload(SMILfile);
         try {
         sms.sendTextMessage(number, null, SMILfile.getName(), sentPI, deliveredPI); 
         } catch (Exception e) {toast("There was a problem sending SMIL message to " + number);}
         
-        boolean itworked = Uploader.upload(SMILfile);
+        
         if (itworked) toast(SMILfile.getName() + "uploaded to cloud");
         else toast("There was a problem uploading the file");
     }
     
     private void sendSMSMessage(String phoneNumber, String message)
     {        
+        Intent in = getIntent ( );
+        if ( in.hasExtra ( "smilFile" ) )
+        {
+            String smilName = in.getExtras().getString( "smilFile" );
+            saveSmilFile( smilName, SmilConstants.MODE_SEND );
+            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilName+":");
+            File file = new File(Environment.getExternalStorageDirectory ( ) 
+                    + SmilConstants.OUTBOX_PATH + smilName);
+            Log.i ( "SEND", file.getAbsolutePath() );
+            toast( "About to upload: " + smilName );
+            try {
+                boolean uploaded = Uploader.upload( file );
+                if(uploaded)
+                {
+                    toast( "File uploaded: " + smilName );
+                }
+                else
+                {
+                    toast( "Failed to upload: " + smilName );
+                }
+            } 
+            catch (Exception e)
+            {
+                toast( e.toString());
+            }
+            
+            file.delete();
+            String[] fileName = smilName.split( "_" );
+            smilName = phoneNumber + "_" + fileName[1];
+            saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
+        }
+        
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
  
@@ -182,37 +214,6 @@ public class SendActivity extends Activity{
             }
         };
         
-        Intent in = getIntent ( );
-        if ( in.hasExtra ( "smilFile" ) )
-        {
-            String smilName = in.getExtras().getString( "smilFile" );
-            saveSmilFile( smilName, SmilConstants.MODE_SEND );
-            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilName+":");
-            File file = new File(Environment.getExternalStorageDirectory ( ) 
-                    + SmilConstants.OUTBOX_PATH + smilName);
-            Log.i ( "SEND", file.getAbsolutePath() );
-            toast( "About to upload: " + smilName );
-            try {
-                boolean uploaded = Uploader.upload( file );
-                if(uploaded)
-                {
-                    toast( "File uploaded: " + smilName );
-                }
-                else
-                {
-                    toast( "Failed to upload: " + smilName );
-                }
-            } 
-            catch (Exception e)
-            {
-                toast( e.toString());
-            }
-            
-            file.delete();
-            String[] fileName = smilName.split( "_" );
-            smilName = phoneNumber + "_" + fileName[1];
-            saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
-        }
         //---when the SMS has been sent---
         registerReceiver(sentReceiver, new IntentFilter(SENT));
         
