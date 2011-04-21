@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slime:DocumentModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:slime="http://de.mvmsoft.slimeuml.model.slimemodel">
+  <children xsi:type="slime:ClassModel" x="41" y="37" width="114" height="96" name="ProvideUploadURL" classText="ProvideUploadURL" methodText="+ doGet()&#xA;+ doPost()" qualifiedClassName="com.team1.communication.cloud.ProvideUploadURL" javaProjectName="WebHandler" type="=WebHandler/src&lt;com.team1.communication.cloud{ProvideUploadURL.java[ProvideUploadURL"/>
+  <children xsi:type="slime:ClassModel" x="195" y="37" width="105" height="81" name="ProvideDownload" classText="ProvideDownload" methodText="+ doGet()" qualifiedClassName="com.team1.communication.cloud.ProvideDownload" javaProjectName="WebHandler" type="=WebHandler/src&lt;com.team1.communication.cloud{ProvideDownload.java[ProvideDownload"/>
+</slime:DocumentModel>

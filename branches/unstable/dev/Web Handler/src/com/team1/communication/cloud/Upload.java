@@ -1,6 +1,7 @@
 package com.team1.communication.cloud;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -20,11 +21,8 @@ public class Upload extends HttpServlet {
 
         Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
         BlobKey blobKey = blobs.get("myFile");
-
-        if (blobKey == null) {
-            res.sendRedirect("/");
-        } else {
-            res.sendRedirect("/serve?blob-key=" + blobKey.getKeyString());
-        }
+        PrintWriter out = res.getWriter();
+        out.println(blobKey.getKeyString());
+        
     }
 }
