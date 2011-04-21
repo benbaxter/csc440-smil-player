@@ -10,6 +10,10 @@
     <servlet-class>com.team1.communication.cloud.Upload</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>CountFiles</servlet-name>
+    <servlet-class>com.team1.communication.cloud.CountFiles</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>ProvideUploadURL</servlet-name>
     <servlet-class>com.team1.communication.cloud.ProvideUploadURL</servlet-class>
   </servlet>
@@ -37,6 +41,10 @@
   <servlet-mapping>
     <servlet-name>Upload</servlet-name>
     <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CountFiles</servlet-name>
+    <url-pattern>/count</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Upload</servlet-name>

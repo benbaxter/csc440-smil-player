@@ -26,20 +26,29 @@ public class ProvideDownload extends HttpServlet {
     	//PrintWriter out = res.getWriter();
 
     	String filename = req.getParameter("file");
-    	BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
-    	Iterator<BlobInfo> it = blobInfoFactory.queryBlobInfos();
-    	BlobKey bkey = null;
-    	while(it.hasNext())
+    	String key = req.getParameter("key");
+    	if(key != null)
     	{
-    		BlobInfo binfo = it.next();
-    		if(binfo.getFilename().equals(filename))
-    		{
-    			bkey = binfo.getBlobKey();
-    		}
+    		blobstoreService.serve(new BlobKey(key), res);
     	}
-    	if(bkey!=null)
-    		blobstoreService.serve(bkey, res);
-    	
+    	else if(filename != null)
+    	{
+    		
+	    	BlobInfoFactory blobInfoFactory = new BlobInfoFactory();
+	    	
+	    	Iterator<BlobInfo> it = blobInfoFactory.queryBlobInfos();
+	    	BlobKey bkey = null;
+	    	while(it.hasNext())
+	    	{
+	    		BlobInfo binfo = it.next();
+	    		if(binfo.getFilename().equals(filename))
+	    		{
+	    			bkey = binfo.getBlobKey();
+	    		}
+	    	}
+	    	if(bkey!=null)
+	    		blobstoreService.serve(bkey, res);
+    	}
 	    	
     }
 }
