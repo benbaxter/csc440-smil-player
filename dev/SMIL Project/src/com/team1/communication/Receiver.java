@@ -31,7 +31,7 @@ public class Receiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {    
-        
+        Log.i("RECEIVE", "onReceive started");
         toastContext = context;
 //        //this stops notifications to others
         this.abortBroadcast();
@@ -52,6 +52,7 @@ public class Receiver extends BroadcastReceiver
                 if(msgs[i].getMessageBody().toString().contains( "You have just received a new SMIL message!" +
                 		" Go to our application to check it out!" ))
                 {
+                    Log.i("RECEIVE", "Message is a SMIL message.");
                     str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
                     str += " :";
                     str += msgs[i].getMessageBody().toString();
@@ -67,7 +68,7 @@ public class Receiver extends BroadcastReceiver
                     + SmilConstants.INBOX_PATH + smilFile;
                     try
                     {
-                        Log.i("RECIEVER", "about to download");
+                        Log.i("RECEIVE", "about to download");
                         downloaded = Downloader.downloadFilename(smilFile, fileName );
                     }
                     catch ( MalformedURLException e )
@@ -116,6 +117,10 @@ public class Receiver extends BroadcastReceiver
                 this.clearAbortBroadcast();
             }
         } 
+        else
+        {
+            Log.i("RECEIVE", "Message is not a SMIL message");
+        }
     }    
     
     private static void downloadMedia ( SmilMessage message )
