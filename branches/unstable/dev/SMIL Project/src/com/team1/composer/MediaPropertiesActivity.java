@@ -90,7 +90,7 @@ public class MediaPropertiesActivity extends Activity
                     toast("Bad path for Audio");
                 }
                 double durationDouble = duration/1000.0;
-                duration = ( int ) Math.ceil( durationDouble );
+                duration = ( int ) Math.floor( durationDouble );
                 media.setEnd( duration );
                 media.setBegin( 0 );
             }
@@ -202,7 +202,7 @@ public class MediaPropertiesActivity extends Activity
                 c.close();
                 
                 double durationDouble = duration/1000.0;
-                duration = ( int ) Math.ceil( durationDouble );
+                duration = ( int ) Math.floor( durationDouble );
                 media.setEnd( duration );
                 media.setBegin( 0 );
                 
@@ -218,17 +218,7 @@ public class MediaPropertiesActivity extends Activity
            
         }
         
-        if(media.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
-            findViewById( R.id.xyInfo ).setVisibility( View.GONE );
-        else
-        {
-            findViewById( R.id.x ).setEnabled( false );
-            findViewById( R.id.y ).setEnabled( false );
-            findViewById( R.id.xLabel ).setEnabled( false );
-            findViewById( R.id.yLabel ).setEnabled( false );
-            findViewById( R.id.xyInfo ).setEnabled( false );
-        }
-        
+        findViewById( R.id.xyInfo ).setVisibility( View.INVISIBLE );
         TextView tv = (TextView)findViewById( R.id.Title );
         tv.setText(media.getFileName());
     }

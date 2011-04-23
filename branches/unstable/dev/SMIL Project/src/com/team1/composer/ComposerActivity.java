@@ -91,7 +91,12 @@ public class ComposerActivity extends Activity {
                 {
                     int type = message.getResourcesByBeginTime().get(idx).getType ( );
                     String source = message.getResourcesByBeginTime().get(idx).getSource ( );
-                    int begin = message.getResourcesByBeginTime().get(idx).getBegin ( );
+                    int begin =0;
+                    if(type == SmilConstants.COMPONENT_TYPE_VIDEO || 
+                            type == SmilConstants.COMPONENT_TYPE_AUDIO)
+                        begin = message.getResourcesByBeginTime().get(idx).getBegin ( ) - 1;
+                    else
+                        begin = message.getResourcesByBeginTime().get(idx).getBegin ( );
                     int end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
                         message.getResourcesByBeginTime().get(idx).getBegin ( );                
                     
