@@ -1,8 +1,10 @@
 package com.team1.communication;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +12,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.SmsMessage;
@@ -66,21 +69,28 @@ public class Receiver extends BroadcastReceiver
                     boolean downloaded = false;
                     String fileName = Environment.getExternalStorageDirectory ( ) 
                     + SmilConstants.INBOX_PATH + smilFile;
+                    
+                    Log.i("RECEIVE", "about to download");
+                    downloadThread t = new downloadThread();
+                    t.execute( "filename", smilFile, fileName );
                     try
                     {
-                        Log.i("RECEIVE", "about to download");
-                        downloaded = Downloader.downloadFilename(smilFile, fileName );
+                        t.get();
                     }
-                    catch ( MalformedURLException e )
+                    catch ( InterruptedException e1 )
                     {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        e1.printStackTrace();
                     }
-                    catch ( IOException e )
+                    catch ( ExecutionException e1 )
                     {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }//downloadFromCloud( smilFile );
+                        e1.printStackTrace();
+                    }
+                    //
+                    Log.i("RECEIVE", "downloaded");
+                    downloaded = new File(fileName).exists();
+                    
                     
                     if(downloaded)
                     {
@@ -126,6 +136,7 @@ public class Receiver extends BroadcastReceiver
     private static void downloadMedia ( SmilMessage message )
     {
         ArrayList < SmilComponent > components = message.getResourcesByBeginTime();
+        ArrayList < downloadThread > threads = new ArrayList< downloadThread >();
         for ( int i = 0; i < components.size(); i++ )
         {
             SmilComponent comp = components.get(i);
@@ -133,14 +144,32 @@ public class Receiver extends BroadcastReceiver
             if( comp.getTitle() != null && comp.getTitle().length() > 0)
             {
                 Log.i("DOWNLOAD", "Attempting to download key " + comp.getTitle());
-                boolean downloaded = Downloader.downloadKey( comp.getTitle(), comp.getSource() );
-                if ( !downloaded )
-                {
-                    Log.e( "DOWNLOAD", "File failed to download." );
-                }
+                downloadThread t = new downloadThread();
+                threads.add(t);
+                t.execute( "key", comp.getTitle(), comp.getSource() );
+            }
+            
+        }
+        for(int i = 0; i < threads.size(); i++)
+        {
+            try
+            {
+                threads.get( i ).get();
+            }
+            catch ( InterruptedException e )
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch ( ExecutionException e )
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
+        
     }
+    
     
     public void displayNotification( String ticker, String msg, Context context)
     {
@@ -179,4 +208,38 @@ public class Receiver extends BroadcastReceiver
 
         manager.notify( 1, notification );
     }
+    
+    
+    
+    
+    
  }
+
+
+class downloadThread extends AsyncTask<String, Void, Void>
+{
+
+    @Override
+    protected Void doInBackground( String... params )
+    {
+        String type = params[0];
+        String data = params[1];
+        String saveAs = params[2];
+        
+        try{
+        if(type.equals("filename"))
+            Downloader.downloadFilename( data, saveAs );
+        else
+            Downloader.downloadKey( data, saveAs );
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            Log.e("DOWNLOADTHREAD", "Something broke");
+        }
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+}
+
