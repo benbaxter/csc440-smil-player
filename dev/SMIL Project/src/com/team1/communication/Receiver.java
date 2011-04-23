@@ -74,18 +74,10 @@ public class Receiver extends BroadcastReceiver
                     
                     Log.i("RECEIVE", "about to download");
                     
-                    ticker = "You have " + numOfSMIL + " new SMIL message(s)";
-                    //---display the new SMS message---
-                    if(numOfSMIL > 0){                
-                        //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                        displayNotification( ticker, "SMIL Messages!", context );
-                    }
-                    else{
-                        //continue the normal process of sms and will get alert and reaches inbox
-                        this.clearAbortBroadcast();
-                    }
+                    
                     
                     downloadThread t = new downloadThread();
+                    Log.i("DOWNLOADTHREAD", smilFile);
                     t.execute( "filename", smilFile, fileName );
                     try
                     {
@@ -128,8 +120,19 @@ public class Receiver extends BroadcastReceiver
                         Log.i("DOWNLOAD", "downloaded: " + downloaded);
                     }
                     
-                }
-         //   }
+                    ticker = "You have " + numOfSMIL + " new SMIL message(s)";
+                    //---display the new SMS message---
+                    if(numOfSMIL > 0){                
+                        //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+                        displayNotification( ticker, "SMIL Messages!", context );
+                    }
+                    else{
+                        //continue the normal process of sms and will get alert and reaches inbox
+                        this.clearAbortBroadcast();
+                    }
+                    
+              //  }
+            }
             
         } 
         else
@@ -203,9 +206,9 @@ public class Receiver extends BroadcastReceiver
         CharSequence contentText = "Click here to check them out!";
         //this will take us to the inbox activity
         Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
-        smilFile = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
-        Log.i("RECEIVE", "smil file: " + smilFile);
-        notificationIntent.putExtra( "RecievedSmil", smilFile );
+        String smilFile2 = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
+        Log.i("RECEIVE", "smil file: " + smilFile2);
+        notificationIntent.putExtra( "RecievedSmil", smilFile2 );
         
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
@@ -232,7 +235,7 @@ class downloadThread extends AsyncTask<String, Void, Void>
         String type = params[0];
         String data = params[1];
         String saveAs = params[2];
-        
+        Log.e("DOWNLOADTHREAD", params[0]+ " + " + params[1] + " + " + params[2]);
         try{
         if(type.equals("filename"))
             Downloader.downloadFilename( data, saveAs );
