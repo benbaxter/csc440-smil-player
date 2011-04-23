@@ -26,7 +26,7 @@ public class SmilPlayerActivity extends Activity implements Callback
 	private SmilMessage     message;
     private Timer           myTimer;
 	private Bundle          instance;
-	private boolean          userStopped = false;
+	private boolean         userStopped = false;
 
 	   private class DisplaySurfaceRunnable implements Runnable
 	   {
@@ -122,6 +122,7 @@ public class SmilPlayerActivity extends Activity implements Callback
     {
         view.stopPlayer ( );
         mediaController.hide ( );   
+        myTimer.cancel ( );
         System.gc ( );        
         super.finish ( );
     }
@@ -336,6 +337,7 @@ public class SmilPlayerActivity extends Activity implements Callback
 
     @Override public void surfaceDestroyed ( SurfaceHolder holder ) 
     {
+        myTimer.cancel ( );
     }
     
     
@@ -355,7 +357,11 @@ public class SmilPlayerActivity extends Activity implements Callback
             
             String timeDisplay = "";
             int time = view.getRuntime ( );
+            
+            //if ( bFlag ) return;
+            
             Log.i("TIME", String.valueOf( time ));
+            
             int duration = 0;
     
             format = NumberFormat.getNumberInstance();
