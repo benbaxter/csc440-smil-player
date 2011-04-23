@@ -22,6 +22,7 @@ import com.team1.composer.ComposerActivity;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -157,6 +158,7 @@ public void setSavedBackground (int newValue)
  */
 public void onDragStart(DragSource source, Object info, int dragAction) 
 {
+    setBackgroundResource( R.drawable.delete_passive );
 }
 
 /**
@@ -214,7 +216,8 @@ public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffse
         DragView dragView, Object dragInfo)
 {
     int bg = R.color.red;
-    setBackgroundResource (bg);
+//    setBackgroundResource (bg);
+    setBackgroundResource( R.drawable.delete_active );
 }
 
 /**
@@ -231,7 +234,8 @@ public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset
 public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
         DragView dragView, Object dragInfo)
 {
-    setBackgroundResource (getSavedBackground ());
+//    setBackgroundResource (getSavedBackground ());
+    setBackgroundResource( R.drawable.delete_passive );
 
 }
 

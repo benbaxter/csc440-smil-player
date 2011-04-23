@@ -51,12 +51,6 @@
 		        android:layout_alignParentBottom="true" 
 		        android:layout_alignParentRight="true" />		
 		        
-		        <TextView 
-		        android:text="DELETE"
-		        android:layout_width="50px"
-		        android:layout_height="50px" 
-		        android:layout_alignParentBottom="true" 
-		        android:layout_alignParentRight="true" />
 		</RelativeLayout>
 
 	</com.team1.composer.drag.DragLayer>
