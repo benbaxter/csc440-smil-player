@@ -78,6 +78,7 @@ public class SmilPlayerActivity extends Activity implements Callback
     {
         instance = savedInstanceState;
         
+
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
@@ -360,7 +361,6 @@ public class SmilPlayerActivity extends Activity implements Callback
 
     @Override public void surfaceDestroyed ( SurfaceHolder holder ) 
     {
-        myTimer.cancel ( );
     }
     
     
@@ -395,8 +395,6 @@ public class SmilPlayerActivity extends Activity implements Callback
                 format.format ( time / 60 ) + ":" + format.format ( time % 60  ) + " / " + 
                 format.format ( duration / 60 ) + ":" + format.format ( duration % 60  );
             }
-//            if ( ( time < 0 ) ||
-//                 ( view.getPlayState ( ) == view.STOPPED && time != duration) )
             else 
             {
                 timeDisplay = "  Press play to start.";
@@ -408,14 +406,13 @@ public class SmilPlayerActivity extends Activity implements Callback
                 }
                 
             } 
-            
-           
+             
             int progress = 0;
             if(duration!=0)
             {
                 progress = (int) (((float) time / (float) duration) * 100);
             }
-            else if (messagePlayed && !userStopped)
+            else if (messagePlayed && !userStopped && time >= 0)
             {
                 progress = 100;
                 timeDisplay = "  " +  
