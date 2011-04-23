@@ -7,7 +7,7 @@
     <Button android:layout_width="wrap_content"  
         android:id="@+id/browseBtn"  
         android:layout_height="wrap_content"  
-        android:text="Browse..."  
+        android:background="@drawable/contactsbuttonsender"  
         android:layout_alignParentRight="true"/>
         
     <EditText android:layout_height="wrap_content" 

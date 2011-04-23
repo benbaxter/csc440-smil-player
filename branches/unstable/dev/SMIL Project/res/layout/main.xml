@@ -13,7 +13,8 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:layout_centerVertical="true" 
-			android:text="SMIL Player - Main Menu"/>
+			android:text="SMIL Player - Main Menu"
+			android:textColor="#efefef"/>
 			
 		<!-- Button android:id="@+id/newBtn" 
 			android:layout_width="wrap_content" 

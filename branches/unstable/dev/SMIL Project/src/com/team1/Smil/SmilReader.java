@@ -77,7 +77,7 @@ public class SmilReader extends DefaultHandler
             xr.parse(new InputSource(f));
 
             SmilMessage message = parser.getMessage();
-            //downloadMedia(message);
+
             return message;
         }
     }
@@ -87,7 +87,7 @@ public class SmilReader extends DefaultHandler
     {
         parsedMessage = new SmilMessage ( );
     }
-    
+
     @Override
     public void endDocument() throws SAXException 
     {
@@ -201,12 +201,6 @@ public class SmilReader extends DefaultHandler
                     { // new resource to construct
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
-                        
-                        if( !localName.equals( "text" ) && source != null && !source.contains( "/" ))
-                        {
-                            source = Environment.getExternalStorageDirectory() + SmilConstants.MEDIA_PATH + source;
-                        }
-                        
                         if ( localName.equals ( "text" ) ) 
                         {
                             Log.i("SOURCE IS", source);
@@ -232,12 +226,6 @@ public class SmilReader extends DefaultHandler
                             parsedComponent = new SmilVideoComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_VIDEO );
                             mInVideoTag = true;
-                        }
-                        
-                        String title = atts.getValue ( "title" );
-                        if ( title != null )
-                        {
-                            parsedComponent.setTitle( title );
                         }
                      
                         if ( mInTextTag || mInImageTag || mInAudioTag || mInVideoTag )

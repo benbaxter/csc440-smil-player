@@ -72,7 +72,7 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 				currentTime = -2;
 				state = PLAYING;
 				Log.d("SmilView", "STATE: playing");
-	            while ( getPlayState ( ) > STOPPED ) 
+	            while ( getPlayState ( ) != STOPPED ) 
 	            {
 	                Canvas c = null;
 	                try 
@@ -329,7 +329,6 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	final public static int PLAYING = 1;
 	final public static int PAUSED  = 0;
 	final public static int STOPPED = -1;
-	final public static int PLAYED  = -2;
 	
 	private int state = STOPPED;
 	private SmilThread time;

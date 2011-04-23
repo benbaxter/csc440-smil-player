@@ -26,6 +26,7 @@ public class SmilPlayerActivity extends Activity implements Callback
 	private SmilMessage     message;
     private Timer           myTimer;
 	private Bundle          instance;
+	private boolean          userStopped = false;
 
 	   private class DisplaySurfaceRunnable implements Runnable
 	   {
@@ -79,9 +80,8 @@ public class SmilPlayerActivity extends Activity implements Callback
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                TimerMethod();
+                timerMethod();
             }
-
         }, 0, 500);
 
         startPlayer ( );
@@ -151,6 +151,8 @@ public class SmilPlayerActivity extends Activity implements Callback
         mediaController.setAnchorView ( frameLayout );
         mediaController.setLayoutParams ( layoutParams );
         
+        userStopped = false;
+        
         ((Button)findViewById(R.id.playBtn)).setOnClickListener(new View.OnClickListener ( ) 
         {
             @SuppressWarnings ( "static-access" )
@@ -173,9 +175,8 @@ public class SmilPlayerActivity extends Activity implements Callback
                     }
                     else
                     {
-                        view.playPlayer ( message );
-                        Button playPause = (Button)findViewById( R.id.playBtn );
-                        playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.playbuttonplayer));
+                        
+                        startPlayer ( );
                     }
                 }
                 else
@@ -185,28 +186,19 @@ public class SmilPlayerActivity extends Activity implements Callback
             }
         });
 
-        ((Button)findViewById(R.id.replayBtn)).setOnClickListener(new View.OnClickListener ( ) 
+        ((Button)findViewById(R.id.stopBtn)).setOnClickListener(new View.OnClickListener ( ) 
         {
             @Override
             public void onClick ( View v ) 
             {
-                restartPlayer ( );
+                ((ProgressBar)findViewById(R.id.progressBar)).setProgress(0);
+                stopMessage ( );
             }
         });
 
-        ((Button)findViewById(R.id.respondBtn)).setOnClickListener(new View.OnClickListener ( ) 
-        {
-            @Override
-            public void onClick ( View v ) 
-            {
-                //TBD: Respond to the smil message
-                Toast.makeText(getApplicationContext(), "Respond", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         try
         {
-            
             Intent in = getIntent ( );
             if ( in.hasExtra ( "playFile" ) )
             {
@@ -252,9 +244,12 @@ public class SmilPlayerActivity extends Activity implements Callback
         }
     }
     
-    private void restartPlayer ( )
+    private void stopMessage ( )
    	{
-        startPlayer ( );
+        view.stopPlayer ( );  
+        Button playPause = (Button)findViewById( R.id.playBtn );
+        playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.playbuttonplayer));
+        userStopped = true;
    	}
 
     MediaController.MediaPlayerControl playerInterface = new MediaController.MediaPlayerControl ( ) 
@@ -345,38 +340,69 @@ public class SmilPlayerActivity extends Activity implements Callback
     
     
 
-    private void TimerMethod ( )
+    private void timerMethod ( )
     {
         this.runOnUiThread ( Timer_Tick );
     }
 
     private Runnable Timer_Tick = new Runnable ( ) 
     {
+        boolean messagePlayed = false;
         public void run ( ) 
         {
             NumberFormat format;
             
             String timeDisplay = "";
             int time = view.getRuntime ( );
+            Log.i("TIME", String.valueOf( time ));
+            int duration = 0;
     
             format = NumberFormat.getNumberInstance();
             format.setMinimumIntegerDigits(2); // pad with 0 if necessary
-
-
-            if ( ( time < 0 ) ||
-                 ( view.getPlayState ( ) == view.STOPPED ) )
+            if( time == duration )
+                messagePlayed = true;
+            
+            if( (time >= 0 && view.getPlayState ( ) != view.STOPPED))
             {
-                timeDisplay = "                     Click repeat to play again.";
+                duration = view.getRunLength ( );
+                timeDisplay = "  " +  
+                format.format ( time / 60 ) + ":" + format.format ( time % 60  ) + " / " + 
+                format.format ( duration / 60 ) + ":" + format.format ( duration % 60  );
+            }
+//            if ( ( time < 0 ) ||
+//                 ( view.getPlayState ( ) == view.STOPPED && time != duration) )
+            else 
+            {
+                timeDisplay = "  Press play to start.";
+                
+                if(time > 0)
+                {
+                    Button playPause = (Button)findViewById( R.id.playBtn );
+                    playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.playbuttonplayer));            
+                }
+                
             } 
-            else
+            
+           
+            int progress = 0;
+            if(duration!=0)
             {
-                int length = view.getRunLength ( );
-                timeDisplay = "                              " +  
-                              format.format ( time / 60 ) + ":" + format.format ( time % 60  ) + " / " + 
-                              format.format ( length / 60 ) + ":" + format.format ( length % 60  );
+                progress = (int) (((float) time / (float) duration) * 100);
+            }
+            else if (messagePlayed && !userStopped)
+            {
+                progress = 100;
+                timeDisplay = "  " +  
+                format.format ( time / 60 ) + ":" + format.format ( time % 60  ) + " / " + 
+                format.format ( time / 60 ) + ":" + format.format ( time % 60  );
+                Button playPause = (Button)findViewById( R.id.playBtn );
+                playPause.setBackgroundDrawable(getResources().getDrawable( R.drawable.pausebuttonplayer));
+                messagePlayed = false;
             }
             
+            ((ProgressBar)findViewById(R.id.progressBar)).setProgress(progress);
             ((TextView)findViewById( R.id.timerLbl )).setText( timeDisplay );
         }
+            
     };
 }
