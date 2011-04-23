@@ -196,7 +196,6 @@ public class FileBrowserActivity extends ListActivity
 
                         setResult( RESULT_OK, data );
                         finish();
-
                     }
                     else if ( item == 1 )
                     {
@@ -207,9 +206,8 @@ public class FileBrowserActivity extends ListActivity
                         finish();
                     }
                     else if ( item == 2 )
-                        deleteDatabase( filePath );
-                    
-                                    }
+                        deleteFileAndRefresh ( filePath );
+                }
             });
             dialog = buildSelecter2.create();
             break;
