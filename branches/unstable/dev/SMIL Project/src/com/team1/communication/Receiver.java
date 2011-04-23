@@ -219,15 +219,16 @@ public class Receiver extends BroadcastReceiver
         CharSequence contentTitle = "New SMIL Messages!";
         CharSequence contentText = "Click here to check them out!";
         
-        //this will take us to the inbox activity
+        // Construct the file path to the received SMIL file
         String smilFile2 = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
         Log.i("RECEIVE", "smil file: " + smilFile2);
         
-        Intent browseIntent = new Intent( context, FileBrowserActivity.class );
-        browseIntent.putExtra( "BROWSE", Main.BROWSE_TYPE_INBOX );
+        // Pass the SMIL file path into the SMIL Player Activity intent
+        Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
+        notificationIntent.putExtra( "RecievedSmil", smilFile2 );
         
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
-
+        // When the user selects the notification, the SMIL Player Activity should start
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
         manager.notify( 1, notification );
     }
