@@ -89,8 +89,8 @@ public class SmilGenerator
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_VIDEO || 
                         item.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
                 {
-                    par.append("begin=\"" + item.getBegin() + 1 + "\" ");
-                    par.append("end=\"" + (item.getEnd()+item.getBegin()) + 1 + "\" ");
+                    par.append("begin=\"" + (item.getBegin() + 1) + "\" ");
+                    par.append("end=\"" + ((item.getEnd()+item.getBegin()) + 1) + "\" ");
                 }
                 else
                 {
