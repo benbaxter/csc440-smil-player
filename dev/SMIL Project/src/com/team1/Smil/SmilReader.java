@@ -207,7 +207,11 @@ public class SmilReader extends DefaultHandler
                             parsedComponent = new SmilTextComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
                             mInTextTag = true;
-                        } 
+                        }
+                        if( !localName.equals( "text" ) && source != null && !source.contains( "/" ))
+                        {
+                            source = Environment.getExternalStorageDirectory() + SmilConstants.MEDIA_PATH + source;
+                        }
                         else if ( localName.equals ( "img" ) ) 
                         {
                             Log.i("imgSource-Reader", source);
@@ -226,6 +230,12 @@ public class SmilReader extends DefaultHandler
                             parsedComponent = new SmilVideoComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_VIDEO );
                             mInVideoTag = true;
+                        }
+                        
+                        String title = atts.getValue ( "title" );
+                        if ( title != null )
+                        {
+                            parsedComponent.setTitle( title );
                         }
                      
                         if ( mInTextTag || mInImageTag || mInAudioTag || mInVideoTag )
