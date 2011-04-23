@@ -147,10 +147,10 @@ public class ComposerActivity extends Activity {
                     {
                         SmilRegion region = new SmilRegion ( message.getResourcesByBeginTime().get(idx).getRegion ( ) );
                         SmilVideoComponent c = new SmilVideoComponent ( source, region, begin, end );
-                        c.setTag( "video" + mediaCount++ );
-                        media.add ( c );
-                        
-                        addVideoToCanvas ( false );
+		                c.setTag( "video" + mediaCount++ );
+		                media.add ( c );
+		                
+		                addVideoToCanvas ( true );
 
                         ImageView iv = (ImageView)mDragLayer.findViewWithTag ( media.getLast().getTag ( ) );
                         iv.setMaxWidth ( media.getLast().getRegion().getRect().width ( ) );
@@ -278,7 +278,7 @@ public class ComposerActivity extends Activity {
                     }
                 }
 
-                toast ( "Generating SMIL file" );
+		        toast ( "Saving to draft folder..." );
                 
                 String file = "draft_" + format.format ( fileIndex ) + ".smil";
                 
