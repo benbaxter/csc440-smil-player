@@ -211,6 +211,7 @@ public class SmilPlayerActivity extends Activity implements Callback
             {
                 String fileName = in.getExtras().getString ( "RecievedSmil" );
                 Toast.makeText( getApplicationContext(), "Received: " + fileName, Toast.LENGTH_LONG );
+                Log.i("RECEIVE", "file name: " + fileName);
                 message = SmilReader.parseMessage ( fileName );
                 downloadMedia( message );
                 loadVideos ( );
