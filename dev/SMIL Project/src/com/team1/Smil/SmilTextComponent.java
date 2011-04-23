@@ -29,6 +29,8 @@ public class SmilTextComponent extends SmilComponent
         super ( null, null, 0, 0 );
         this.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
         this.fontSize = 25;
+        textColor = new Paint ( );
+        textColor.setTextSize ( 25 );
     }
     
     public SmilTextComponent ( String source, SmilRegion region, int begin, int end ) 
@@ -38,6 +40,7 @@ public class SmilTextComponent extends SmilComponent
         this.fontSize = 25;
         getTextFromSource ( );
         textColor = new Paint ( );
+        textColor.setTextSize ( 25 );
         updateText ( );
     }
 
