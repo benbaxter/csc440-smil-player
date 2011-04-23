@@ -50,11 +50,13 @@ public class Receiver extends BroadcastReceiver
             Object[] pdus = (Object[]) bundle.get("pdus");
             msgs = new SmsMessage[pdus.length];            
             int numOfSMIL = 0;
-            for (int i=0; i<msgs.length; i++){
+            int i = 0;
+           // for (int i=0; i<msgs.length; i++){
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
                 if(msgs[i].getMessageBody().toString().contains( "You have just received a new SMIL message!" +
                 		" Go to our application to check it out!" ))
                 {
+                    
                     Log.i("RECEIVE", "Message is a SMIL message.");
                     str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
                     str += " :";
@@ -71,6 +73,18 @@ public class Receiver extends BroadcastReceiver
                     + SmilConstants.INBOX_PATH + smilFile;
                     
                     Log.i("RECEIVE", "about to download");
+                    
+                    ticker = "You have " + numOfSMIL + " new SMIL message(s)";
+                    //---display the new SMS message---
+                    if(numOfSMIL > 0){                
+                        //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+                        displayNotification( ticker, "SMIL Messages!", context );
+                    }
+                    else{
+                        //continue the normal process of sms and will get alert and reaches inbox
+                        this.clearAbortBroadcast();
+                    }
+                    
                     downloadThread t = new downloadThread();
                     t.execute( "filename", smilFile, fileName );
                     try
@@ -115,17 +129,8 @@ public class Receiver extends BroadcastReceiver
                     }
                     
                 }
-            }
-            ticker = "You have " + numOfSMIL + " new SMIL message(s)";
-            //---display the new SMS message---
-            if(numOfSMIL > 0){                
-                //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                displayNotification( ticker, "SMIL Messages!", context );
-            }
-            else{
-                //continue the normal process of sms and will get alert and reaches inbox
-                this.clearAbortBroadcast();
-            }
+         //   }
+            
         } 
         else
         {
