@@ -189,6 +189,7 @@ public class Main extends Activity
                         {
                             File file = new File(filePath);
                             file.delete();
+                            openFileBrowserActivity( BROWSE_TYPE_DRAFT );
                         }
                     }
                     
