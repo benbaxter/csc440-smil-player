@@ -108,7 +108,7 @@ public class FileBrowserActivity extends ListActivity
             else if( Main.BROWSE_TYPE_INBOX == type )
                 tv.setText ( "Inbox" );
             else if( Main.BROWSE_TYPE_OUTBOX == type )
-                tv.setText ( "Drafts" );
+                tv.setText ( "Outbox" );
         }
 
         ListView messageView = getListView ( );
@@ -117,7 +117,8 @@ public class FileBrowserActivity extends ListActivity
         {
             public void onItemClick ( AdapterView<?> parent, View view, int position, long id ) 
             {
-                filePath = filePath + "/" + ((TextView)view).getText().toString();
+                String filename = ((TextView)view).getTag().toString();
+                filePath = filePath + "/" + filename;
                 showDialog( type );
             }
         });
