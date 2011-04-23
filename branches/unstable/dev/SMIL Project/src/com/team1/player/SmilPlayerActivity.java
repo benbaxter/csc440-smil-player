@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.view.SurfaceHolder.Callback;
 
 import com.team1.Smil.*; 
+import com.team1.communication.Receiver;
 import com.team1.communication.cloud.Downloader;
 import com.team1.R;
 
@@ -213,7 +215,27 @@ public class SmilPlayerActivity extends Activity implements Callback
                 String fileName = in.getExtras().getString ( "RecievedSmil" );
                 Toast.makeText( getApplicationContext(), "Received: " + fileName, Toast.LENGTH_LONG );
                 Log.i("RECEIVE", "file name: " + fileName);
-                message = SmilReader.parseMessage ( fileName );
+                
+                File pathDir = Environment.getExternalStorageDirectory ( );
+                File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
+                File[] fileList = dir.listFiles();
+                
+                File recentFile = null;
+                if(fileList != null && fileList.length > 0)
+                {
+                    int biggestIndex = 0;
+                    for( File f : fileList)
+                    {
+                        String name =  f.getName();
+                        int index = Integer.parseInt( name.substring( name.indexOf( "_" ) + 1, name.indexOf( "." ) ) );
+                        if ( index > biggestIndex)
+                        {
+                            biggestIndex = index;
+                            recentFile = f;
+                        }
+                    }
+                }
+                message = SmilReader.parseMessage ( recentFile.getAbsolutePath() );
                 downloadMedia( message );
                 loadVideos ( );
             }
