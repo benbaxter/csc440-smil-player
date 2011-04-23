@@ -20,7 +20,7 @@ public class Downloader {
             while ((bytesRead = in.read(buffer)) != -1)
             {
               fOut.write(buffer, 0, bytesRead);
-              Log.i("DOWNLOAD", buffer.length+"");
+              //Log.i("DOWNLOAD", buffer.length+"");
             }
             fOut.flush();
             fOut.close();
