@@ -3,6 +3,7 @@ package com.team1;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.TreeMap;
 
 import android.app.Activity;
@@ -30,7 +31,7 @@ import com.team1.Smil.SmilConstants;
 public class FileBrowserActivity extends ListActivity 
 {
 	private String filePath;
-	private TreeMap<String, String> smilFilesMap = new TreeMap<String, String>();
+	private TreeMap<String, String> smilFilesMap = new TreeMap<String, String>(Collections.reverseOrder());
 	private Intent in;
 	private Dialog dialog = null;
 	private FileBrowserAdapter adapter;
