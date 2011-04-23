@@ -208,7 +208,11 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 
 		public int getRunLength ( )
 	    {
-		    return message.getLength ( );
+		    if ( message != null )
+		    {
+		        return message.getLength ( );
+		    }
+		    return 0;
 	    }
 
 		private class SmilAudioThread extends Thread
@@ -395,11 +399,17 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	
 	public synchronized void stopPlayer ( )
 	{
-		if ( state >= PAUSED )
-		{
-		    state = STOPPED;
-		} 
-        time.stop ( );
+	    try
+	    {
+	        if ( state >= PAUSED )
+	        {
+	            state = STOPPED;
+	        } 
+	        time.stop ( );
+	    }
+	    catch ( Exception e )
+	    {	
+	    }
 	}
 	
 	public int getPlayState ( )
