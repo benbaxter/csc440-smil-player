@@ -358,10 +358,6 @@ public class SmilPlayerActivity extends Activity implements Callback
             String timeDisplay = "";
             int time = view.getRuntime ( );
             
-            //if ( bFlag ) return;
-            
-            Log.i("TIME", String.valueOf( time ));
-            
             int duration = 0;
     
             format = NumberFormat.getNumberInstance();
