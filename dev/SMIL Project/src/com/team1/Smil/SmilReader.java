@@ -201,6 +201,12 @@ public class SmilReader extends DefaultHandler
                     { // new resource to construct
                         String regionId = atts.getValue ( "region" );
                         String source = atts.getValue ( "src" );
+                        
+                        if( !localName.equals( "text" ) && source != null && !source.contains( "/" ))
+                        {
+                            source = Environment.getExternalStorageDirectory() + SmilConstants.MEDIA_PATH + source;
+                        }
+                        
                         if ( localName.equals ( "text" ) ) 
                         {
                             Log.i("SOURCE IS", source);
@@ -208,10 +214,7 @@ public class SmilReader extends DefaultHandler
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
                             mInTextTag = true;
                         }
-                        if( !localName.equals( "text" ) && source != null && !source.contains( "/" ))
-                        {
-                            source = Environment.getExternalStorageDirectory() + SmilConstants.MEDIA_PATH + source;
-                        }
+                        
                         else if ( localName.equals ( "img" ) ) 
                         {
                             Log.i("imgSource-Reader", source);
