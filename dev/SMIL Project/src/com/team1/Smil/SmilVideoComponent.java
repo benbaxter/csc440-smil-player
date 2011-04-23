@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -55,20 +56,25 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
             videoWidth = getRegion().getRect().width ( );
             videoHeight = getRegion().getRect().height ( );
             
+            Log.i ( "SMILVIDEO", String.format ( "Video Width: %d", videoWidth ) );
+            Log.i ( "SMILVIDEO", String.format ( "Video Height: %d", videoHeight ) );
+ 
             FrameLayout.LayoutParams vidParms = new FrameLayout.LayoutParams(videoWidth, videoHeight);
             
             vidParms.gravity = Gravity.TOP;
             vidParms.topMargin = getRegion().getRect().top;
             
-            if ( getBegin ( ) > 0 )
-            {
-                vidParms.leftMargin = 0 - videoWidth;
-            }
-            else
-            {
-                vidParms.leftMargin = getRegion().getRect().left;
-            }
-            
+            //if ( getBegin ( ) > 0 )
+            //{
+                vidParms.leftMargin = videoWidth;
+            //}
+            //else
+            //{
+            //    vidParms.leftMargin = getRegion().getRect().left;
+            //}
+
+            Log.i ( "SMILVIDEO", String.format ( "Video Left Margin: %d", vidParms.leftMargin ) );
+
             preview.setBackgroundColor ( Color.TRANSPARENT );
             preview.setLayoutParams ( vidParms );
             holder = preview.getHolder ( );
