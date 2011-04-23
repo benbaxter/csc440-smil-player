@@ -217,17 +217,18 @@ public class SmilPlayerActivity extends Activity implements Callback
                 Log.i("RECEIVE", "file name: " + fileName);
                 
                 File pathDir = Environment.getExternalStorageDirectory ( );
-                File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
+                File dir = new File ( pathDir, SmilConstants.INBOX_PATH );
                 File[] fileList = dir.listFiles();
                 
                 File recentFile = null;
                 if(fileList != null && fileList.length > 0)
                 {
-                    int biggestIndex = 0;
+                    long biggestIndex = 0;
                     for( File f : fileList)
                     {
                         String name =  f.getName();
-                        int index = Integer.parseInt( name.substring( name.indexOf( "_" ) + 1, name.indexOf( "." ) ) );
+                        Log.i("Files", name);
+                        long index = Long.parseLong( name.substring( name.indexOf( "_" ) + 1, name.indexOf( "." ) ) );
                         if ( index > biggestIndex)
                         {
                             biggestIndex = index;
