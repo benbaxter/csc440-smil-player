@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,6 +20,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.team1.FileBrowserActivity;
 import com.team1.R;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
@@ -26,6 +28,7 @@ import com.team1.Smil.SmilMessage;
 import com.team1.Smil.SmilReader;
 import com.team1.communication.cloud.Downloader;
 import com.team1.player.SmilPlayerActivity;
+import com.team1.*;
  
 public class Receiver extends BroadcastReceiver
 {
@@ -198,8 +201,9 @@ public class Receiver extends BroadcastReceiver
         long when = System.currentTimeMillis();
 
         Notification notification = new Notification(icon, tickerText, when);
-//        Notification notification = new Notification( R.drawable.icon_mail, msg, System.currentTimeMillis() );
-        notification.flags = notification.FLAG_AUTO_CANCEL;
+        notification.flags  = Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+
         notification.defaults |= Notification.DEFAULT_SOUND;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notification.defaults |= Notification.DEFAULT_LIGHTS;
@@ -210,30 +214,23 @@ public class Receiver extends BroadcastReceiver
         notification.ledARGB = 0xff00ff00;
         notification.ledOnMS = 300;
         notification.ledOffMS = 1000;
-        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
         
         Context appContext = context.getApplicationContext();
         CharSequence contentTitle = "New SMIL Messages!";
         CharSequence contentText = "Click here to check them out!";
+        
         //this will take us to the inbox activity
-        Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
         String smilFile2 = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
         Log.i("RECEIVE", "smil file: " + smilFile2);
-        notificationIntent.putExtra( "RecievedSmil", smilFile2 );
         
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        Intent browseIntent = new Intent( context, FileBrowserActivity.class );
+        browseIntent.putExtra( "BROWSE", Main.BROWSE_TYPE_INBOX );
+        
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, browseIntent, 0);
 
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-        
-//        notification.setLatestEventInfo( this, "Title here", ".. And here's some more details..", contentIntent );
-
         manager.notify( 1, notification );
     }
-    
-    
-    
-    
-    
  }
 
 
