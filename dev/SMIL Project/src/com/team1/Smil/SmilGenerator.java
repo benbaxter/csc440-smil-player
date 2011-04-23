@@ -88,10 +88,15 @@ public class SmilGenerator
                     par.append("region=\"" + item.getTag() + "\" ");
                 if(item.getType() == SmilConstants.COMPONENT_TYPE_VIDEO || 
                         item.getType() == SmilConstants.COMPONENT_TYPE_AUDIO)
+                {
                     par.append("begin=\"" + item.getBegin() + 1 + "\" ");
+                    par.append("end=\"" + (item.getEnd()+item.getBegin()) + 1 + "\" ");
+                }
                 else
+                {
                     par.append("begin=\"" + item.getBegin() + "\" ");
-                par.append("end=\"" + (item.getEnd()+item.getBegin()) + "\" ");
+                    par.append("end=\"" + (item.getEnd()+item.getBegin()) + "\" ");
+                }
                 par.append( " />\r\n" );
             }
             br.write( layout.toString() );
