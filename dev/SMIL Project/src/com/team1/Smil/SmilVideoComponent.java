@@ -66,11 +66,11 @@ public class SmilVideoComponent extends SmilComponent implements OnPreparedListe
             
             //if ( getBegin ( ) > 0 )
             //{
-                vidParms.leftMargin = videoWidth;
+            //    vidParms.leftMargin = videoWidth;
             //}
             //else
             //{
-            //    vidParms.leftMargin = getRegion().getRect().left;
+                vidParms.leftMargin = getRegion().getRect().left;
             //}
 
             Log.i ( "SMILVIDEO", String.format ( "Video Left Margin: %d", vidParms.leftMargin ) );
