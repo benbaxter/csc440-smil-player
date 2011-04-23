@@ -262,27 +262,31 @@ public class ComposerActivity extends Activity {
                 File pathDir = Environment.getExternalStorageDirectory ( );
                 File dir = new File ( pathDir, SmilConstants.DRAFT_PATH );
 
-                String[] allFiles = dir.list ( );
-                
-                NumberFormat format;
-                format = NumberFormat.getNumberInstance();
-                format.setMinimumIntegerDigits(2); // pad with 0 if necessary
+		        File[] fileList = dir.listFiles();
+		        
+		        NumberFormat format;
+	            format = NumberFormat.getNumberInstance();
+	            format.setMinimumIntegerDigits(2); // pad with 0 if necessary
 
-                if ( allFiles != null )
-                {
-                    // Find all of the .smil files in this directory
-                    for ( int index = 0; index < allFiles.length; index++ )
-                    {
-                        if ( allFiles[index].endsWith ( ".smil" ) == true )
-                            ++fileIndex;
-                    }
-                }
+		        if(fileList != null && fileList.length > 0)
+		        {
+		            int biggestIndex = 0;
+		            for( File f : fileList)
+		            {
+		                String name =  f.getName();
+		                int index = Integer.parseInt( name.substring( name.indexOf( "_" ) + 1, name.indexOf( "." ) ) );
+		                if ( index > biggestIndex)
+		                    biggestIndex = index;
+		            }
+                    fileIndex = biggestIndex + 1;
+		        }
+		        else
+		            fileIndex = 0;
 
-		        toast ( "Saving to draft folder..." );
-                
                 String file = "draft_" + format.format ( fileIndex ) + ".smil";
                 
                 saveSmilFile ( file , SmilConstants.MODE_DRAFT );
+                toast ( "Saving SMIL file to drafts" );
                 changed = false;
             } 
             else if ( v.getId() == R.id.previewBtn ) 
