@@ -17,17 +17,15 @@
 			android:text="@string/app_name"
 			android:textColor="#efefef"/>
 
-		<!--Button android:id="@+id/newBtn" 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
-			android:background="@drawable/newbutton"
-			android:layout_alignParentRight="true" /-->
 	</RelativeLayout>
 
 	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  			android:layout_width="wrap_content"
-  			android:layout_height="wrap_content" 
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent" 
+   	        android:layout_above="@+id/playBtn"
    	        android:layout_below="@+id/TopBar"
+			android:layout_margin="10px"
+			android:background="#000000"
   			android:id="@+id/frame">
 	</FrameLayout>
 	
@@ -37,15 +35,6 @@
 		android:background="@drawable/pausebuttonplayer"
 		android:layout_alignParentBottom="true" />
 	
-	<!--  
-	<Button android:id="@+id/pauseBtn" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:background="@drawable/pausebuttonplayer"
-		android:layout_toRightOf="@+id/playBtn"
-		android:layout_alignParentBottom="true" /> 
-	 -->
-
 	<Button android:id="@+id/backBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
@@ -74,10 +63,7 @@
 		android:layout_toRightOf="@+id/playBtn"
 		android:layout_toLeftOf="@+id/stopBtn"
 		android:layout_above="@+id/timerLbl"/>
-		
-
-
-
+			
 	<Button android:id="@+id/stopBtn" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
