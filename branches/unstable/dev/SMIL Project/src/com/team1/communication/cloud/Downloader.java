@@ -25,10 +25,10 @@ public class Downloader {
             fOut.flush();
             fOut.close();
             
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = "";
-            while((line=br.readLine()) != null)
-                Log.i("DOWNLOAD", line);
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            String line = "";
+//            while((line=br.readLine()) != null)
+//                Log.i("DOWNLOAD", line);
         }
         catch ( MalformedURLException e )
         {
