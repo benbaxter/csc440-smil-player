@@ -199,7 +199,9 @@ public class Receiver extends BroadcastReceiver
         //this will take us to the inbox activity
         Intent notificationIntent = new Intent(context, SmilPlayerActivity.class);
         smilFile = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
+        Log.i("RECEIVE", "smil file: " + smilFile);
         notificationIntent.putExtra( "RecievedSmil", smilFile );
+        
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
