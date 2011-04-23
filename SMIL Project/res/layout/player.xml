@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/player"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout android:id="@+id/TopBar"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:background="@drawable/bar" 
+		android:fadingEdge="none">
+
+		<TextView android:id="@+id/Title" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:layout_centerVertical="true"
+			android:text="@string/app_name"
+			android:textColor="#efefef"/>
+
+	</RelativeLayout>
+
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent" 
+   	        android:layout_above="@+id/playBtn"
+   	        android:layout_below="@+id/TopBar"
+			android:layout_margin="10px"
+			android:background="#000000"
+  			android:id="@+id/frame">
+	</FrameLayout>
+	
+	<Button android:id="@+id/playBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/pausebuttonplayer"
+		android:layout_alignParentBottom="true" />
+	
+	<Button android:id="@+id/backBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@+id/playBtn"
+		android:layout_toLeftOf="@+id/stopBtn"
+		android:background="@drawable/backbarplayer"
+		android:layout_alignParentBottom="true" />
+
+	<TextView android:id="@+id/timerLbl" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@+id/playBtn"
+		android:layout_toLeftOf="@+id/stopBtn"
+		android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true"
+		android:textColor="#efefef"
+		android:text="   Loading..." 
+		android:layout_alignParentBottom="true"/>
+		
+	<ProgressBar android:id="@+id/progressBar"
+		android:indeterminateOnly="false"
+		android:progressDrawable="@android:drawable/progress_horizontal"
+		android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+		android:layout_width="wrap_content"
+		android:layout_height="12dip"
+		android:layout_toRightOf="@+id/playBtn"
+		android:layout_toLeftOf="@+id/stopBtn"
+		android:layout_above="@+id/timerLbl"/>
+			
+	<Button android:id="@+id/stopBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:background="@drawable/stopbuttonplayer"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" />		
+		
+		
+</RelativeLayout>
