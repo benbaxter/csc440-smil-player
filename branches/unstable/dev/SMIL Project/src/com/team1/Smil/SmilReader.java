@@ -52,20 +52,20 @@ public class SmilReader extends DefaultHandler
     {
         //try
         {
-    		String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-    		
-    		if ( fileName.startsWith ( rootDir ) ) 
-    		{
-    			fileName = fileName.replace ( rootDir, "" );
-    		}
-    		
-    		if ( fileName.endsWith ( ".smil" ) ) 
-    		{
-    			fileName = fileName.replace ( ".smil", "" );
-    		}
-    		
-    		Log.i("FILENAME FOR PARSING", rootDir + fileName + ".smil");
-    		FileReader f = new FileReader ( rootDir + fileName + ".smil" );
+            String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+            
+            if ( fileName.startsWith ( rootDir ) ) 
+            {
+                fileName = fileName.replace ( rootDir, "" );
+            }
+            
+            if ( fileName.endsWith ( ".smil" ) ) 
+            {
+                fileName = fileName.replace ( ".smil", "" );
+            }
+            
+            Log.i("FILENAME FOR PARSING", rootDir + fileName + ".smil");
+            FileReader f = new FileReader ( rootDir + fileName + ".smil" );
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
@@ -77,7 +77,7 @@ public class SmilReader extends DefaultHandler
             xr.parse(new InputSource(f));
 
             SmilMessage message = parser.getMessage();
-
+            //downloadMedia(message);
             return message;
         }
     }
@@ -87,7 +87,7 @@ public class SmilReader extends DefaultHandler
     {
         parsedMessage = new SmilMessage ( );
     }
-
+    
     @Override
     public void endDocument() throws SAXException 
     {
@@ -213,8 +213,7 @@ public class SmilReader extends DefaultHandler
                             parsedComponent = new SmilTextComponent ( source, parsedRegionMap.get(regionId), mParBeginTime, mParEndTime );
                             parsedComponent.setType ( SmilConstants.COMPONENT_TYPE_TEXT );
                             mInTextTag = true;
-                        }
-                        
+                        } 
                         else if ( localName.equals ( "img" ) ) 
                         {
                             Log.i("imgSource-Reader", source);
