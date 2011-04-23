@@ -1,10 +1,10 @@
 package com.team1;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import com.team1.R;
-import com.team1.Smil.SmilConstants;
+import java.util.Calendar;
+import java.util.TreeMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,19 +17,22 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.team1.Smil.SmilConstants;
 
 public class FileBrowserActivity extends ListActivity 
 {
 	private String filePath;
-	private ArrayList<String> smilFiles = new ArrayList<String>();
+	private TreeMap<String, String> smilFilesMap = new TreeMap<String, String>();
 	private Intent in;
 	private Dialog dialog = null;
 	
@@ -38,13 +41,12 @@ public class FileBrowserActivity extends ListActivity
 	{
 		super.onCreate ( savedInstanceState );
 		
-		// Look up the notification manager service
-        NotificationManager manager = (NotificationManager) getSystemService ( NOTIFICATION_SERVICE );
-    
-        // Cancel the notification that we started in IncomingMessage
-        manager.cancel ( 9 );
-		
-        // Allow for the background to show through when scrolling is happening
+        createScreen();
+	}
+	
+	private void createScreen()
+	{
+	 // Allow for the background to show through when scrolling is happening
         this.getListView().setCacheColorHint ( Color.TRANSPARENT );
 
         // Determine where to look (ie Inbox, Outbox, Drafts )
@@ -70,23 +72,39 @@ public class FileBrowserActivity extends ListActivity
         }
 
         filePath = dir.getAbsolutePath().toString();
+        Log.i("FILE", filePath);
         
-		String[] allFiles = dir.list ( );
-		if ( allFiles != null )
-		{
-			// Find all of the .smil files in this directory
-			for ( int index = 0; index < allFiles.length; index++ )
-			{
-				if ( allFiles[index].endsWith ( ".smil" ) == true )
-					smilFiles.add ( allFiles[index] );
-			}
-		}
+        String[] allFiles = dir.list ( );
+        if ( allFiles != null )
+        {
+            // Find all of the .smil files in this directory
+            for ( int index = 0; index < allFiles.length; index++ )
+            {
+                if ( allFiles[index].endsWith ( ".smil" ) == true )
+                {
+                    String baseName = allFiles[index];
+                    
+                    String displayName = baseName.substring( 0, baseName.indexOf( "_" ) ) + "\n";
+                    
+                    long milliseconds = Long.parseLong( baseName.substring( baseName.indexOf( "_" ) + 1, baseName.indexOf( "." ) ) );
+                    Calendar time = Calendar.getInstance();
+                    time.setTimeInMillis( milliseconds );
+                    
+                    SimpleDateFormat sdf = new SimpleDateFormat("M/dd hh:mm");
+                    displayName += sdf.format( time.getTime() );
+                    if ( Main.BROWSE_TYPE_DRAFT == type)
+                        smilFilesMap.put( baseName, baseName );
+                    else
+                        smilFilesMap.put( baseName, displayName );
+                }
+            }
+        }
 
-		setContentView ( R.layout.simple_list );
-		FileBrowserAdapter adapter = new FileBrowserAdapter ( this, android.R.layout.simple_list_item_1, smilFiles );
-		setListAdapter ( adapter );
+        setContentView ( R.layout.simple_list );
+        FileBrowserAdapter adapter = new FileBrowserAdapter ( this, smilFilesMap );
+        setListAdapter ( adapter );
 
-		// Set the title
+        // Set the title
         if ( in.hasExtra ( "BROWSE" ) )
         {
             TextView tv = (TextView)findViewById ( R.id.Title );
@@ -96,22 +114,23 @@ public class FileBrowserActivity extends ListActivity
             else if( Main.BROWSE_TYPE_INBOX == type )
                 tv.setText ( "Inbox" );
             else if( Main.BROWSE_TYPE_OUTBOX == type )
-                tv.setText ( "Drafts" );
+                tv.setText ( "Outbox" );
         }
 
-		ListView messageView = getListView ( );
-		
-		messageView.setOnItemClickListener ( new OnItemClickListener ( ) 
-		{
-		    public void onItemClick ( AdapterView<?> parent, View view, int position, long id ) 
-		    {
-		        filePath = filePath + "/" + ((TextView)view).getText().toString();
-		        showDialog( type );
-		    }
-		});
+        ListView messageView = getListView ( );
+        
+        messageView.setOnItemClickListener ( new OnItemClickListener ( ) 
+        {
+            public void onItemClick ( AdapterView<?> parent, View view, int position, long id ) 
+            {
+                String fileName = ((TextView)view).getTag().toString();
+                filePath = filePath + "/" + fileName;
+                showDialog( type );
+            }
+        });
 	}
 	
-	protected Dialog onCreateDialog(int id) {
+	protected Dialog onCreateDialog(int id ) {
         switch (id) {
         case Main.BROWSE_TYPE_DRAFT:
             final String[] items = { "Edit", "Delete" };
@@ -123,12 +142,15 @@ public class FileBrowserActivity extends ListActivity
                     Intent data = new Intent();
                     
                     if( item == 0 )
+                    {
                         data.putExtra("ACTION", Main.ACTION_EDIT);
+                    }
                     else if ( item == 1 )
+                    {
                         data.putExtra("ACTION", Main.ACTION_DELETE);
-                    
+                    }
                     data.putExtra( "FILE", filePath );
-
+                    
                     setResult( RESULT_OK, data );
                     finish();
                 }
@@ -185,32 +207,51 @@ public class FileBrowserActivity extends ListActivity
         return dialog;
 	}
 	
-	private class FileBrowserAdapter extends ArrayAdapter<String> 
+	private class FileBrowserAdapter extends BaseAdapter 
 	{
-	    private Activity context;
-	    private ArrayList<String> items;
-	    
-	    public FileBrowserAdapter ( Activity context, int textViewId, ArrayList<String> items ) 
-	    {
-	        super ( context, textViewId, items );
-	        this.context = context;
-	        this.items = items;
-	    }
-	    
-	    @Override
-	    public View getView ( int position, View convertView, ViewGroup parent ) 
-	    {
-	        View view = convertView;
-	        if ( view == null ) 
-	        {
-	            LayoutInflater layout = (LayoutInflater)context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
-	            view = layout.inflate ( android.R.layout.simple_list_item_1, null );
-	        }
-	        
-	        TextView text = (TextView)view.findViewById ( android.R.id.text1 );
-	        text.setText ( items.get ( position ) );
-	        
-	        return view;
-	    }
+	    private TreeMap<String, String> mData = new TreeMap<String, String>();
+        private String[] mKeys;
+        private Activity context;
+        
+        public FileBrowserAdapter(Activity context, TreeMap<String, String> data){
+
+            this.context = context;
+            mData  = data;
+            mKeys = mData.keySet().toArray(new String[data.size()]);
+        }
+
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mData.get(mKeys[position]);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
+
+        @Override
+        public View getView(int pos, View convertView, ViewGroup parent) {
+            String key = mKeys[pos];
+            String value = getItem(pos).toString();
+
+            View view = convertView;
+            if ( view == null ) 
+            {
+                LayoutInflater layout = (LayoutInflater)context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
+                view = layout.inflate ( android.R.layout.simple_list_item_1, null );
+            }
+            
+            TextView text = (TextView)view.findViewById ( android.R.id.text1 );
+            text.setText ( value );
+            text.setTag( key );
+            
+            return view;
+        }
 	}
 }

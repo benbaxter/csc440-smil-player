@@ -268,11 +268,11 @@ public class ComposerActivity extends Activity {
 		            }
 		        }
 
-		        toast ( "Generating SMIL file" );
                 
                 String file = "draft_" + format.format ( fileIndex ) + ".smil";
 			    
                 saveSmilFile ( file , SmilConstants.MODE_DRAFT );
+                toast ( "SMIL file saved in drafts" );
 			} 
 			else if ( v.getId() == R.id.previewBtn ) 
 			{
