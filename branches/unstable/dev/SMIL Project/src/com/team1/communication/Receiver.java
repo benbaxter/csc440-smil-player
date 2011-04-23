@@ -108,11 +108,13 @@ public class Receiver extends BroadcastReceiver
                         try
                         {
                             SmilMessage message = SmilReader.parseMessage( fileName );
+                            Log.i("RECEIVE", "downloading media");
                             downloadMedia(message);
                             while(!downloadFlag)
                             {
-                                
+                                Thread.sleep( 500l );
                             }
+                            Log.i("RECEIVE", "all media downloaded");
                         }
                         catch ( Exception e )
                         {
@@ -189,6 +191,8 @@ public class Receiver extends BroadcastReceiver
     public void displayNotification( String ticker, String msg, Context context)
     {
         NotificationManager manager = ( NotificationManager ) context.getSystemService( Context.NOTIFICATION_SERVICE );
+        manager.cancelAll();
+        
         int icon = R.drawable.icon_mail;
         CharSequence tickerText = ticker;
         long when = System.currentTimeMillis();
