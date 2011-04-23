@@ -31,6 +31,8 @@ public class Receiver extends BroadcastReceiver
 {
     Context toastContext;
     String smilFile;
+    
+    static boolean downloadFlag = false;
     @Override
     public void onReceive(Context context, Intent intent) 
     {    
@@ -107,6 +109,10 @@ public class Receiver extends BroadcastReceiver
                         {
                             SmilMessage message = SmilReader.parseMessage( fileName );
                             downloadMedia(message);
+                            while(!downloadFlag)
+                            {
+                                
+                            }
                         }
                         catch ( Exception e )
                         {
@@ -175,6 +181,7 @@ public class Receiver extends BroadcastReceiver
                 e.printStackTrace();
             }
         }
+        downloadFlag = true;
         
     }
     
