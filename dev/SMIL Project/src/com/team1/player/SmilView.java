@@ -290,6 +290,10 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 					owner.displaySurface ( video.getVideoView(), video.getLayoutParams ( ) );
 					Log.i("VideoThread", "created " + video.getSource ( ) );
 				}
+				else
+				{
+				    Log.i ( "VideoThread", "Owner is NULL" );
+				}
 			}
 			
 			@Override public void run ( )
@@ -364,6 +368,16 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 		{
 		    if ( state == STOPPED )
 		    {
+		        if ( time == null )
+		        {
+		            SurfaceHolder holder = getHolder ( );
+		            holder.addCallback ( this );
+		            
+		            time = new SmilThread ( holder );
+		             
+		            this.setFocusable ( true );
+		        }
+		        
 		        if ( time.setDataSet ( data ) ) 
 		        {
 		            time.start ( );
@@ -404,7 +418,11 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	        {
 	            state = STOPPED;
 	        } 
+	        
+	        Thread.sleep ( 1250 );
 	        time.stop ( );
+	        time = null;
+	        System.gc ( );
 	    }
 	    catch ( Exception e )
 	    {	
@@ -428,17 +446,25 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	
 	public int getRuntime ( )
 	{
-		return time.getRunTime ( );
+	    if ( time != null )
+	    {
+	        return time.getRunTime ( );
+	    }
+	    return -1;
 	}
 
 	public void setRunTime ( int pos )
 	{
-	    time.setRunTime ( pos );
+	    //time.setRunTime ( pos );
 	}
 	
 	public int getRunLength ( )
     {
-	    return time.getRunLength ( );
+	    if ( time != null )
+	    {
+	        return time.getRunLength ( );
+	    }
+	    return -1;
     }
 	
 	@Override public void surfaceCreated ( SurfaceHolder arg0 ) 
@@ -454,7 +480,8 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	@Override public void surfaceDestroyed(SurfaceHolder arg0) {
 		 boolean retry = true;
 		 state = STOPPED;
-	        while ( retry ) 
+	        while ( ( time != null ) &&
+	                ( retry        ) ) 
 	        {
 	            try 
 	            {
