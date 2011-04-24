@@ -177,7 +177,6 @@ public class SendActivity extends Activity{
             saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
             Log.i("SEND", "saved to outbox");
         }
-        dialog.dismiss();
         finish();
         
     }
