@@ -75,29 +75,28 @@ public class SmilView extends SurfaceView implements SurfaceHolder.Callback
 	            while ( getPlayState ( ) != STOPPED ) 
 	            {
 	                Canvas c = null;
-	                try 
+	                c = resHolder.lockCanvas ( null );
+	                synchronized (resHolder) 
 	                {
-	                    c = resHolder.lockCanvas ( null );
-	                    synchronized (resHolder) 
-	                    {
-	                    	SmilComponentLoadThread t = new SmilComponentLoadThread ( c );
-	                    	t.start ( );	        
-	                    	Thread.sleep ( 100 );	
-	                    	draw ( c );			    
-                            Thread.sleep ( 900 );    
-	                    }
-	                } 
-	                catch ( InterruptedException e ) 
+	                  	SmilComponentLoadThread t = new SmilComponentLoadThread ( c );
+	                   	t.start ( );	        
+	                   	draw ( c );			    
+                    }
+	                
+	                if ( c != null ) 
 	                {
-						e.printStackTrace();
-					} 
-	                finally 
+	                    resHolder.unlockCanvasAndPost ( c );
+	                }
+					
+	                try
 	                {
-	                    if ( c != null ) 
-	                    {
-	                        resHolder.unlockCanvasAndPost ( c );
-	                    }
-					}
+	                    Thread.sleep ( 1000 );
+	                }
+	                catch ( InterruptedException e )
+	                {
+	                    e.printStackTrace ( );
+	                }
+	                
 	            }
 			}
 			catch ( Exception e )
