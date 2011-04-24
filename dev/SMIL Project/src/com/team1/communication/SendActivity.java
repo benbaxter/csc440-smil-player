@@ -1,24 +1,23 @@
 package com.team1.communication;
 
 import java.io.File;
-import java.util.*;
 import com.team1.R;
 import com.team1.Smil.SmilConstants;
 import com.team1.Smil.SmilGenerator;
 import com.team1.communication.cloud.Uploader;
 import com.team1.composer.ComposerActivity;
-
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +30,7 @@ public class SendActivity extends Activity{
     private static final int PICK_CONTACT = 1;
     private String name = "";
     private String number = "";
+    ProgressDialog dialog;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,7 @@ public class SendActivity extends Activity{
         browse.setOnClickListener(buttonClick);
         send.setOnClickListener(buttonClick);
         cancel.setOnClickListener(buttonClick);
+        
     }
     
     OnClickListener buttonClick = new OnClickListener() {
@@ -52,31 +53,48 @@ public class SendActivity extends Activity{
             if(v.getId() == R.id.browseBtn){
                 getContact();
             }else if(v.getId() == R.id.sendBtn){
-                //ProgressDialog dialog = ProgressDialog.show(getApplicationContext(), "", "Please wait for few seconds...", true);
                 EditText addrTxt = (EditText) SendActivity.this.findViewById(R.id.addrText);
                 addrTxt.setFocusable(false);
                 Intent in = getIntent ( );
                 String smilURL = in.getExtras().getString( "smilFile" );
 
 
+                dialog = ProgressDialog.show(SendActivity.this, "", 
+                        "Sending...", true);
                 try {
-                    String msg = "You have just received a new SMIL message! Go to our application to check it out!";
+                    Log.i("SEND", "about to send");
+                    final String msg = "You have just received a new SMIL message! Go to our application to check it out!"
+                        + " Look for the file in your inbox called " + smilURL;
                     if(number.equals( "" ))
                     {
                         number = addrTxt.getText().toString();
                     }
-                    msg += " Look for the file in your inbox called " + smilURL;
-                    sendSMSMessage(number, msg);
-                    
-                    
+                    final Handler h = new Handler();
+                    final Thread t = new Thread(new Runnable() 
+                    {                
+                        public void run() 
+                        {
+                            sendSMSMessage(number, msg);
+                            h.post(finishThread);
+                        }
+                    });
+
+                    t.start();
                 } catch (Exception e) {
                     toast("Failed to send SMS ");
-                    e.printStackTrace();
+                    Log.i("SEND", "send failed");
                 }
-                
             }else if(v.getId() == R.id.cancelBtn){
                 finish();
             }
+        }
+    };
+    
+    Runnable finishThread = new Runnable()
+    {       
+        public void run() 
+        {
+            if(dialog != null) dialog.dismiss();
         }
     };
     
@@ -99,7 +117,7 @@ public class SendActivity extends Activity{
                 if (c.moveToFirst()) {
                     name = c.getString(c.getColumnIndex(Contacts.DISPLAY_NAME));
                     number = c.getString(c.getColumnIndex(Phone.DATA));
-                    if(number.matches( ".*[0-9]*" ) )
+                    if(!number.matches( ".*[0-9]*" ) )
                     {
                         toast("Contact has no Number");
                     }
@@ -111,21 +129,6 @@ public class SendActivity extends Activity{
         }
     }
     
-    public void sendSMILMessage(String number, File SMILfile)
-    {
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
-        SmsManager sms = SmsManager.getDefault();
-        boolean itworked = Uploader.upload(SMILfile);
-        try {
-        sms.sendTextMessage(number, null, SMILfile.getName(), sentPI, deliveredPI); 
-        } catch (Exception e) {toast("There was a problem sending SMIL message to " + number);}
-        
-        
-        if (itworked) toast(SMILfile.getName() + "uploaded to cloud");
-        else toast("There was a problem uploading the file");
-    }
-    
     private void sendSMSMessage(String phoneNumber, String message)
     {        
         Intent in = getIntent ( );
@@ -133,16 +136,13 @@ public class SendActivity extends Activity{
         {
             String smilName = in.getExtras().getString( "smilFile" );
             saveSmilFile( smilName, SmilConstants.MODE_SEND );
-            Log.i("SMILE FILE ABOUT TO SEND", ":"+smilName+":");
             File file = new File(Environment.getExternalStorageDirectory ( ) 
                     + SmilConstants.OUTBOX_PATH + smilName);
             Log.i ( "SEND", file.getAbsolutePath() );
-            toast( "About to upload: " + smilName );
             try {
                 boolean uploaded = Uploader.upload( file );
                 if(uploaded)
                 {
-                    toast( "File uploaded: " + smilName );
                     
                     String SENT = "SMS_SENT";
                     String DELIVERED = "SMS_DELIVERED";
@@ -155,12 +155,10 @@ public class SendActivity extends Activity{
                     
                     SmsManager sms = SmsManager.getDefault();
                     sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI); 
-//                    sms.sendDataMessage( phoneNumber, null, SMS_PORT, message.getBytes(), sentPI, deliveredPI );
-                   
                      
+                    Log.i("SEND", "sent");
                     
                     setResult(RESULT_OK);
-                    
                     finish();
                 }
                 else
@@ -177,13 +175,12 @@ public class SendActivity extends Activity{
             String[] fileName = smilName.split( "_" );
             smilName = phoneNumber + "_" + fileName[1];
             saveSmilFile( smilName, SmilConstants.MODE_DRAFT );
+            Log.i("SEND", "saved to outbox");
         }
-        
+        dialog.dismiss();
         finish();
         
     }
-    
-    
     
     private void saveSmilFile ( String fileName, int mode )
     {
@@ -201,15 +198,8 @@ public class SendActivity extends Activity{
         }
         catch ( Exception e )
         {
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Exception", "error occurred while creating xml file", e);
         }
-    }
-    
-    
-    private String getMyPhoneNumber(){
-        TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
-        return mTelephonyMgr.getLine1Number();
     }
     
     public void toast(String msg) {
