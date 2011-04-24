@@ -18,6 +18,7 @@ import android.view.SurfaceHolder.Callback;
 import com.team1.Smil.*; 
 import com.team1.communication.Receiver;
 import com.team1.communication.cloud.Downloader;
+import com.team1.Main;
 import com.team1.R;
 
 public class SmilPlayerActivity extends Activity implements Callback
@@ -29,7 +30,8 @@ public class SmilPlayerActivity extends Activity implements Callback
     private Timer           myTimer;
 	private Bundle          instance;
 	private boolean         userStopped = false;
-    
+	private String          fileName;
+	
 	private class DisplaySurfaceRunnable implements Runnable
 	{
 	    private SurfaceView surface;
@@ -87,7 +89,6 @@ public class SmilPlayerActivity extends Activity implements Callback
             }
         }, 0, 500);
 
-        
         startPlayer ( );
     }
 
@@ -133,14 +134,12 @@ public class SmilPlayerActivity extends Activity implements Callback
     
     private void startPlayer ( )
     {
-        
         super.onCreate ( instance );
 
         setContentView ( R.layout.player );
         
         frameLayout = (FrameLayout) findViewById ( R.id.frame );
         frameLayout.setWillNotDraw ( true );
-
         
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT );
@@ -182,8 +181,12 @@ public class SmilPlayerActivity extends Activity implements Callback
                     }
                     else
                     {
-                        
-                        startPlayer ( );
+                        //startPlayer ( ); //view.playPlayer ( message );
+                        Intent data = new Intent ( );
+                        data.putExtra ( "REPLAY", "replay" );
+                        data.putExtra ( "FILE", fileName );
+                        setResult ( RESULT_OK, data );
+                        finish ( );
                     }
                 }
                 else
@@ -209,14 +212,14 @@ public class SmilPlayerActivity extends Activity implements Callback
             Intent in = getIntent ( );
             if ( in.hasExtra ( "playFile" ) )
             {
-                String fileName = in.getExtras().getString ( "playFile" );
+                fileName = in.getExtras().getString ( "playFile" );
                 message = SmilReader.parseMessage ( fileName );
                 downloadMedia( message );
                 loadVideos ( );
             }            
             else if ( in.hasExtra( "RecievedSmil" ))
             {
-                String fileName = in.getExtras().getString ( "RecievedSmil" );
+                fileName = in.getExtras().getString ( "RecievedSmil" );
                 Toast.makeText( getApplicationContext(), "Received: " + fileName, Toast.LENGTH_LONG );
                 Log.i("RECEIVE", "file name: " + fileName);
                 

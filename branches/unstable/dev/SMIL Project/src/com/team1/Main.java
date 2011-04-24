@@ -32,11 +32,14 @@ public class Main extends Activity
     protected static final String ACTION_EDIT = "edit";
     protected static final String ACTION_PLAY = "play";
     protected static final String ACTION_DELETE = "delete";
+    protected static final String ACTION_REPLAY = "replay";
     
     private static final int COMPOSER = 1;
     private static final int EXIT     = 0;
 
     private static final int FILE_BROWSER = 1;
+    private static final int PLAYER = 2;
+    
     
     @Override
     public void onCreate( Bundle savedInstanceState )
@@ -134,7 +137,7 @@ public class Main extends Activity
             mPlayerIntent.putExtra ( "playFile", fileName );
         }
         
-        startActivity ( mPlayerIntent );
+        startActivityForResult ( mPlayerIntent, PLAYER );
     }
 
 
@@ -167,6 +170,23 @@ public class Main extends Activity
         
         switch ( requestCode )
         {                
+            case PLAYER:
+            {
+                if ( null != intent )
+                {
+                    if ( intent.hasExtra ( "REPLAY" ) )
+                    {
+                        Bundle extras = intent.getExtras ( );
+                        String action = extras.getString ( "REPLAY" );
+                        String filePath = extras.getString ( "FILE" );
+                    
+                        if ( action.equals ( ACTION_REPLAY ) )
+                        {
+                            openPlayerActivity ( filePath );
+                        }
+                    }                        
+                }
+            }
             case FILE_BROWSER:
             {
                 if ( ( RESULT_OK == resultCode ) &&

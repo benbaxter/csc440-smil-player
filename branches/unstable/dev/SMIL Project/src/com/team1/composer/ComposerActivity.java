@@ -44,6 +44,9 @@ public class ComposerActivity extends Activity {
     private final static int SEND_MESSAGE = 12;
     private final static int MEDIA_PICK = 13;
 
+    private static final int PLAYER = 2;
+    protected static final String ACTION_REPLAY = "replay";
+    
     private DragController mDragController;
     
     
@@ -81,6 +84,7 @@ public class ComposerActivity extends Activity {
         try
         {
             Intent in = getIntent ( );
+
             if ( in.hasExtra ( "fileName" ) )
             {
                 String fileName = in.getExtras().getString ( "fileName" );
@@ -100,7 +104,7 @@ public class ComposerActivity extends Activity {
                         begin = message.getResourcesByBeginTime().get(idx).getBegin ( );
                     end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
                          message.getResourcesByBeginTime().get(idx).getBegin ( );  
-                    
+
                     if ( SmilConstants.COMPONENT_TYPE_AUDIO == type ) 
                     {
                         SmilRegion region = new SmilRegion ( "", 0, 0, 0, 0 );
@@ -155,8 +159,8 @@ public class ComposerActivity extends Activity {
                         SmilVideoComponent c = new SmilVideoComponent ( source, region, begin, end );
 		                c.setTag( "video" + mediaCount++ );
 		                media.add ( c );
-		                
-		                addVideoToCanvas ( true );
+		    
+		                addVideoToCanvas ( false );
 		                
 		                File file = new File( c.getSource() );
 		                
@@ -382,7 +386,7 @@ public class ComposerActivity extends Activity {
             // Preview the temporary .smil file
             Intent mPlayerIntent = new Intent ( this, SmilPlayerActivity.class );
             mPlayerIntent.putExtra ( "playFile", SmilConstants.ROOT_PATH + "test1.smil" );
-            startActivity ( mPlayerIntent );
+            startActivityForResult ( mPlayerIntent, PLAYER );
         }
         catch ( Exception e )
         {
@@ -472,6 +476,23 @@ public class ComposerActivity extends Activity {
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
         switch (reqCode) {
+            case PLAYER:
+            {
+                if ( null != data )
+                {
+                    if ( data.hasExtra ( "REPLAY" ) )
+                    {
+                        Bundle extras = data.getExtras ( );
+                        String action = extras.getString ( "REPLAY" );
+                        
+                        if ( action.equals ( ACTION_REPLAY ) )
+                        {
+                            previewSmilFile ( );
+                        }
+                    }                        
+                }
+                break;
+            }
             case (ADD_MEDIA) :
                 if ( resultCode == Activity.RESULT_OK ) 
                 {                   
