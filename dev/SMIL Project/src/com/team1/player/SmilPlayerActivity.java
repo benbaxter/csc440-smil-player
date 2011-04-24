@@ -87,6 +87,15 @@ public class SmilPlayerActivity extends Activity implements Callback
             }
         }, 0, 500);
 
+        super.onCreate ( instance );
+        
+        setContentView ( R.layout.player );
+
+        frameLayout = (FrameLayout) findViewById ( R.id.frame );
+        frameLayout.setWillNotDraw ( true );
+        
+                
+
         startPlayer ( );
     }
 
@@ -132,16 +141,9 @@ public class SmilPlayerActivity extends Activity implements Callback
     
     private void startPlayer ( )
     {
-        super.onCreate ( instance );
-        
-        setContentView ( R.layout.player );
-
-        frameLayout = (FrameLayout) findViewById ( R.id.frame );
-        frameLayout.setWillNotDraw ( true );
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
-                                                                               FrameLayout.LayoutParams.WRAP_CONTENT );
-        
-                
+                FrameLayout.LayoutParams.WRAP_CONTENT );
+
         view = new SmilView ( frameLayout.getContext ( ), null );
         view.setZOrderMediaOverlay ( true );
         view.getHolder().addCallback ( this );
@@ -154,7 +156,7 @@ public class SmilPlayerActivity extends Activity implements Callback
         mediaController.setEnabled ( true );
         mediaController.setAnchorView ( frameLayout );
         mediaController.setLayoutParams ( layoutParams );
-        
+
         userStopped = false;
         
         ((Button)findViewById(R.id.playBtn)).setOnClickListener(new View.OnClickListener ( ) 
