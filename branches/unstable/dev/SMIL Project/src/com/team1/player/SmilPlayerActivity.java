@@ -29,48 +29,48 @@ public class SmilPlayerActivity extends Activity implements Callback
     private Timer           myTimer;
 	private Bundle          instance;
 	private boolean         userStopped = false;
-
-	   private class DisplaySurfaceRunnable implements Runnable
-	   {
-	        private SurfaceView surface;
-	        private FrameLayout.LayoutParams newParams;
+    
+	private class DisplaySurfaceRunnable implements Runnable
+	{
+	    private SurfaceView surface;
+	    private FrameLayout.LayoutParams newParams;
 	        
-	        public DisplaySurfaceRunnable ( SurfaceView sv, 
-	                                        FrameLayout.LayoutParams lp )
-	        {
-	            this.surface = sv;
-	            this.newParams = lp;
-	        }
+	    public DisplaySurfaceRunnable ( SurfaceView sv, 
+	                                    FrameLayout.LayoutParams lp )
+	    {
+	        this.surface = sv;
+	        this.newParams = lp;
+	    }
 	        
-	        @Override public void run ( )
+	    @Override public void run ( )
+	    {
+	        if ( surface != null )
 	        {
-	            if ( surface != null )
+	            if ( newParams == null )
 	            {
-	                if ( newParams == null )
-	                {
-	                    surface.setVisibility ( View.INVISIBLE );
-	                    surface.invalidate ( );
-	                }
-	                else
-	                {
-	                    FrameLayout.LayoutParams videoParams = new FrameLayout.LayoutParams ( surface.getWidth ( ), 
-	                                                                                          surface.getHeight ( ) );
-	                    videoParams.gravity = Gravity.TOP;
-	                    videoParams.topMargin = newParams.topMargin;
-	                    videoParams.leftMargin = newParams.leftMargin;
-	                    surface.setLayoutParams ( videoParams );
-	                    surface.invalidate ( );
-	                }
+	                surface.setVisibility ( View.INVISIBLE );
+	                surface.invalidate ( );
+	            }
+	            else
+	            {
+	                FrameLayout.LayoutParams videoParams = new FrameLayout.LayoutParams ( surface.getWidth ( ), 
+	                                                                                      surface.getHeight ( ) );
+	                videoParams.gravity = Gravity.TOP;
+	                videoParams.topMargin = newParams.topMargin;
+	                videoParams.leftMargin = newParams.leftMargin;
+	                surface.setLayoutParams ( videoParams );
+	                surface.invalidate ( );
 	            }
 	        }
 	    }
+	}
 	    
-	    public synchronized void displaySurface ( SurfaceView v, 
-	                                              FrameLayout.LayoutParams p )
-	    {
-	        DisplaySurfaceRunnable hvr = new DisplaySurfaceRunnable ( v, p );
-	        runOnUiThread ( hvr );
-	    }
+	public synchronized void displaySurface ( SurfaceView v, 
+	                                          FrameLayout.LayoutParams p )
+	{
+	    DisplaySurfaceRunnable hvr = new DisplaySurfaceRunnable ( v, p );
+	    runOnUiThread ( hvr );
+	}
 
 	    
     @Override
@@ -87,15 +87,7 @@ public class SmilPlayerActivity extends Activity implements Callback
             }
         }, 0, 500);
 
-        super.onCreate ( instance );
         
-        setContentView ( R.layout.player );
-
-        frameLayout = (FrameLayout) findViewById ( R.id.frame );
-        frameLayout.setWillNotDraw ( true );
-        
-                
-
         startPlayer ( );
     }
 
@@ -141,6 +133,15 @@ public class SmilPlayerActivity extends Activity implements Callback
     
     private void startPlayer ( )
     {
+        
+        super.onCreate ( instance );
+
+        setContentView ( R.layout.player );
+        
+        frameLayout = (FrameLayout) findViewById ( R.id.frame );
+        frameLayout.setWillNotDraw ( true );
+
+        
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams ( FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT );
 
@@ -250,7 +251,8 @@ public class SmilPlayerActivity extends Activity implements Callback
             Log.e("Exception", "error occurred while creating xml file", e);
         }
     }
-   	
+   	    
+            
     private void downloadMedia ( SmilMessage message )
     {
         ArrayList < SmilComponent > components = message.getResourcesByBeginTime();
@@ -296,10 +298,10 @@ public class SmilPlayerActivity extends Activity implements Callback
     	}
 
     	@Override public void seekTo ( int pos ) 
-    	{
-    	    view.setRunTime ( pos );
-    	}
-        
+        {
+            //view.setRunTime ( pos );
+        }
+                
     	@Override public void pause ( ) 
     	{
     		view.pausePlayer ( );
