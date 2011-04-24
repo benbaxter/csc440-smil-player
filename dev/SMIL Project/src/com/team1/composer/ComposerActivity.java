@@ -95,17 +95,11 @@ public class ComposerActivity extends Activity {
                     int end = 0;
                     if(type == SmilConstants.COMPONENT_TYPE_VIDEO || 
                             type == SmilConstants.COMPONENT_TYPE_AUDIO)
-                    {
                         begin = message.getResourcesByBeginTime().get(idx).getBegin ( ) - 1;
-                        end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
-                            message.getResourcesByBeginTime().get(idx).getBegin ( ) - 1; 
-                    }
                     else
-                    {
                         begin = message.getResourcesByBeginTime().get(idx).getBegin ( );
-                        end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
-                            message.getResourcesByBeginTime().get(idx).getBegin ( );  
-                    }
+                    end = message.getResourcesByBeginTime().get(idx).getEnd ( ) - 
+                         message.getResourcesByBeginTime().get(idx).getBegin ( );  
                     
                     if ( SmilConstants.COMPONENT_TYPE_AUDIO == type ) 
                     {
@@ -445,11 +439,6 @@ public class ComposerActivity extends Activity {
         return number;
     }
 
-    private String getMy10DigitPhoneNumber(){
-        String s = getMyPhoneNumber();
-        return s.substring(2);
-    }
-    
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
