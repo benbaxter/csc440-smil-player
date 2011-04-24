@@ -55,8 +55,8 @@ public class Receiver extends BroadcastReceiver
             Object[] pdus = (Object[]) bundle.get("pdus");
             msgs = new SmsMessage[pdus.length];            
             int numOfSMIL = 0;
-            int i = 0;
-           // for (int i=0; i<msgs.length; i++){
+            //int i = 0;
+            for (int i=0; i<msgs.length; i++){
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
                 if(msgs[i].getMessageBody().toString().contains( "You have just received a new SMIL message!" +
                 		" Go to our application to check it out!" ))
@@ -137,12 +137,12 @@ public class Receiver extends BroadcastReceiver
                         //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                         displayNotification( ticker, "SMIL Messages!", context );
                     }
-                    else{
-                        //continue the normal process of sms and will get alert and reaches inbox
-                        this.clearAbortBroadcast();
-                    }
                     
-              //  }
+                }
+                else{
+                    //continue the normal process of sms and will get alert and reaches inbox
+                    this.clearAbortBroadcast();
+                }
             }
             
         } 
