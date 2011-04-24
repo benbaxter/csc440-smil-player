@@ -157,8 +157,37 @@ public class ComposerActivity extends Activity {
 		                media.add ( c );
 		                
 		                addVideoToCanvas ( true );
+		                
+		                File file = new File( c.getSource() );
+		                
+		                Uri video = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+		                String[] proj={MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME};
+		                Cursor cur = managedQuery(video, proj, null, null, null);
+		                int videoId = 0;
 
+		                if (cur.moveToFirst()) {
+
+		                    int id;
+		                    String name;
+		                    int idColumn = cur.getColumnIndex(MediaStore.Video.Media._ID); 
+		                    int nameColumn = cur.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME);
+		                
+		                    do {
+		                        id = cur.getInt(idColumn);
+		                        name = cur.getString( nameColumn );
+		                        
+		                        if( name.equals( file.getName() ) )
+		                           videoId = id;
+
+		                    } while (cur.moveToNext());
+		                }
+		                
+		                ContentResolver cr = getContentResolver();
                         ImageView iv = (ImageView)mDragLayer.findViewWithTag ( media.getLast().getTag ( ) );
+                        BitmapDrawable thumb = new BitmapDrawable( MediaStore.Video.Thumbnails.getThumbnail(cr, 
+                                videoId, MediaStore.Video.Thumbnails.MINI_KIND, null) );
+                        
+                        iv.setBackgroundDrawable( thumb );
                         iv.setMaxWidth ( media.getLast().getRegion().getRect().width ( ) );
                         iv.setMaxHeight ( media.getLast().getRegion().getRect().height ( ) );
                         DragLayer.LayoutParams lp = new DragLayer.LayoutParams (
