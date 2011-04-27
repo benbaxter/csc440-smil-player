@@ -1,12 +1,12 @@
+//This is for you Hao
+
 package com.team1.communication;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,7 +20,6 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.team1.FileBrowserActivity;
 import com.team1.R;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
@@ -28,7 +27,6 @@ import com.team1.Smil.SmilMessage;
 import com.team1.Smil.SmilReader;
 import com.team1.communication.cloud.Downloader;
 import com.team1.player.SmilPlayerActivity;
-import com.team1.*;
  
 public class Receiver extends BroadcastReceiver
 {
@@ -61,7 +59,6 @@ public class Receiver extends BroadcastReceiver
                 if(msgs[i].getMessageBody().toString().contains( "You have just received a new SMIL message!" +
                 		" Go to our application to check it out!" ))
                 {
-                    
                     Log.i("RECEIVE", "Message is a SMIL message.");
                     str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
                     str += " :";
@@ -90,12 +87,10 @@ public class Receiver extends BroadcastReceiver
                     }
                     catch ( InterruptedException e1 )
                     {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                     catch ( ExecutionException e1 )
                     {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                     //
@@ -121,7 +116,6 @@ public class Receiver extends BroadcastReceiver
                         }
                         catch ( Exception e )
                         {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                     }
@@ -177,12 +171,10 @@ public class Receiver extends BroadcastReceiver
             }
             catch ( InterruptedException e )
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             catch ( ExecutionException e )
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -215,7 +207,6 @@ public class Receiver extends BroadcastReceiver
         notification.ledOnMS = 300;
         notification.ledOffMS = 1000;
         
-        Context appContext = context.getApplicationContext();
         CharSequence contentTitle = "New SMIL Messages!";
         CharSequence contentText = "Click here to check them out!";
         
@@ -256,7 +247,6 @@ class downloadThread extends AsyncTask<String, Void, Void>
             e.printStackTrace();
             Log.e("DOWNLOADTHREAD", "Something broke");
         }
-        // TODO Auto-generated method stub
         return null;
     }
     

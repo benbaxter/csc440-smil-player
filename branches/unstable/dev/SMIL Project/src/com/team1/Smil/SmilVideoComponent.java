@@ -1,8 +1,8 @@
+//This is for you Hao
+
 package com.team1.Smil;
 
 import java.io.File;
-
-import com.team1.player.SmilView;
 
 import android.R;
 import android.graphics.Bitmap;
@@ -14,9 +14,11 @@ import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
 import android.widget.FrameLayout;
+
+import com.team1.player.SmilView;
 
 
 public class SmilVideoComponent extends SmilComponent implements OnPreparedListener, Callback, OnVideoSizeChangedListener

@@ -1,20 +1,32 @@
+//This is for you Hao
+
 /* 
+
  * Questions to decide upon
  * Do we worry about <seq> and other tags?
  */
 
 package com.team1.Smil;
 
-import java.io.*;
-import java.util.*;
-
-import com.team1.communication.cloud.Uploader;
-import com.team1.composer.ComposerActivity;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import android.os.Environment;
 import android.util.Log;
-//import com.team1.composer.Media;
-import android.widget.Toast;
+
+import com.team1.communication.cloud.Uploader;
 
 public class SmilGenerator
 {

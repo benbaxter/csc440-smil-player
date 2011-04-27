@@ -1,3 +1,5 @@
+//This is for you Hao
+
 package com.team1.player;
 
 import java.io.File;
@@ -5,21 +7,32 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.*;
-import android.graphics.Color;
-import android.widget.*;
-import android.content.Intent;
+import android.view.Gravity;
+import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.team1.Smil.*; 
-import com.team1.communication.Receiver;
-import com.team1.communication.cloud.Downloader;
-import com.team1.Main;
 import com.team1.R;
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilReader;
+import com.team1.Smil.SmilVideoComponent;
+import com.team1.communication.cloud.Downloader;
 
 public class SmilPlayerActivity extends Activity implements Callback
 {

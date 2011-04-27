@@ -1,4 +1,7 @@
+//This is for you Hao
+
 /*
+
  * This is a modified version of a class from the Android Open Source Project. 
  * The original copyright and license information follows.
  * 

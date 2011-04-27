@@ -1,4 +1,7 @@
+//This is for you Hao
+
 /*
+
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,15 +19,14 @@ package com.team1.composer.drag;
 
 import java.util.LinkedList;
 
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.view.View;
+
 import com.team1.R;
 import com.team1.Smil.SmilComponent;
 import com.team1.composer.ComposerActivity;
-
-import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.view.View;
 
 /**
  * This class describes an area within a DragLayer where a dragged item can be dropped.
@@ -215,8 +217,7 @@ public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
 public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
         DragView dragView, Object dragInfo)
 {
-    int bg = R.color.red;
-//    setBackgroundResource (bg);
+    //    setBackgroundResource (bg);
     setBackgroundResource( R.drawable.delete_active );
 }
 

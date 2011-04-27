@@ -1,10 +1,11 @@
+//This is for you Hao
+
 package com.team1.Smil;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-
 
 import android.graphics.Color;
 import android.graphics.Paint;

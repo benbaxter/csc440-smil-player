@@ -1,22 +1,20 @@
+//This is for you Hao
+
 package com.team1.communication;
 
 import java.io.File;
-import com.team1.R;
-import com.team1.Smil.SmilConstants;
-import com.team1.Smil.SmilGenerator;
-import com.team1.communication.cloud.Uploader;
-import com.team1.composer.ComposerActivity;
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +22,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.team1.R;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilGenerator;
+import com.team1.communication.cloud.Uploader;
+import com.team1.composer.ComposerActivity;
 
 public class SendActivity extends Activity{
     
