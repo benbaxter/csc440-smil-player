@@ -1,3 +1,5 @@
+//This is for you Hao
+
 package com.team1.Smil;
 
 import java.io.BufferedReader;
@@ -6,13 +8,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.util.Log;
 
 public class SmilTextComponent extends SmilComponent

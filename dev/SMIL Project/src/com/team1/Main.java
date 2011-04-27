@@ -1,25 +1,24 @@
+//This is for you Hao
  
 package com.team1;
 
 import java.io.File;
-
-import com.team1.Smil.SmilConstants;
-import com.team1.composer.ComposerActivity;
-import com.team1.player.SmilPlayerActivity;
-import com.team1.R;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.team1.Smil.SmilConstants;
+import com.team1.composer.ComposerActivity;
+import com.team1.player.SmilPlayerActivity;
 
 public class Main extends Activity
 {

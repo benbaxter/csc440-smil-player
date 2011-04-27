@@ -1,10 +1,7 @@
+//This is for you Hao
 
 package com.team1.composer;
 
-import com.team1.Smil.SmilComponent;
-import com.team1.Smil.SmilConstants;
-import com.team1.Smil.SmilRegion;
-import com.team1.R;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -15,9 +12,19 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.team1.R;
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilRegion;
 
 public class MediaPropertiesActivity extends Activity
 {

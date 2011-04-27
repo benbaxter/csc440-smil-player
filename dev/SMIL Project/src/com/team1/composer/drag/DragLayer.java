@@ -1,4 +1,7 @@
+//This is for you Hao
+
 /*
+
  * This is a modified version of a class from the Android Open Source Project. 
  * The original copyright and license information follows.
  * 
@@ -21,16 +24,17 @@ package com.team1.composer.drag;
 
 import java.util.LinkedList;
 
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+
 import com.team1.R;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilRegion;
 import com.team1.composer.ComposerActivity;
-import android.content.Context;
-import android.graphics.Rect;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.KeyEvent;
-import android.view.View;
 
 /**
  * A ViewGroup that coordinates dragging across its dscendants.

@@ -1,11 +1,19 @@
+//This is for you Hao
+
 package com.team1.composer;
 
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import android.app.*;
-import android.content.*;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,21 +22,37 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
-import android.util.*;
-import android.view.*;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-
-import com.team1.composer.drag.DropSpot;
 import com.team1.R;
-import com.team1.Smil.*;
+import com.team1.Smil.SmilAudioComponent;
+import com.team1.Smil.SmilComponent;
+import com.team1.Smil.SmilConstants;
+import com.team1.Smil.SmilGenerator;
+import com.team1.Smil.SmilImageComponent;
+import com.team1.Smil.SmilMessage;
+import com.team1.Smil.SmilReader;
+import com.team1.Smil.SmilRegion;
+import com.team1.Smil.SmilTextComponent;
+import com.team1.Smil.SmilVideoComponent;
 import com.team1.communication.SendActivity;
 import com.team1.composer.drag.DragController;
 import com.team1.composer.drag.DragLayer;
-import com.team1.player.*;
+import com.team1.composer.drag.DropSpot;
+import com.team1.player.SmilPlayerActivity;
 
 public class ComposerActivity extends Activity {
 

@@ -1,3 +1,5 @@
+//This is for you Hao
+
 package com.team1.player;
 
 import java.util.ArrayList;
@@ -13,10 +15,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
-import android.widget.ImageButton;
 
-import com.team1.R;
 import com.team1.Smil.SmilAudioComponent;
 import com.team1.Smil.SmilComponent;
 import com.team1.Smil.SmilConstants;
