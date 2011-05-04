@@ -53,6 +53,7 @@ public class Receiver extends BroadcastReceiver
             Object[] pdus = (Object[]) bundle.get("pdus");
             msgs = new SmsMessage[pdus.length];            
             int numOfSMIL = 0;
+            String from = "";
             //int i = 0;
             for (int i=0; i<msgs.length; i++){
                 msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);                
@@ -65,7 +66,7 @@ public class Receiver extends BroadcastReceiver
                     str += msgs[i].getMessageBody().toString();
                     str += "\n";    
                     ++numOfSMIL;
-                    String from = msgs[i].getOriginatingAddress().replace( "+", "" );
+                    from = msgs[i].getOriginatingAddress().replace( "+", "" );
                     if(from.startsWith( "1" ))
                         from = from.substring( 1 );
                     smilFile = from + "_" + msgs[i].getMessageBody().split("_")[msgs[i].getMessageBody().split("_").length - 1];
@@ -129,7 +130,7 @@ public class Receiver extends BroadcastReceiver
                     //---display the new SMS message---
                     if(numOfSMIL > 0){                
                         //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                        displayNotification( ticker, "SMIL Messages!", context );
+                        displayNotification( ticker, "SMIL Messages!", context, from );
                     }
                     
                 }
@@ -183,12 +184,12 @@ public class Receiver extends BroadcastReceiver
     }
     
     
-    public void displayNotification( String ticker, String msg, Context context)
+    public void displayNotification( String ticker, String msg, Context context, String from)
     {
         NotificationManager manager = ( NotificationManager ) context.getSystemService( Context.NOTIFICATION_SERVICE );
         manager.cancelAll();
         
-        int icon = R.drawable.icon_mail;
+        int icon = R.drawable.launch_icon_hdpi;
         CharSequence tickerText = ticker;
         long when = System.currentTimeMillis();
 
@@ -207,8 +208,8 @@ public class Receiver extends BroadcastReceiver
         notification.ledOnMS = 300;
         notification.ledOffMS = 1000;
         
-        CharSequence contentTitle = "New SMIL Messages!";
-        CharSequence contentText = "Click here to check them out!";
+        CharSequence contentTitle = "New SMIL Message!";
+        CharSequence contentText = "From " + from;
         
         // Construct the file path to the received SMIL file
         String smilFile2 = Environment.getExternalStorageDirectory() + SmilConstants.INBOX_PATH + smilFile;
