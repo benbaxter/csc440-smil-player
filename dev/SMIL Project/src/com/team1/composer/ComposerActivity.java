@@ -83,12 +83,12 @@ public class ComposerActivity extends Activity {
     private static boolean changed = false;
 
     static LinkedList<SmilComponent> media;
-    int messageSize = 0;
+    private int messageSize = 0;
     private SmilMessage message;
 
     Toast toast;
 
-    public int calcMessageSize()
+    public void updateMessageSize()
     {
         int size = 0;
         for( SmilComponent component : media )
@@ -100,7 +100,7 @@ public class ComposerActivity extends Activity {
                 size = startTime + dur;
             }
         }
-        return size;
+        messageSize = size;
     }
     
     public static LinkedList<SmilComponent> getMedia()
@@ -563,7 +563,7 @@ public class ComposerActivity extends Activity {
                 {
                     media.removeLast ( );
                 }
-            messageSize = calcMessageSize();
+            updateMessageSize();
             break;
             case (EDIT_MEDIA) :
                 if (resultCode == Activity.RESULT_OK) {
@@ -632,7 +632,7 @@ public class ComposerActivity extends Activity {
                 {
                     //media.removeLast();
                 }
-            messageSize = calcMessageSize();
+            updateMessageSize();
             break;
             case (SEND_MESSAGE) :
                 if (resultCode == Activity.RESULT_OK) {
