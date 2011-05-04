@@ -87,6 +87,7 @@ public class ComposerActivity extends Activity {
     static LinkedList<SmilComponent> media;
     private SmilMessage message;
     static SeekBar timeBar;
+    static TextView maxTime;
 
     Toast toast;
 
@@ -103,6 +104,7 @@ public class ComposerActivity extends Activity {
             }
         }
         timeBar.setMax( size );
+        maxTime.setText( String.valueOf( size ) );
         
     }
     
@@ -121,6 +123,7 @@ public class ComposerActivity extends Activity {
         setContentView ( R.layout.composer );
         
         timeBar = (SeekBar) findViewById(R.id.timeBar);
+        maxTime = (TextView) findViewById(R.id.maxTime);
         
         setupListeners ( );
 
@@ -954,7 +957,7 @@ public class ComposerActivity extends Activity {
             int startTime = component.getBegin();
             int dur = component.getEnd();
             View view = (View) mDragLayer.findViewWithTag( component.getTag() );
-            if( currentTime >= startTime && currentTime < (startTime+dur) )
+            if( currentTime >= startTime && currentTime <= (startTime+dur) )
             {
                 view.setVisibility( View.VISIBLE );
             }
