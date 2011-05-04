@@ -959,7 +959,7 @@ public class ComposerActivity extends Activity {
             if( ! (component instanceof SmilAudioComponent) )
             {
                 View view = (View) mDragLayer.findViewWithTag( component.getTag() );
-                if( currentTime >= startTime && currentTime <= (startTime+dur) )
+                if( currentTime >= startTime && currentTime < (startTime+dur) )
                 {
                     view.setVisibility( View.VISIBLE );
                 }
