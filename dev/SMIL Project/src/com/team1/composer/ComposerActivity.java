@@ -83,10 +83,26 @@ public class ComposerActivity extends Activity {
     private static boolean changed = false;
 
     static LinkedList<SmilComponent> media;
+    int messageSize = 0;
     private SmilMessage message;
 
     Toast toast;
 
+    public int calcMessageSize()
+    {
+        int size = 0;
+        for( SmilComponent component : media )
+        {
+            int startTime = component.getBegin();
+            int dur = component.getEnd();
+            if ( size < (startTime + dur))
+            {
+                size = startTime + dur;
+            }
+        }
+        return size;
+    }
+    
     public static LinkedList<SmilComponent> getMedia()
     {
         return media;
