@@ -207,7 +207,7 @@ public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
         }
     }
     mDragLayer.findViewById(R.id.delete).setVisibility( View.GONE );
-
+    ComposerActivity.updateMessageSize();
 }
 
 /**
