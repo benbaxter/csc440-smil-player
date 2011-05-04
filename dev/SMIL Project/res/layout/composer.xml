@@ -31,7 +31,7 @@
 		android:id="@+id/Canvas" 
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent" 
-		android:layout_above="@+id/addBtn"
+		android:layout_above="@+id/timeBar"
 		android:layout_below="@+id/TopBar" 
 		android:layout_margin="10px"
 		android:background="#C4C4C4">
@@ -63,6 +63,13 @@
 		android:layout_width="wrap_content" 
 		android:layout_margin="15px" 
 		android:src="@drawable/note"/>
+		
+	<SeekBar
+ 		android:id="@+id/timeBar"
+ 		android:layout_width="fill_parent"
+ 		android:layout_height="wrap_content"
+ 		android:layout_above="@+id/addBtn"
+ 		android:paddingBottom="10px"/>
 		
 	<Button android:id="@+id/addBtn" 
 		android:layout_width="wrap_content"
