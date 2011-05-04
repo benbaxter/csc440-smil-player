@@ -35,6 +35,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,12 +85,12 @@ public class ComposerActivity extends Activity {
     private static boolean changed = false;
 
     static LinkedList<SmilComponent> media;
-    private int messageSize = 0;
     private SmilMessage message;
+    static SeekBar timeBar;
 
     Toast toast;
 
-    public void updateMessageSize()
+    public static void updateMessageSize()
     {
         int size = 0;
         for( SmilComponent component : media )
@@ -101,7 +102,8 @@ public class ComposerActivity extends Activity {
                 size = startTime + dur;
             }
         }
-        messageSize = size;
+        timeBar.setMax( size );
+        
     }
     
     public static LinkedList<SmilComponent> getMedia()
@@ -117,7 +119,9 @@ public class ComposerActivity extends Activity {
         mDragController = new DragController ( this );
 
         setContentView ( R.layout.composer );
-
+        
+        timeBar = (SeekBar) findViewById(R.id.timeBar);
+        
         setupListeners ( );
 
         media = new LinkedList<SmilComponent>();
@@ -243,6 +247,8 @@ public class ComposerActivity extends Activity {
                     }
                 }
             }
+            updateMessageSize();
+            updateView();
         }
         catch ( Exception e )
         {
@@ -323,7 +329,7 @@ public class ComposerActivity extends Activity {
 
         }
     };
-    
+
     OnClickListener buttonClick = new OnClickListener ( ) 
     {
         @Override
@@ -385,6 +391,7 @@ public class ComposerActivity extends Activity {
         }
     };
     
+    
     OnLongClickListener viewLongClick = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
@@ -394,6 +401,28 @@ public class ComposerActivity extends Activity {
             }
             return startDrag(v);
         }
+    };
+    
+    OnSeekBarChangeListener seekBar = new OnSeekBarChangeListener(){
+
+        @Override
+        public void onProgressChanged( SeekBar arg0, int arg1, boolean arg2 )
+        {
+            updateView();
+        }
+
+        @Override
+        public void onStartTrackingTouch( SeekBar seekBar )
+        {
+            
+        }
+
+        @Override
+        public void onStopTrackingTouch( SeekBar seekBar )
+        {
+            
+        }
+        
     };
 
     public SmilMessage getMessage ( )
@@ -904,6 +933,7 @@ public class ComposerActivity extends Activity {
         preview.setOnClickListener(buttonClick);
         send.setOnClickListener(buttonClick);
         homeBtn.setOnClickListener(buttonClick);
+        timeBar.setOnSeekBarChangeListener( seekBar );
 
         View audio = findViewById(R.id.audio);
         audio.setOnClickListener(viewClick);
@@ -923,7 +953,7 @@ public class ComposerActivity extends Activity {
             int startTime = component.getBegin();
             int dur = component.getEnd();
             View view = (View) mDragLayer.findViewWithTag( component.getTag() );
-            if( currentTime > startTime && currentTime < (startTime+dur) )
+            if( currentTime >= startTime && currentTime < (startTime+dur) )
             {
                 view.setVisibility( View.VISIBLE );
             }

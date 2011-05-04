@@ -104,6 +104,7 @@ public class MediaPropertiesActivity extends Activity
             
             EditText et = (EditText)findViewById( R.id.startTime );
             et.setText( Integer.toString( media.getBegin() ) );
+            et.setText( String.valueOf( ComposerActivity.timeBar.getProgress()) );
             et = (EditText)findViewById( R.id.duration);
             et.setText( Integer.toString( media.getEnd() ) );
             
@@ -224,6 +225,8 @@ public class MediaPropertiesActivity extends Activity
             findViewById( R.id.hwInfo ).setVisibility( View.VISIBLE );
            
         }
+        EditText et = (EditText)findViewById( R.id.startTime );
+        et.setText( String.valueOf( ComposerActivity.timeBar.getProgress()) );
         
         findViewById( R.id.xyInfo ).setVisibility( View.INVISIBLE );
         TextView tv = (TextView)findViewById( R.id.Title );
