@@ -563,6 +563,7 @@ public class ComposerActivity extends Activity {
                 {
                     media.removeLast ( );
                 }
+            messageSize = calcMessageSize();
             break;
             case (EDIT_MEDIA) :
                 if (resultCode == Activity.RESULT_OK) {
@@ -631,6 +632,7 @@ public class ComposerActivity extends Activity {
                 {
                     //media.removeLast();
                 }
+            messageSize = calcMessageSize();
             break;
             case (SEND_MESSAGE) :
                 if (resultCode == Activity.RESULT_OK) {
