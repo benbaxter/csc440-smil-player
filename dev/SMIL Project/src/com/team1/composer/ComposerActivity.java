@@ -34,6 +34,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -911,5 +912,25 @@ public class ComposerActivity extends Activity {
 
     public void toast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+    
+    public void updateView()
+    {
+        SeekBar seek = ( SeekBar ) findViewById( R.id.timeBar );
+        int currentTime = seek.getProgress();
+        for( SmilComponent component : media )
+        {
+            int startTime = component.getBegin();
+            int dur = component.getEnd();
+            View view = (View) mDragLayer.findViewWithTag( component.getTag() );
+            if( currentTime > startTime && currentTime < (startTime+dur) )
+            {
+                view.setVisibility( View.VISIBLE );
+            }
+            else
+            {
+                view.setVisibility( View.GONE );
+            }
+        }
     }
 }
