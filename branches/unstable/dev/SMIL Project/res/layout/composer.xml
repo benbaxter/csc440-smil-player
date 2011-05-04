@@ -41,7 +41,7 @@
 		    android:layout_width="fill_parent"
 		    android:layout_height="fill_parent">
 		    
-				<com.team1.composer.drag.DropSpot
+				  <com.team1.composer.drag.DropSpot
 		        android:id="@+id/deleteSpot"
 		        android:background="@color/deleteSpot"
 		        android:adjustViewBounds="true"
@@ -64,7 +64,7 @@
 		android:layout_margin="15px" 
 		android:src="@drawable/note"/>
 		
-	<LinearLayout android:id="@+id/seekBar"
+	<RelativeLayout android:id="@+id/seekBar"
 		android:layout_above="@+id/addBtn"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -75,23 +75,23 @@
 			android:textSize="20px"
 			android:textColor="#C4C4C4"
 			android:layout_width="wrap_content"
-	 		android:layout_height="wrap_content" 
+	 		android:layout_height="wrap_content"
+	 		android:layout_alignParentLeft="true"
 	 		android:padding="10px"/>
 			
 		<SeekBar android:id="@+id/timeBar"
-	 		android:layout_width="fill_parent"
 	 		android:layout_height="wrap_content"
-	 		android:paddingBottom="10px"/>
+	 		android:paddingBottom="10px" android:layout_width="fill_parent" android:layout_centerInParent="false" android:layout_marginRight="30px" android:layout_marginLeft="30px"/>
 	 		
 	 	<TextView android:id="@+id/maxTime"
 			android:text="1"
 			android:textSize="20px"
 			android:textColor="#C4C4C4"
-			android:layout_width="wrap_content"
+			android:layout_width="fill_parent"
 	 		android:layout_height="wrap_content" 
-	 		android:padding="10px"/>
+	 		android:padding="10px" android:gravity="right"/>
 	 		
-	</LinearLayout>
+	</RelativeLayout>
 		
 	<Button android:id="@+id/addBtn" 
 		android:layout_width="wrap_content"
