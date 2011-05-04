@@ -409,6 +409,7 @@ public class ComposerActivity extends Activity {
         public void onProgressChanged( SeekBar arg0, int arg1, boolean arg2 )
         {
             updateView();
+            ((TextView)findViewById( R.id.currentTime )).setText(String.valueOf( timeBar.getProgress() ));
         }
 
         @Override
