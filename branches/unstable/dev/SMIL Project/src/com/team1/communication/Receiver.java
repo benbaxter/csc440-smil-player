@@ -1,5 +1,12 @@
 //This is for you Hao
-
+/*
+ * This class is for monitoring the received text messages then parsing them.
+ * If a message is received with our unique text message, then we parse the message
+ * to get the file name. tHen we download the file from the cloud and then parse the SMIL
+ * message for files that are on the cloud. Then we display a notification for the user to see
+ * This notification will have the smil file and pass it to the player.
+ * There is more magic this class does but like a true magician, we  do not reveal all our tricks.
+ */
 package com.team1.communication;
 
 import java.io.File;
@@ -30,6 +37,8 @@ import com.team1.player.SmilPlayerActivity;
  
 public class Receiver extends BroadcastReceiver
 {
+    //The first guy is for holding the context so we can toast later
+    //The second dude is to hold the smil file name
     Context toastContext;
     String smilFile;
     
@@ -45,7 +54,6 @@ public class Receiver extends BroadcastReceiver
         //---get the SMS message passed in---
         Bundle bundle = intent.getExtras();   
         SmsMessage[] msgs = null;
-        String str = "";         
         String ticker = "";
         if (bundle != null)
         {
@@ -61,23 +69,16 @@ public class Receiver extends BroadcastReceiver
                 		" Go to our application to check it out!" ))
                 {
                     Log.i("RECEIVE", "Message is a SMIL message.");
-                    str += "SMS from " + msgs[i].getOriginatingAddress().replace( "+", "" );   
-                    str += " :";
-                    str += msgs[i].getMessageBody().toString();
-                    str += "\n";    
                     ++numOfSMIL;
                     from = msgs[i].getOriginatingAddress().replace( "+", "" );
                     if(from.startsWith( "1" ))
                         from = from.substring( 1 );
                     smilFile = from + "_" + msgs[i].getMessageBody().split("_")[msgs[i].getMessageBody().split("_").length - 1];
-                    Toast.makeText( toastContext, "About to download: " + smilFile, Toast.LENGTH_LONG );
                     boolean downloaded = false;
                     String fileName = Environment.getExternalStorageDirectory ( ) 
                     + SmilConstants.INBOX_PATH + smilFile;
                     
                     Log.i("RECEIVE", "about to download");
-                    
-                    
                     
                     downloadThread t = new downloadThread();
                     Log.i("DOWNLOADTHREAD", smilFile);
@@ -97,7 +98,6 @@ public class Receiver extends BroadcastReceiver
                     //
                     Log.i("RECEIVE", "downloaded");
                     downloaded = new File(fileName).exists();
-                    
                     
                     if(downloaded)
                     {
@@ -125,14 +125,11 @@ public class Receiver extends BroadcastReceiver
                         Toast.makeText( toastContext, "Did not download: " + from + ".smil", Toast.LENGTH_LONG );
                         Log.i("DOWNLOAD", "downloaded: " + downloaded);
                     }
-                    
                     ticker = "You have " + numOfSMIL + " new SMIL message(s)";
                     //---display the new SMS message---
                     if(numOfSMIL > 0){                
-                        //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                         displayNotification( ticker, "SMIL Messages!", context, from );
                     }
-                    
                 }
                 else{
                     //continue the normal process of sms and will get alert and reaches inbox
@@ -146,7 +143,9 @@ public class Receiver extends BroadcastReceiver
             Log.i("RECEIVE", "Message is not a SMIL message");
         }
     }    
-    
+    /* this will parse thorugh the file and download all the media components in the file 
+     * 
+     */
     private static void downloadMedia ( SmilMessage message )
     {
         ArrayList < SmilComponent > components = message.getResourcesByBeginTime();
@@ -183,7 +182,9 @@ public class Receiver extends BroadcastReceiver
         
     }
     
-    
+    /*
+     * This is used to display a notification in the status bar when we have a message.
+     */
     public void displayNotification( String ticker, String msg, Context context, String from)
     {
         NotificationManager manager = ( NotificationManager ) context.getSystemService( Context.NOTIFICATION_SERVICE );
