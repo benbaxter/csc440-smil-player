@@ -1,0 +1,1 @@
+Users will be able to create, watch, send and receive SMIL messages on their Android phone. This is a project for CSC440 Software Engineering at Northern Kentucky University.
